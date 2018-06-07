@@ -43,10 +43,10 @@ Disclaimer
         </group>
     </actions>
 
-    <project-components>
-        <component>
-            <loadForDefaultProject>true</loadForDefaultProject>
-            <implementation-class>plugin.achdjian.it.ESP2866SDKSettings</implementation-class>
-        </component>
-    </project-components>
+    <!--<project-components>-->
+        <!--<component>-->
+            <!--<loadForDefaultProject>true</loadForDefaultProject>-->
+            <!--<implementation-class>plugin.achdjian.it.ESP2866SDKSettings</implementation-class>-->
+        <!--</component>-->
+    <!--</project-components>-->
 </idea-plugin>
