@@ -1,6 +1,7 @@
 package plugin.achdjian.it
 
 import com.intellij.openapi.components.ProjectComponent
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
@@ -9,7 +10,6 @@ import javax.swing.JComponent
 import javax.swing.JTextField
 
 class ESP2866SDKSettings(val project:Project) : ProjectComponent, Configurable {
-    val rootPath = JTextField()
     val rootPath = TextFieldWithBrowseButton(JTextField("test"))
     override fun isModified(): Boolean {
         return true
@@ -27,7 +27,7 @@ class ESP2866SDKSettings(val project:Project) : ProjectComponent, Configurable {
     }
 
     override fun createComponent() = panel() {
-        row("Root path: ") { rootPath }
+        row("Root path: ") { textFieldWithBrowseButton("ESP2866 free rtos path", null, null, FileChooserDescriptorFactory.createSingleFolderDescriptor()) }
     }
 
     override fun reset() {
