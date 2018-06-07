@@ -43,6 +43,12 @@ Disclaimer
         </group>
     </actions>
 
+    <project-components>
+    <component>
+        <loadForDefaultProject>true</loadForDefaultProject>
+        <implementation-class>plugin.achdjian.it.ESP8266SettingsState</implementation-class>
+    </component>
+    </project-components>
     <!--<project-components>-->
         <!--<component>-->
             <!--<loadForDefaultProject>true</loadForDefaultProject>-->
