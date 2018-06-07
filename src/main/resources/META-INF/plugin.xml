@@ -31,7 +31,9 @@ Disclaimer
     <!--<depends>com.intellij.modules.clion</depends>-->
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
+        <!--<configurationType implementation="plugin.achdjian.it.ESP2866SDKSettings" id="esp2866.plugin.achdjian.it"/>-->
+        <projectConfigurable order="last" id="ESP2866.plugin.achdjian.it" instance="plugin.achdjian.it.ESP2866SDKSettings"
+                             displayName="ESP2866 config" groupId="build.tools"/>
     </extensions>
 
     <actions>

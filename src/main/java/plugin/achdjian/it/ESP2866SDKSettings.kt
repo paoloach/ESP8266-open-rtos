@@ -2,9 +2,12 @@ package plugin.achdjian.it
 
 import com.intellij.openapi.components.ProjectComponent
 import com.intellij.openapi.options.Configurable
+import com.intellij.ui.layout.panel
 import javax.swing.JComponent
+import javax.swing.JTextField
 
 class ESP2866SDKSettings : ProjectComponent, Configurable {
+    val rootPath = JTextField()
     override fun isModified(): Boolean {
         return true
     }
@@ -15,7 +18,8 @@ class ESP2866SDKSettings : ProjectComponent, Configurable {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun createComponent(): JComponent? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun createComponent()= panel(){
+            row("Root path: ") {rootPath  }
+        }
     }
 }
