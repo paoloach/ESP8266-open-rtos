@@ -4,22 +4,32 @@ import com.intellij.openapi.components.ProjectComponent
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.TextFieldWithBrowseButton
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.layout.panel
-import javax.swing.JComponent
-import javax.swing.JTextField
 
-class ESP2866SDKSettings(val project:Project) : ProjectComponent, Configurable {
-    val rootPath = TextFieldWithBrowseButton(JTextField("test"))
+
+class ESP2866SDKSettings(val project: Project) : ProjectComponent, Configurable {
+    var sdkHome: VirtualFile? = null
+
+    companion object {
+        val DEFAULT = ESP8266SettingsState()
+    }
+
     override fun isModified(): Boolean {
-        return true
+        val state = project.getComponent(ESP8266SettingsState::class.java, DEFAULT) as ESP8266SettingsState
+
+        val modified = state.sdkHome != sdkHome?.canonicalPath
+        System.out.println("Is modified: $modified")
+        return modified
     }
 
     override fun getDisplayName() = "ESP2866"
 
 
     override fun apply() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val state = project.getComponent(ESP8266SettingsState::class.java, DEFAULT) as ESP8266SettingsState
+        System.out.println(sdkHome?.canonicalPath)
+        state.sdkHome = sdkHome?.canonicalPath
     }
 
     override fun disposeComponent() {
@@ -27,7 +37,17 @@ class ESP2866SDKSettings(val project:Project) : ProjectComponent, Configurable {
     }
 
     override fun createComponent() = panel() {
-        row("Root path: ") { textFieldWithBrowseButton("ESP2866 free rtos path", null, null, FileChooserDescriptorFactory.createSingleFolderDescriptor()) }
+        val state = project.getComponent(ESP8266SettingsState::class.java, DEFAULT) as ESP8266SettingsState
+        row("Root path: ") {
+            textFieldWithBrowseButton(
+                    browseDialogTitle = "ESP2866 free rtos path",
+                    value = state.sdkHome,
+                    fileChooserDescriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor(),
+                    fileChoosen = {
+                        sdkHome = it
+                        it.path
+                    })
+        }
     }
 
     override fun reset() {
