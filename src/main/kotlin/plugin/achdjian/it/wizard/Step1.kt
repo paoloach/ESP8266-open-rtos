@@ -3,6 +3,7 @@ package plugin.achdjian.it.wizard
 import com.intellij.BundleBase
 import com.intellij.ide.util.projectWizard.ModuleWizardStep
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.layout.Row
 import com.intellij.ui.layout.panel
 import java.awt.event.ItemEvent
@@ -16,10 +17,6 @@ fun Row.checkBox(text: String, actionListener: (event: ItemEvent) -> Unit) {
     checkBox()
 }
 
-fun Row.ScrollPanel(text: String, actionListener: (event: ItemEvent) -> Unit) {
-    val scrollPane = JScrollPane(BundleBase.replaceMnemonicAmpersand(text))
-    scrollPane()
-}
 
 class Step1 : ModuleWizardStep() {
     companion object {
@@ -36,8 +33,12 @@ class Step1 : ModuleWizardStep() {
     val extrasEnabled = HashMap<String,Boolean>()
 
 
-    override fun getComponent(): JComponent = panel(title="extenal") {
-        extras.forEach{name -> row(){checkBox(name,{extrasEnabled[name] = it.stateChange == ItemEvent.SELECTED})}}
+    override fun getComponent(): JComponent {
+        val extraPanel = panel(title="Extra") {
+            extras.forEach{name -> row(){checkBox(name,{extrasEnabled[name] = it.stateChange == ItemEvent.SELECTED})}}
+        }
+
+        return JBScrollPane(extraPanel)
     }
 
     override fun updateDataModel() {
