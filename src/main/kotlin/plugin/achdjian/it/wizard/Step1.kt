@@ -1,11 +1,17 @@
 package plugin.achdjian.it.wizard
 
 import com.intellij.BundleBase
+import com.intellij.ide.util.projectWizard.ModuleBuilder
 import com.intellij.ide.util.projectWizard.ModuleWizardStep
+import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.ProjectManager
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.layout.Row
 import com.intellij.ui.layout.panel
+import plugin.achdjian.it.ESP2866SDKSettings
+import plugin.achdjian.it.ESP8266SettingsState
 import java.awt.event.ItemEvent
 import javax.swing.JCheckBox
 import javax.swing.JComponent
@@ -18,7 +24,7 @@ fun Row.checkBox(text: String, actionListener: (event: ItemEvent) -> Unit) {
 }
 
 
-class Step1 : ModuleWizardStep() {
+class Step1(val context: WizardContext) : ModuleWizardStep() {
     companion object {
         private val LOG = Logger.getInstance(Step1::class.java)
     }
@@ -42,8 +48,16 @@ class Step1 : ModuleWizardStep() {
     }
 
     override fun updateDataModel() {
+        val projectBuilder = context.projectBuilder
+        if (projectBuilder is EPS2866ModuleBuilder) {
+            projectBuilder.addModuleConfigurationUpdater(ConfigurationUpdater)
+        }
+        context.projectBuilder
         System.out.println("Update data model")
+        val state = project.getComponent(ESP8266SettingsState::class.java, ESP2866SDKSettings.DEFAULT) as ESP8266SettingsState
+        state.extras = HashMap(extrasEnabled)
     }
 
+    private object ConfigurationUpdater : ModuleBuilder.ModuleConfigurationUpdater()
 
 }
