@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="clion">
+    <CLASSES>
+      <root url="jar:///opt/clion-2018.1.2/lib/clion.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

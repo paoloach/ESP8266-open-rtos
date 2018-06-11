@@ -9,7 +9,7 @@ import com.intellij.openapi.components.Storage
 data class ESP8266SettingsState(var sdkHome: String? = "", var extras: MutableMap<String,Boolean> = HashMap()) : PersistentStateComponent<ESP8266SettingsState> {
 
     override fun getState(): ESP8266SettingsState? {
-        System.out.println("Get State: $sdkHome")
+        println("Get State: $this")
         return this;
     }
 

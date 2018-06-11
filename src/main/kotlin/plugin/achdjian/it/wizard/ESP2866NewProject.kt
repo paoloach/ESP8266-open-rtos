@@ -4,6 +4,7 @@ import com.intellij.BundleBase
 import com.intellij.ide.util.projectWizard.ModuleBuilder
 import com.intellij.ide.util.projectWizard.ModuleWizardStep
 import com.intellij.ide.util.projectWizard.WizardContext
+import com.intellij.ide.wizard.CommitStepException
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ModifiableRootModel
@@ -23,9 +24,9 @@ fun Row.checkBox(text: String, actionListener: (event: ItemEvent) -> Unit) {
 }
 
 
-class Step1(val context: WizardContext) : ModuleWizardStep() {
+class ESP2866NewProject(val context: WizardContext) : ModuleWizardStep() {
     companion object {
-        private val LOG = Logger.getInstance(Step1::class.java)
+        private val LOG = Logger.getInstance(ESP2866NewProject::class.java)
     }
 
     val extras = arrayListOf("ad7709x", "ads111x", "bearssl", "bh1750", "bme680", "bmp180", "bmp280", "ccs811", "cpp_support", "crc_generic",
@@ -52,9 +53,15 @@ class Step1(val context: WizardContext) : ModuleWizardStep() {
             projectBuilder.addModuleConfigurationUpdater(ConfigurationUpdater(extrasEnabled))
         }
         context.projectBuilder
-        System.out.println("Update data model")
-//        val state = project.getComponent(ESP8266SettingsState::class.java, ESP2866SDKSettings.DEFAULT) as ESP8266SettingsState
-//        state.extras = HashMap(extrasEnabled)
+
+    }
+
+
+    @Throws(CommitStepException::class)
+    override fun onWizardFinished() {
+        println("project file directory: ${context.projectFileDirectory}")
+        println("context : ${context}")
+        println("base path: ${context.project}")
     }
 }
 
@@ -63,8 +70,9 @@ class ConfigurationUpdater(val extras: Map<String, Boolean>) : ModuleBuilder.Mod
     override fun update(module: Module, rootModel: ModifiableRootModel) {
         val state = module.project.getComponent(ESP8266SettingsState::class.java, ESP2866SDKSettings.DEFAULT) as ESP8266SettingsState
         state.extras = HashMap(extras)
-
+        println("Update data model")
         rootModel.inheritSdk()
+        println("Sdk name: ${rootModel.sdkName}")
     }
 }
 

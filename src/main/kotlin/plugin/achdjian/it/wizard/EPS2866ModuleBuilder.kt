@@ -15,7 +15,7 @@ class EPS2866ModuleBuilder: ModuleBuilder() {
     override fun setupRootModel(modifiableRootModel: ModifiableRootModel?) {
     }
 
-    override fun createWizardSteps(wizardContext: WizardContext, modulesProvider: ModulesProvider): Array<ModuleWizardStep> = arrayOf(Step1(wizardContext))
+    override fun createWizardSteps(wizardContext: WizardContext, modulesProvider: ModulesProvider): Array<ModuleWizardStep> = arrayOf(ESP2866NewProject(wizardContext))
 
     companion object {
         private val LOG = Logger.getInstance(EPS2866ModuleBuilder::class.java)
