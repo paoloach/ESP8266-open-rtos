@@ -14,6 +14,7 @@ import com.jetbrains.cidr.cpp.cmake.projectWizard.CLionProjectWizardUtils.refres
 import com.jetbrains.cidr.cpp.cmake.projectWizard.CMakeProjectStepAdapter
 import com.jetbrains.cidr.cpp.cmake.projectWizard.CMakeProjectWizard
 import org.jdom.JDOMException
+import plugin.achdjian.it.create
 import java.io.File
 import java.io.FilenameFilter
 import java.io.IOException
@@ -103,18 +104,18 @@ class NewESP2866ProjectWizard : CMakeProjectWizard("New ESP2866 free rtos Projec
 
     @Throws(IOException::class)
     fun createProject(projectName: String, projectRootPath: String): String {
+        CPPLog.LOG.info("Create project")
         var projectName = projectName
         val projectRoot = File(projectRootPath)
         val cMakeLists = File(projectRoot, "CMakeLists.txt")
         if (!cMakeLists.exists() && !cMakeLists.createNewFile()) {
             throw IOException("Cannot create file $cMakeLists")
         } else {
-            projectName = FileUtil.sanitizeFileName(projectName)
-            val mainSketchFile = File(projectRoot, "$projectName.ino")
-            if (!mainSketchFile.exists() && !mainSketchFile.createNewFile()) {
-                throw IOException("Cannot create file $mainSketchFile")
+            val makefile = File(projectRoot, "CMakeList.txt")
+            if (!makefile.exists() && !makefile.createNewFile()) {
+                throw IOException("Cannot create $projectRoot\\CMakeList.txt")
             } else {
-                FileUtil.writeToFile(mainSketchFile, "test")
+                create(makefile, projectName)
 
                 // generate makefile
 
