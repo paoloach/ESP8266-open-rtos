@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.wm.impl.welcomeScreen.NewWelcomeScreen
+import plugin.achdjian.it.wizard.NewESP2866ProjectWizard
 
 class NewProject : AnAction() {
     override fun update(event: AnActionEvent?) {
@@ -20,6 +21,6 @@ class NewProject : AnAction() {
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        NewArduinoProjectWizard().runWizard()
+        NewESP2866ProjectWizard().runWizard()
     }
 }

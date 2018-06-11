@@ -40,6 +40,12 @@ Disclaimer
             <add-to-group group-id="MainMenu" anchor="last"/>
             <action id="Myplugin.Textboxes" class="plugin.achdjian.it.HelloAction" text="Hello" description="Says hello"/>
         </group>
+        <action id="SketchProject.New"
+          class="plugin.achdjian.it.actions.NewProject"
+          text="New ESP2866 free rtos project" description="Creates a new ESP2866 free rtos project project">
+            <add-to-group group-id="FileMenu" anchor="first"/>
+            <add-to-group group-id="WelcomeScreen.QuickStart" anchor="first"/>
+        </action>
     </actions>
 
     <project-components>
