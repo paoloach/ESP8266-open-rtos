@@ -2,6 +2,7 @@ package plugin.achdjian.it.wizard
 
 import com.intellij.ide.profiler.dummy.main
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.layout.panel
 import com.jetbrains.cidr.cpp.cmake.projectWizard.CMakeProjectStepAdapter
@@ -9,7 +10,7 @@ import java.awt.event.ItemEvent
 import javax.swing.JComponent
 import javax.swing.JPanel
 
-class NewESP2866ProjectForm(val defaultProjectName:String, val defaultProjectPath:String) : CMakeProjectStepAdapter() {
+class NewESP2866ProjectForm(val defaultProjectName:String,  defaultProjectPath:String) : CMakeProjectStepAdapter() {
 
     companion object {
         private val LOG = Logger.getInstance(NewESP2866ProjectForm::class.java)
@@ -25,6 +26,8 @@ class NewESP2866ProjectForm(val defaultProjectName:String, val defaultProjectPat
 
     val extrasEnabled = HashMap<String, Boolean>()
     val mainPanel: JPanel
+    var lastSelectedPath= defaultProjectPath
+    var projectName = defaultProjectName
 
     init {
         val extraPanel = panel(title = "Extra") {
@@ -32,6 +35,15 @@ class NewESP2866ProjectForm(val defaultProjectName:String, val defaultProjectPat
         }
 
         mainPanel = panel(title="ESP2866 free rtos"){
+            row("project name"){label(defaultProjectName)}
+            row("project path"){textFieldWithBrowseButton(
+                    browseDialogTitle = "project path",
+                    value = lastSelectedPath,
+                    fileChooserDescriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor(),
+                    fileChoosen = {
+                        lastSelectedPath = it.path
+                        lastSelectedPath
+                    })}
             row(){JBScrollPane(extraPanel)}
         }
     }
