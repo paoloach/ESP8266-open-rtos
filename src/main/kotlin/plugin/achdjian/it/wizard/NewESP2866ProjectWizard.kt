@@ -19,10 +19,10 @@ import java.io.FilenameFilter
 import java.io.IOException
 import java.util.*
 
-class NewESP2866ProjectWizard: CMakeProjectWizard("New ESP2866 free rtos Project", "NewESP2866Project") {
+class NewESP2866ProjectWizard : CMakeProjectWizard("New ESP2866 free rtos Project", "NewESP2866Project") {
     private val lastDir = Optional.ofNullable(RecentProjectsManager.getInstance().lastProjectCreationLocation)
             .orElse("")
-    val adapter = NewESP2866ProjectForm("untitled-0",  File(lastDir).getPath());
+    val adapter = NewESP2866ProjectForm("untitled-0", File(lastDir).getPath());
 
 
     init {
@@ -72,7 +72,8 @@ class NewESP2866ProjectWizard: CMakeProjectWizard("New ESP2866 free rtos Project
     }
 
     override fun doRunWizard() {
-        val projectRoot = LocalFileSystem.getInstance().refreshAndFindFileByPath(this.adapter.lastSelectedPath) ?: return
+        val projectRoot = LocalFileSystem.getInstance().refreshAndFindFileByPath(this.adapter.lastSelectedPath)
+                ?: return
         refreshProjectDir(projectRoot)
         val cMakeLists = projectRoot.findChild("CMakeLists.txt") ?: return
         val mainSketchFile = projectRoot.findChild(this.adapter.projectName + ".ino") ?: return
@@ -93,8 +94,7 @@ class NewESP2866ProjectWizard: CMakeProjectWizard("New ESP2866 free rtos Project
             return
         }
 
-        val projectSpec = CMakeProjectOpenProcessor.getHelper()
-                .getAndClearFileToOpenData(project)
+        val projectSpec = CMakeProjectOpenProcessor.getHelper().getAndClearFileToOpenData(project)
 
         deleteBuildOutputDir(projectSpec)
         OpenFileDescriptor(project, cMakeLists).navigate(false)
@@ -124,4 +124,9 @@ class NewESP2866ProjectWizard: CMakeProjectWizard("New ESP2866 free rtos Project
     }
 
 
+    private fun deleteBuildOutputDir(projectSpec: CMakeProjectOpenProcessor.OpenProjectSpec?) {
+        if (projectSpec != null && projectSpec.generationDir != null) {
+            FileUtil.delete(projectSpec.generationDir!!)
+        }
+    }
 }
