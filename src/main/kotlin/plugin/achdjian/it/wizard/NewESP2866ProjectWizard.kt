@@ -77,7 +77,6 @@ class NewESP2866ProjectWizard : CMakeProjectWizard("New ESP2866 free rtos Projec
                 ?: return
         refreshProjectDir(projectRoot)
         val cMakeLists = projectRoot.findChild("CMakeLists.txt") ?: return
-        val mainSketchFile = projectRoot.findChild(this.adapter.projectName + ".ino") ?: return
 
         val project: Project?
         try {
@@ -99,7 +98,6 @@ class NewESP2866ProjectWizard : CMakeProjectWizard("New ESP2866 free rtos Projec
 
         deleteBuildOutputDir(projectSpec)
         OpenFileDescriptor(project, cMakeLists).navigate(false)
-        OpenFileDescriptor(project, mainSketchFile).navigate(true)
     }
 
     @Throws(IOException::class)
@@ -111,9 +109,9 @@ class NewESP2866ProjectWizard : CMakeProjectWizard("New ESP2866 free rtos Projec
         if (!cMakeLists.exists() && !cMakeLists.createNewFile()) {
             throw IOException("Cannot create file $cMakeLists")
         } else {
-            val makefile = File(projectRoot, "CMakeList.txt")
+            val makefile = File(projectRoot, "CMakeLists.txt")
             if (!makefile.exists() && !makefile.createNewFile()) {
-                throw IOException("Cannot create $projectRoot\\CMakeList.txt")
+                throw IOException("Cannot create $projectRoot\\CMakeLists.txt")
             } else {
                 create(makefile, projectName)
 
