@@ -11,7 +11,6 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.jetbrains.cidr.cpp.CPPLog
 import com.jetbrains.cidr.cpp.cmake.CMakeProjectOpenProcessor
 import com.jetbrains.cidr.cpp.cmake.projectWizard.CLionProjectWizardUtils.refreshProjectDir
-import com.jetbrains.cidr.cpp.cmake.projectWizard.CMakeProjectStepAdapter
 import com.jetbrains.cidr.cpp.cmake.projectWizard.CMakeProjectWizard
 import org.jdom.JDOMException
 import plugin.achdjian.it.create
