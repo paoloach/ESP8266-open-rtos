@@ -31,6 +31,7 @@ Disclaimer
 
     <extensions defaultExtensionNs="com.intellij">
         <moduleType id="ESP2866_MODULE" implementationClass="plugin.achdjian.it.wizard.ESP2866ModuleType"/>
+        <directoryProjectGenerator implementation="plugin.achdjian.it.wizard.ESP2866ProjectGenerator"/>
         <!--<configurationType implementation="plugin.achdjian.it.ESP2866SDKSettings" id="esp2866.plugin.achdjian.it"/>-->
         <projectConfigurable order="last" id="ESP2866.plugin.achdjian.it" instance="plugin.achdjian.it.ESP2866SDKSettings"
                              displayName="ESP2866 config" groupId="build.tools"/>
@@ -39,16 +40,6 @@ Disclaimer
     </extensions>
 
     <actions>
-        <group id="MyPlugin.SampleMenu" text="Greeting" description="Greeting menu">
-            <add-to-group group-id="MainMenu" anchor="last"/>
-            <action id="Myplugin.Textboxes" class="plugin.achdjian.it.HelloAction" text="Hello" description="Says hello"/>
-        </group>
-        <action id="SketchProject.New"
-          class="plugin.achdjian.it.actions.NewProject"
-          text="New ESP2866 free rtos project" description="Creates a new ESP2866 free rtos project project">
-            <add-to-group group-id="FileMenu" anchor="first"/>
-            <add-to-group group-id="WelcomeScreen.QuickStart" anchor="first"/>
-        </action>
     </actions>
 
     <project-components>
