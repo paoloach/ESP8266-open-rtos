@@ -7,7 +7,7 @@ import javax.swing.JComponent
 
 class ESP2866ProjectGenerator:  CMakeAbstractCProjectGenerator(){
 
-    val extrasEnabled = HashMap<String, Boolean>()
+    val wizardData = WizardData()
 
     override fun createSourceFiles(projectName: String, path: VirtualFile): Array<VirtualFile> {
        return arrayOf(this.createProjectFileWithContent(path, "main.c", "#include <stdio.h>\n\nint main( )\n{\n    printf(\"Hello, World!\\n\");\n    return 0;\n}\n"))
@@ -19,6 +19,6 @@ class ESP2866ProjectGenerator:  CMakeAbstractCProjectGenerator(){
 
     override fun getName(): String  = "C ESP2866 free rtos"
 
-    override fun getSettingsPanel(): JComponent?  = ESP2866WizardPanel(createSettingsPanel(), extrasEnabled)
+    override fun getSettingsPanel(): JComponent?  = ESP2866WizardPanel(createSettingsPanel(), wizardData)
 
 }

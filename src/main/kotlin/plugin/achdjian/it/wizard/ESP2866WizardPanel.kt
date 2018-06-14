@@ -7,8 +7,10 @@ import com.intellij.ui.layout.panel
 import java.awt.BorderLayout
 import java.awt.event.ItemEvent
 import javax.swing.JCheckBox
-import javax.swing.JComboBox
 import javax.swing.JPanel
+import javax.swing.JTextArea
+import javax.swing.event.DocumentEvent
+import javax.swing.event.DocumentListener
 
 
 fun Row.checkBox(text: String, actionListener: (event: ItemEvent) -> Unit) {
@@ -17,13 +19,23 @@ fun Row.checkBox(text: String, actionListener: (event: ItemEvent) -> Unit) {
     checkBox()
 }
 
-fun Row.comboBox(options: Array<String>, actionListener: (event: ItemEvent) -> Unit) {
+fun Row.comboBox(options: Array<String>, selected: String? = null, actionListener: (event: ItemEvent) -> Unit) {
     val checkBox = ComboBox(options)
     checkBox.addItemListener(actionListener)
+    if (selected != null)
+        checkBox.selectedItem = selected
     checkBox()
 }
 
-class ESP2866WizardPanel(clionPanel: JPanel, extras: MutableMap<String, Boolean>) : JPanel(BorderLayout()) {
+class ESP2866WizardPanel(clionPanel: JPanel, val wizardData: WizardData) : JPanel(BorderLayout()), DocumentListener {
+    override fun changedUpdate(documentEvent: DocumentEvent?) {
+        wizardData.espPort = documentEvent?.document.toString()
+    }
+
+    override fun insertUpdate(documentEvent: DocumentEvent?) {}
+
+    override fun removeUpdate(documentEvent: DocumentEvent?) {}
+
     companion object {
         val extraModules = arrayListOf("ad7709x", "ads111x", "bearssl", "bh1750", "bme680", "bmp180", "bmp280", "ccs811", "cpp_support", "crc_generic",
                 "dhcpserver", "dht", "ds1302", "ds1307", "ds18b20", "ds3231", "dsm", "fatfs", "fonts", "fram",
@@ -32,18 +44,26 @@ class ESP2866WizardPanel(clionPanel: JPanel, extras: MutableMap<String, Boolean>
                 "onewire", "paho_mqtt_c", "pca9685", "pcf8574", "pcf8591", "pwm", "rboot-ota", "sdio", "sht3x", "sntp",
                 "softuart", "spiffs", "ssd1306", "stdin_uart_interrupt", "timekeeping", "tsl2561", "tsl4531", "ultrasonic", "wificfg", "ws2812",
                 "ws2812_i2s")
-        val availableSize = arrayOf("256KB", "512Kb", "1MB", "2MB","4MB")
+        val availableSize = arrayOf("256KB", "512KB", "1MB", "2MB", "4MB")
         val availableMode = arrayOf("qio", "qout", "dio")
+        val availableSpeed = arrayOf("80", "40", "26", "20")
     }
 
     init {
+        val textArea = JTextArea()
+        textArea.text = "/dev/ttyUSB0"
+        textArea.document.addDocumentListener(this)
+
         add(clionPanel, BorderLayout.PAGE_START)
-        add(panel(title = "ESP2866 config"){
-            row("flash Size"){comboBox (availableSize, {})}
-            row("Flash Mode"){comboBox (availableMode, {})}
+        add(panel(title = "ESP2866 config") {
+            row("flash Size") { comboBox(availableSize, "512KB", { wizardData.flashSize = it.item.toString() }) }
+            row("Flash Mode") { comboBox(availableMode, "qio", { wizardData.flashMode = it.item.toString() }) }
+            row("Flash Speed") { comboBox(availableSpeed, "40", { wizardData.flashSpeed = it.item.toString() }) }
+            row("ESP port") { textArea }
+            row( ){checkBox("Float Support", {wizardData.floatSupport = it.stateChange == ItemEvent.SELECTED})}
         })
         add(panel(title = "Extras") {
-            extraModules.forEach { name -> row() { checkBox(name, { extras[name] = it.stateChange == ItemEvent.SELECTED }) } }
+            extraModules.forEach { name -> row() { checkBox(name, { wizardData.extras[name] = it.stateChange == ItemEvent.SELECTED }) } }
         }, BorderLayout.PAGE_END)
     }
 }
