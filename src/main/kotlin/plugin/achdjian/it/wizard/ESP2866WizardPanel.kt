@@ -55,13 +55,14 @@ class ESP2866WizardPanel(clionPanel: JPanel, val wizardData: WizardData) : JPane
         textArea.document.addDocumentListener(this)
 
         add(clionPanel, BorderLayout.PAGE_START)
-        val p =panel(title = "ESP2866 config") {
+        val p =panel() {
             row("flash Size") { comboBox(availableSize, "512KB", { wizardData.flashSize = it.item.toString() }) }
             row("Flash Mode") { comboBox(availableMode, "qio", { wizardData.flashMode = it.item.toString() }) }
             row("Flash Speed") { comboBox(availableSpeed, "40", { wizardData.flashSpeed = it.item.toString() }) }
             row("ESP port") { textArea }
             row( ){checkBox("Float Support", {wizardData.floatSupport = it.stateChange == ItemEvent.SELECTED})}
         }
+
         add(p)
         add(panel(title = "Extras") {
             extraModules.forEach { name -> row() { checkBox(name, { wizardData.extras[name] = it.stateChange == ItemEvent.SELECTED }) } }
