@@ -1,26 +1,28 @@
 cmake_minimum_required(VERSION 3.10)
-project(firmware)
+project(__{project_name}__)
 
 set(CMAKE_CXX_STANDARD 11)
 
 # Flash size in megabits
 # Valid values are same as for esptool.py - 2,4,8,16,32
-SET(FLASH_SIZE 512KB)
+SET(FLASH_SIZE __{FLASH_SIZE}__)
 
 # Flash mode, valid values are same as for esptool.py - qio,qout,dio.dout
-SET(FLASH_MODE qio)
+SET(FLASH_MODE __{FLASH_MODE}__)
 
 # Flash speed in MHz, valid values are same as for esptool.py - 80, 40, 26, 20
-set(FLASH_SPEED 40)
+set(FLASH_SPEED __{FLASH_SPEED}__)
 
-set(ESPPORT /dev/ttyUSB0 )
+set(ESPPORT __{ESP_PORT}__ )
 
 # set this to 0 if you don't need floating point support in printf/scanf
 # this will save approx 14.5KB flash space and 448 bytes of statically allocated
 # data RAM
 #
 # NB: Setting the value to 0 requires a recent esptool.py (Feb 2016 / commit ebf02c9)
-set(PRINTF_SCANF_FLOAT_SUPPORT, 0)
+set(PRINTF_SCANF_FLOAT_SUPPORT, __{FLOAT_SUPPORT}__ )
+
+
 
 SET(COMMON_FLAGS "-mlongcalls -mtext-section-literals -DGITSHORTREV=\"93d43d7\" -nostdlib  -ffunction-sections -fdata-sections -DLWIP_MDNS_RESPONDER=1 -DLWIP_NUM_NETIF_CLIENT_DATA=1 -DLWIP_NETIF_EXT_STATUS_CALLBACK=1")
 
@@ -28,7 +30,7 @@ SET(CMAKE_CXX_FLAGS "${COMMON_FLAGS} -std=c++11")
 SET(CMAKE_C_FLAGS "${COMMON_FLAGS} -std=gnu99")
 
 
-set(PROGRAM_SRC wificfg.c)
+set(PROGRAM_SRC mainUser.c)
 
 
 set(ESP_OPEN_RTOS_DIR /home/paolo/esp2866/esp-open-rtos)
@@ -62,8 +64,9 @@ file(GLOB CORE_SRC ${ESP_OPEN_RTOS_DIR}/core/*.c  ${ESP_OPEN_RTOS_DIR}/core/*.cp
 file(GLOB CORE_ASM  ${ESP_OPEN_RTOS_DIR}/core/*.S )
 SET_SOURCE_FILES_PROPERTIES( ${CORE_ASM} PROPERTIES LANGUAGE C )
 # Extras
-file(GLOB LIB_DHCPSERVER_SRC ${ESP_OPEN_RTOS_DIR}/extras/dhcpserver/*.c)
-file(GLOB LIB_WIFICFG_SRC ${ESP_OPEN_RTOS_DIR}/extras/wificfg/*.c)
+
+
+__{EXTRAS_SOURCE_FILES}__
 
 add_library(program STATIC ${PROGRAM_SRC} )
 add_library(open_esplibs_libmain STATIC ${LIB_MAIN_SRC}  ${LIB_MAIN_ASM})
@@ -84,12 +87,9 @@ add_library(lwip STATIC ${LWIP_SRC}  ${ESP_OPEN_RTOS_DIR}/lwip/lwip/src/apps/lwi
         ${ESP_OPEN_RTOS_DIR}/lwip/esp_interface.c)
 
 
-add_library(dhcpserver STATIC ${LIB_DHCPSERVER_SRC})
-add_library(wificfg STATIC ${LIB_WIFICFG_SRC})
-add_library(core STATIC ${CORE_SRC} ${CORE_ASM})
+__{EXTRAS_LIBRARIES}__
 
-
-add_executable(firmware FreeRTOSConfig.h )
+add_executable(__{project_name}__ FreeRTOSConfig.h )
 
 SET(CMAKE_EXE_LINKER_FLAGS "-Wl,--no-check-sections  -u call_user_start -Wl,-static -Wl,-Map=./drindrin.map  -Wl,-gc-sections -T${ESP_OPEN_RTOS_DIR}/ld/program.ld -T${ESP_OPEN_RTOS_DIR}/ld/rom.ld -Wl,--whole-archive" )
 
@@ -148,22 +148,22 @@ add_custom_target(createImage)
 add_custom_command(TARGET createImage
         POST_BUILD
         COMMENT "create image for ESP2866"
-        COMMAND esptool.py elf2image --version=2 -fs ${FLASH_SIZE} -fm ${FLASH_MODE} -ff ${FLASH_SPEED}m firmware -o firmware.bin
+        COMMAND esptool.py elf2image --version=2 -fs ${FLASH_SIZE} -fm ${FLASH_MODE} -ff ${FLASH_SPEED}m __{project_name}__ -o __{project_name}__.bin
         )
 
 add_custom_target(flash)
 add_custom_command(TARGET flash
         POST_BUILD
         COMMENT "Flash esp2866"
-        COMMAND esptool.py -p ${ESPPORT} --baud 115200 write_flash -fs ${FLASH_SIZE} -fm ${FLASH_MODE} -ff ${FLASH_SPEED}m  0x0  ${ESP_OPEN_RTOS_DIR}/bootloader/firmware_prebuilt/rboot.bin 0x1000  ${ESP_OPEN_RTOS_DIR}/bootloader/firmware_prebuilt/blank_config.bin 0x2000 firmware.bin
+        COMMAND esptool.py -p ${ESPPORT} --baud 115200 write_flash -fs ${FLASH_SIZE} -fm ${FLASH_MODE} -ff ${FLASH_SPEED}m  0x0  ${ESP_OPEN_RTOS_DIR}/bootloader/__{project_name}___prebuilt/rboot.bin 0x1000  ${ESP_OPEN_RTOS_DIR}/bootloader/__{project_name}___prebuilt/blank_config.bin 0x2000 __{project_name}__.bin
         )
 
 add_dependencies(rename remove)
-add_dependencies(firmware rename)
-add_dependencies(createImage firmware)
+add_dependencies(__{project_name}__ rename)
+add_dependencies(createImage __{project_name}__)
 add_dependencies(flash createImage)
 
-target_link_libraries(firmware
+target_link_libraries(__{project_name}__
         -Wl,--start-group
         ${CMAKE_CURRENT_BINARY_DIR}/sdklib/libmain.a
         ${CMAKE_CURRENT_BINARY_DIR}/sdklib/libnet80211.a
@@ -172,6 +172,7 @@ target_link_libraries(firmware
         ${CMAKE_CURRENT_BINARY_DIR}/sdklib/libwpa.a
         -Wl,--no-whole-archive
         program
+        __{EXTRAS_STATIC_LIBRARIES}__
         dhcpserver
         wificfg
         freeRTOS
@@ -342,24 +343,7 @@ target_include_directories(lwip PUBLIC
         ${ESP_OPEN_RTOS_DIR}/open_esplibs/include
         )
 
-target_include_directories(wificfg PUBLIC
-        ./
-        ./include
-        ${ESP_OPEN_RTOS_DIR}/include
-        ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
-        ${ESP_OPEN_RTOS_DIR}/extras/dhcpserver/include
-        ${ESP_OPEN_RTOS_DIR}/extras/wificfg/..
-        ${FREE_RTOS}/include
-        ${FREE_RTOS}/portable/esp8266
-        ${LWIP_DIR}/include
-        ${ESP_OPEN_RTOS_DIR}/lwip/include
-        ${LWIP_DIR}/include/compat/posix
-        ${LWIP_DIR}/include/ipv4
-        ${LWIP_DIR}/include/ipv4/lwip
-        ${LWIP_DIR}/include/lwip
-        ${ESP_OPEN_RTOS_DIR}/core/include
-        ${ESP_OPEN_RTOS_DIR}/open_esplibs/include
-        )
+__{EXTRA_INCLUDE_DIRECTORIES}__
 
 target_include_directories(core PUBLIC
         ./
@@ -400,7 +384,7 @@ target_include_directories(program PUBLIC
         )
 
 
-target_include_directories(firmware PUBLIC
+target_include_directories(__{project_name}__ PUBLIC
         ./
         ./include
         ${ESP_OPEN_RTOS_DIR}/include

@@ -28,7 +28,6 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile "org.jetbrains.kotlin:kotlin-stdlib"
    compile files('/opt/clion/lib/clion.jar')
-    compile group: 'org.apache.velocity', name: 'velocity', version: '1.7'
 }
 
 intellij {
