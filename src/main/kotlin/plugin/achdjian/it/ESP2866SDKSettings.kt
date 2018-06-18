@@ -9,6 +9,10 @@ import plugin.achdjian.it.ui.panel
 
 class ESP2866SDKSettings(val project: Project) : ProjectComponent, Configurable {
     var sdkHome: VirtualFile? = null
+    var ccPath: VirtualFile?=null
+    var cxxPath: VirtualFile?=null
+    var objCopyPath: VirtualFile?=null
+    var arPath: VirtualFile?=null
 
     companion object {
         val GCC = "xtensa-lx106-elf-gcc"
@@ -33,6 +37,10 @@ class ESP2866SDKSettings(val project: Project) : ProjectComponent, Configurable 
         val state = project.getComponent(ESP8266SettingsState::class.java, DEFAULT) as ESP8266SettingsState
         System.out.println(sdkHome?.canonicalPath)
         sdkHome?.canonicalPath?.let { state.sdkHome = it }
+        ccPath?.canonicalPath?.let{state.CCPath = it}
+        cxxPath?.canonicalPath?.let{state.CXXPath = it}
+        objCopyPath?.canonicalPath?.let{state.ObjCopyPATH = it}
+        arPath?.canonicalPath?.let{state.ARPath = it}
     }
 
     override fun disposeComponent() {
@@ -49,6 +57,51 @@ class ESP2866SDKSettings(val project: Project) : ProjectComponent, Configurable 
                     fileChooserDescriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor(),
                     fileChosen = {
                         sdkHome = it
+                        it.path
+                    })
+
+        }
+        row("GCC path: ") {
+            textFieldWithHistoryWithBrowseButton(
+                    project = project,
+                    browseDialogTitle = "ESP2866 free sdk gcc path",
+                    value = state.CCPath,
+                    fileChooserDescriptor = FileChooserDescriptorFactory.createSingleFileDescriptor(),
+                    fileChosen = {
+                        ccPath = it
+                        it.path
+                    })
+        }
+        row("G++ path: ") {
+            textFieldWithHistoryWithBrowseButton(
+                    project = project,
+                    browseDialogTitle = "ESP2866 free sdk g++ path",
+                    value = state.CCPath,
+                    fileChooserDescriptor = FileChooserDescriptorFactory.createSingleFileDescriptor(),
+                    fileChosen = {
+                        cxxPath = it
+                        it.path
+                    })
+        }
+        row("Objcpy path: ") {
+            textFieldWithHistoryWithBrowseButton(
+                    project = project,
+                    browseDialogTitle = "ESP2866 free sdk objcopy path",
+                    value = state.CCPath,
+                    fileChooserDescriptor = FileChooserDescriptorFactory.createSingleFileDescriptor(),
+                    fileChosen = {
+                        objCopyPath = it
+                        it.path
+                    })
+        }
+        row("AR path: ") {
+            textFieldWithHistoryWithBrowseButton(
+                    project = project,
+                    browseDialogTitle = "ESP2866 free sdk AR path",
+                    value = state.CCPath,
+                    fileChooserDescriptor = FileChooserDescriptorFactory.createSingleFileDescriptor(),
+                    fileChosen = {
+                        arPath = it
                         it.path
                     })
         }

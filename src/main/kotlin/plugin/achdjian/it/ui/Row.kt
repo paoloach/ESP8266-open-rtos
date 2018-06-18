@@ -43,9 +43,9 @@ class Row(val text:String? = null) {
                                                  browseDialogTitle: String,
                                                  fileChooserDescriptor: FileChooserDescriptor,
                                                  historyProvider: (() -> List<String>)? = null,
-                                                 fileChosen: ((chosenFile: VirtualFile) -> String)? = null): TextFieldWithHistoryWithBrowseButton {
-        val component = TextFieldWithHistoryWithBrowseButton()
-        val textFieldWithHistory = component.childComponent
+                                                 fileChosen: ((chosenFile: VirtualFile) -> String)? = null){
+        val textWithBrowserButton = TextFieldWithHistoryWithBrowseButton()
+        val textFieldWithHistory = textWithBrowserButton.childComponent
         textFieldWithHistory.setHistorySize(-1)
         textFieldWithHistory.setMinimumAndPreferredWidth(0)
         if (historyProvider != null) {
@@ -53,15 +53,15 @@ class Row(val text:String? = null) {
         }
         installFileCompletionAndBrowseDialog(
                 project,
-                component,
-                component.childComponent.textEditor,
+                textWithBrowserButton,
+                textWithBrowserButton.childComponent.textEditor,
                 browseDialogTitle,
                 fileChooserDescriptor,
                 TextComponentAccessor.TEXT_FIELD_WITH_HISTORY_WHOLE_TEXT,
                 fileChosen
         )
-        component.let{component.text = value}
-        return component
+        textWithBrowserButton.let{textWithBrowserButton.text = value}
+        component = textWithBrowserButton
     }
 
     fun label(): JLabel {

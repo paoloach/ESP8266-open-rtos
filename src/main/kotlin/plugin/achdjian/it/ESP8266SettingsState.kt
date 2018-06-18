@@ -7,10 +7,10 @@ import com.intellij.openapi.components.Storage
 
 @State(name = "ESP2866.configuration", storages = arrayOf(Storage("ESP2866.xml")))
 data class ESP8266SettingsState(var sdkHome: String=".",
-                                val CCPath: String=ESP2866SDKSettings.GCC,
-                                val CXXPath: String=ESP2866SDKSettings.CXX,
-                                val ObjCopyPATH: String=ESP2866SDKSettings.OBJCOPY,
-                                val ARPath: String=ESP2866SDKSettings.AR) : PersistentStateComponent<ESP8266SettingsState> {
+                                var CCPath: String=ESP2866SDKSettings.GCC,
+                                var CXXPath: String=ESP2866SDKSettings.CXX,
+                                var ObjCopyPATH: String=ESP2866SDKSettings.OBJCOPY,
+                                var ARPath: String=ESP2866SDKSettings.AR) : PersistentStateComponent<ESP8266SettingsState> {
 
     override fun getState(): ESP8266SettingsState? {
         println("Get State: $this")
