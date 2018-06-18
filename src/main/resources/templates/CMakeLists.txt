@@ -68,6 +68,8 @@ SET_SOURCE_FILES_PROPERTIES( ${CORE_ASM} PROPERTIES LANGUAGE C )
 
 __{EXTRAS_SOURCE_FILES}__
 
+
+add_library(core STATIC ${CORE_SRC} ${CORE_ASM})
 add_library(program STATIC ${PROGRAM_SRC} )
 add_library(open_esplibs_libmain STATIC ${LIB_MAIN_SRC}  ${LIB_MAIN_ASM})
 
@@ -173,7 +175,6 @@ target_link_libraries(__{project_name}__
         -Wl,--no-whole-archive
         program
         __{EXTRAS_STATIC_LIBRARIES}__
-        dhcpserver
         wificfg
         freeRTOS
         lwip
@@ -195,7 +196,6 @@ target_include_directories(open_esplibs_libmain PUBLIC
         ./include
         ${ESP_OPEN_RTOS_DIR}/include
         ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
-        ${ESP_OPEN_RTOS_DIR}/extras/dhcpserver/include
         ${ESP_OPEN_RTOS_DIR}/extras/wificfg/..
         ${FREE_RTOS}/include
         ${FREE_RTOS}/portable/esp8266
@@ -214,7 +214,6 @@ target_include_directories(open_esplibs_net PUBLIC
         ./include
         ${ESP_OPEN_RTOS_DIR}/include
         ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
-        ${ESP_OPEN_RTOS_DIR}/extras/dhcpserver/include
         ${ESP_OPEN_RTOS_DIR}/extras/wificfg/..
         ${FREE_RTOS}/include
         ${FREE_RTOS}/portable/esp8266
@@ -234,7 +233,6 @@ target_include_directories(open_esplibs_pp PUBLIC
         ./include
         ${ESP_OPEN_RTOS_DIR}/include
         ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
-        ${ESP_OPEN_RTOS_DIR}/extras/dhcpserver/include
         ${ESP_OPEN_RTOS_DIR}/extras/wificfg/..
         ${FREE_RTOS}/include
         ${FREE_RTOS}/portable/esp8266
@@ -253,7 +251,6 @@ target_include_directories(open_esplibs_phy PUBLIC
         ./include
         ${ESP_OPEN_RTOS_DIR}/include
         ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
-        ${ESP_OPEN_RTOS_DIR}/extras/dhcpserver/include
         ${ESP_OPEN_RTOS_DIR}/extras/wificfg/..
         ${FREE_RTOS}/include
         ${FREE_RTOS}/portable/esp8266
@@ -272,26 +269,6 @@ target_include_directories(open_esplibs_wpa PUBLIC
         ./include
         ${ESP_OPEN_RTOS_DIR}/include
         ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
-        ${ESP_OPEN_RTOS_DIR}/extras/dhcpserver/include
-        ${ESP_OPEN_RTOS_DIR}/extras/wificfg/..
-        ${FREE_RTOS}/include
-        ${FREE_RTOS}/portable/esp8266
-        ${LWIP_DIR}/include
-        ${ESP_OPEN_RTOS_DIR}/lwip/include
-        ${LWIP_DIR}/include/compat/posix
-        ${LWIP_DIR}/include/ipv4
-        ${LWIP_DIR}/include/ipv4/lwip
-        ${LWIP_DIR}/include/lwip
-        ${ESP_OPEN_RTOS_DIR}/core/include
-        ${ESP_OPEN_RTOS_DIR}/open_esplibs/include
-        )
-
-target_include_directories(dhcpserver PUBLIC
-        ./
-        ./include
-        ${ESP_OPEN_RTOS_DIR}/include
-        ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
-        ${ESP_OPEN_RTOS_DIR}/extras/dhcpserver/include
         ${ESP_OPEN_RTOS_DIR}/extras/wificfg/..
         ${FREE_RTOS}/include
         ${FREE_RTOS}/portable/esp8266
@@ -310,7 +287,6 @@ target_include_directories(freeRTOS PUBLIC
         ./include
         ${ESP_OPEN_RTOS_DIR}/include
         ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
-        ${ESP_OPEN_RTOS_DIR}/extras/dhcpserver/include
         ${ESP_OPEN_RTOS_DIR}/extras/wificfg/..
         ${FREE_RTOS}/include
         ${FREE_RTOS}/portable/esp8266
@@ -329,7 +305,6 @@ target_include_directories(lwip PUBLIC
         ./include
         ${ESP_OPEN_RTOS_DIR}/include
         ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
-        ${ESP_OPEN_RTOS_DIR}/extras/dhcpserver/include
         ${ESP_OPEN_RTOS_DIR}/extras/wificfg/..
         ${FREE_RTOS}/include
         ${FREE_RTOS}/portable/esp8266
@@ -350,7 +325,6 @@ target_include_directories(core PUBLIC
         ./include
         ${ESP_OPEN_RTOS_DIR}/include
         ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
-        ${ESP_OPEN_RTOS_DIR}/extras/dhcpserver/include
         ${ESP_OPEN_RTOS_DIR}/extras/wificfg/..
         ${FREE_RTOS}/include
         ${FREE_RTOS}/portable/esp8266
@@ -369,7 +343,6 @@ target_include_directories(program PUBLIC
         ./include
         ${ESP_OPEN_RTOS_DIR}/include
         ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
-        ${ESP_OPEN_RTOS_DIR}/extras/dhcpserver/include
         ${ESP_OPEN_RTOS_DIR}/extras/wificfg/..
         ${FREE_RTOS}/include
         ${FREE_RTOS}/portable/esp8266
@@ -389,7 +362,6 @@ target_include_directories(__{project_name}__ PUBLIC
         ./include
         ${ESP_OPEN_RTOS_DIR}/include
         ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
-        ${ESP_OPEN_RTOS_DIR}/extras/dhcpserver/include
         ${ESP_OPEN_RTOS_DIR}/extras/wificfg/..
         ${FREE_RTOS}/include
         ${FREE_RTOS}/portable/esp8266

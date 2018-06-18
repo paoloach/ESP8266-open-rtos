@@ -12,10 +12,10 @@ class ESP2866SDKSettings(val project: Project) : ProjectComponent, Configurable 
 
     companion object {
         val GCC = "xtensa-lx106-elf-gcc"
-        val CPP = "xtensa-lx106-elf-g++"
+        val CXX = "xtensa-lx106-elf-g++"
         val OBJCOPY = "xtensa-lx106-elf-objcopy"
         val AR = "xtensa-lx106-elf-ar"
-        val DEFAULT = ESP8266SettingsState("~", GCC,CPP ,OBJCOPY, AR)
+        val DEFAULT = ESP8266SettingsState("~", GCC,CXX ,OBJCOPY, AR)
     }
 
     override fun isModified(): Boolean {
