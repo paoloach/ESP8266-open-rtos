@@ -1,41 +1,17 @@
 package plugin.achdjian.it.wizard
 
-import com.intellij.BundleBase
 import com.intellij.openapi.ui.ComboBox
-import com.intellij.ui.layout.Row
-import com.intellij.ui.layout.panel
+import plugin.achdjian.it.ui.panel
 import java.awt.BorderLayout
+import java.awt.GridLayout
 import java.awt.event.ItemEvent
-import javax.swing.JCheckBox
 import javax.swing.JPanel
 import javax.swing.JTextArea
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 
 
-fun Row.checkBox(text: String, actionListener: (event: ItemEvent) -> Unit) {
-    val checkBox = JCheckBox(BundleBase.replaceMnemonicAmpersand(text))
-    checkBox.addItemListener(actionListener)
-    checkBox()
-}
-
-fun Row.comboBox(options: Array<String>, selected: String? = null, actionListener: (event: ItemEvent) -> Unit) {
-    val checkBox = ComboBox(options)
-    checkBox.addItemListener(actionListener)
-    if (selected != null)
-        checkBox.selectedItem = selected
-    checkBox()
-}
-
-class ESP2866WizardPanel(clionPanel: JPanel, val wizardData: WizardData) : JPanel(BorderLayout()), DocumentListener {
-    override fun changedUpdate(documentEvent: DocumentEvent?) {
-        wizardData.espPort = documentEvent?.document.toString()
-    }
-
-    override fun insertUpdate(documentEvent: DocumentEvent?) {}
-
-    override fun removeUpdate(documentEvent: DocumentEvent?) {}
-
+class ESP2866WizardPanel(clionPanel: JPanel, val wizardData: WizardData) : JPanel(BorderLayout()) {
     companion object {
         val extraModules = arrayListOf("ad7709x", "ads111x", "bearssl", "bh1750", "bme680", "bmp180", "bmp280", "ccs811", "cpp_support", "crc_generic",
                 "dhcpserver", "dht", "ds1302", "ds1307", "ds18b20", "ds3231", "dsm", "fatfs", "fonts", "fram",
@@ -50,16 +26,12 @@ class ESP2866WizardPanel(clionPanel: JPanel, val wizardData: WizardData) : JPane
     }
 
     init {
-        val textArea = JTextArea()
-        textArea.text = "/dev/ttyUSB0"
-        textArea.document.addDocumentListener(this)
-
         add(clionPanel, BorderLayout.PAGE_START)
-        val p =panel() {
+        val p =panel("ESP 2866 Free RTOS configuration") {
             row("flash Size") { comboBox(availableSize, "512KB", { wizardData.flashSize = it.item.toString() }) }
             row("Flash Mode") { comboBox(availableMode, "qio", { wizardData.flashMode = it.item.toString() }) }
             row("Flash Speed") { comboBox(availableSpeed, "40", { wizardData.flashSpeed = it.item.toString() }) }
-            row("ESP port") { textArea }
+            row("ESP port") { textArea("/dev/ttyUSB0", {wizardData.espPort = it?.document.toString()}) }
             row( ){checkBox("Float Support", {wizardData.floatSupport = it.stateChange == ItemEvent.SELECTED})}
         }
 

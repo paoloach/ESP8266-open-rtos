@@ -9,7 +9,7 @@ class ESP2866ProjectGenerator : CMakeAbstractCProjectGenerator() {
     val wizardData = WizardData()
 
     override fun createSourceFiles(projectName: String, path: VirtualFile): Array<VirtualFile> {
-        return arrayOf(createMainUser(path,this ))
+        return arrayOf(createMainUser(path,this ), createCMakeCrossTool(path, this))
     }
 
     override fun getCMakeFileContent(projectName: String): String {
@@ -19,5 +19,4 @@ class ESP2866ProjectGenerator : CMakeAbstractCProjectGenerator() {
     override fun getName(): String = "C ESP2866 free rtos"
 
     override fun getSettingsPanel(): JComponent? = ESP2866WizardPanel(createSettingsPanel(), wizardData)
-
 }

@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.2.41'
+    ext.kotlin_version = '1.2.50'
 
     repositories {
         mavenCentral()
@@ -12,7 +12,7 @@ buildscript {
 
 plugins {
     id 'org.jetbrains.intellij' version '0.3.3'
-    id "org.jetbrains.kotlin.jvm" version "1.2.41"
+    id "org.jetbrains.kotlin.jvm" version "1.2.50"
 }
 
 group 'plugin.achdjian.it'
@@ -43,3 +43,16 @@ patchPluginXml {
 compileKotlin {
     kotlinOptions.jvmTarget = 1.8
 }
+
+task copyPlugin(type: Copy){
+
+    from file("${buildDir}/libs/ESP2866-1.0-SNAPSHOT.jar")
+    into file("${project.gradle.gradleUserHomeDir}/../.CLion2018.1/config/plugins/ESP2866/lib")
+}
+
+task execCLion(type: Exec) {
+    workingDir='~'
+    commandLine '/opt/clion/bin/clion_debug.sh'
+}
+
+

@@ -4,61 +4,61 @@ import com.intellij.openapi.util.io.FileUtil
 
 fun createCMake(wizardData: WizardData, projectName: String): String {
     var cmakelists = getResourceAsString("templates/CMakeLists.txt")
-    cmakelists =cmakelists.replace("__{project_name}__", projectName)
-        .replace("__{FLASH_SIZE}__", wizardData.flashSize)
-        .replace("__{FLASH_MODE}__", wizardData.flashMode)
-        .replace("__{FLASH_SPEED}__", wizardData.flashSpeed)
-        .replace("__{FLASH_SPEED}__", wizardData.flashSpeed)
-        .replace("__{ESP_PORT}__", wizardData.espPort)
-        .replace("__{EXTRAS_SOURCE_FILES}__",createExtrasSourceFilesSet(wizardData))
-        .replace("__{EXTRAS_LIBRARIES}__",createExtrasLibraries(wizardData))
-        .replace("__{EXTRAS_STATIC_LIBRARIES}__",createExtrasStaticLibraries(wizardData))
-        .replace("__{EXTRA_INCLUDE_DIRECTORIES}__",createExtraIncludeDirectories(wizardData))
+    cmakelists = cmakelists.replace("__{project_name}__", projectName)
+            .replace("__{FLASH_SIZE}__", wizardData.flashSize)
+            .replace("__{FLASH_MODE}__", wizardData.flashMode)
+            .replace("__{FLASH_SPEED}__", wizardData.flashSpeed)
+            .replace("__{FLASH_SPEED}__", wizardData.flashSpeed)
+            .replace("__{ESP_PORT}__", wizardData.espPort)
+            .replace("__{EXTRAS_SOURCE_FILES}__", createExtrasSourceFilesSet(wizardData))
+            .replace("__{EXTRAS_LIBRARIES}__", createExtrasLibraries(wizardData))
+            .replace("__{EXTRAS_STATIC_LIBRARIES}__", createExtrasStaticLibraries(wizardData))
+            .replace("__{EXTRA_INCLUDE_DIRECTORIES}__", createExtraIncludeDirectories(wizardData))
 
-    if (wizardData.floatSupport){
-        cmakelists =cmakelists.replace(" __{FLOAT_SUPPORT}__", "1")
+
+    val floatSupport = if (wizardData.floatSupport) {
+        "1"
     } else {
-        cmakelists =cmakelists.replace(" __{FLOAT_SUPPORT}__", "0")
+        "0"
     }
-
-
+    cmakelists = cmakelists.replace(" __{FLOAT_SUPPORT}__", floatSupport)
     return cmakelists
 }
 
-fun createExtrasSourceFilesSet(wizardData: WizardData):String {
+fun createExtrasSourceFilesSet(wizardData: WizardData): String {
     val builder = StringBuilder()
 
-    wizardData.extras.filter { it.value }.forEach({
+    wizardData.extras.filter { it.value }.forEach {
         builder
                 .append("file(GLOB LIB_")
                 .append(it.key.toUpperCase())
                 .append("_SRC \${ESP_OPEN_RTOS_DIR}/extras/")
                 .append(it.key)
                 .appendln("/*c)")
-    })
+    }
 
-    return  builder.toString()
+    return builder.toString()
 }
 
-fun createExtrasLibraries(wizardData: WizardData):String {
+fun createExtrasLibraries(wizardData: WizardData): String {
     val builder = StringBuilder()
 
-    wizardData.extras.filter { it.value }.forEach({
+    wizardData.extras.filter { it.value }.forEach {
         builder
                 .append("add_library(")
                 .append(it.key)
                 .append(" STATIC \${")
                 .append(it.key.toUpperCase())
                 .appendln("_SRC })")
-    })
+    }
 
-    return  builder.toString()
+    return builder.toString()
 }
 
-fun createExtraIncludeDirectories (wizardData: WizardData):String {
+fun createExtraIncludeDirectories(wizardData: WizardData): String {
     val builder = StringBuilder()
 
-    wizardData.extras.filter { it.value }.forEach({
+    wizardData.extras.filter { it.value }.forEach {
         builder.append("target_include_directories(")
                 .append(it.key)
                 .appendln(" PUBLIC")
@@ -79,17 +79,17 @@ fun createExtraIncludeDirectories (wizardData: WizardData):String {
                 .appendln("\t\t\${ESP_OPEN_RTOS_DIR}/core/include")
                 .appendln("\t\t\${ESP_OPEN_RTOS_DIR}/open_esplibs/include")
                 .appendln("\t\t)")
-    })
+    }
 
-    return  builder.toString()
+    return builder.toString()
 }
 
-fun createExtrasStaticLibraries(wizardData: WizardData):String {
+fun createExtrasStaticLibraries(wizardData: WizardData): String {
     val builder = StringBuilder()
 
-    wizardData.extras.filter { it.value }.forEach({ builder.appendln(it.key) })
+    wizardData.extras.filter { it.value }.forEach { builder.appendln(it.key) }
 
-    return  builder.toString()
+    return builder.toString()
 }
 
 fun getResourceAsString(resourceName: String): String {

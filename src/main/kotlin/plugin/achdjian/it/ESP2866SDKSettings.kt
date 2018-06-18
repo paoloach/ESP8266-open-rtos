@@ -5,14 +5,17 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.ui.layout.panel
-
+import plugin.achdjian.it.ui.panel
 
 class ESP2866SDKSettings(val project: Project) : ProjectComponent, Configurable {
     var sdkHome: VirtualFile? = null
 
     companion object {
-        val DEFAULT = ESP8266SettingsState()
+        val GCC = "xtensa-lx106-elf-gcc"
+        val CPP = "xtensa-lx106-elf-g++"
+        val OBJCOPY = "xtensa-lx106-elf-objcopy"
+        val AR = "xtensa-lx106-elf-ar"
+        val DEFAULT = ESP8266SettingsState("~", GCC,CPP ,OBJCOPY, AR)
     }
 
     override fun isModified(): Boolean {
@@ -29,7 +32,7 @@ class ESP2866SDKSettings(val project: Project) : ProjectComponent, Configurable 
     override fun apply() {
         val state = project.getComponent(ESP8266SettingsState::class.java, DEFAULT) as ESP8266SettingsState
         System.out.println(sdkHome?.canonicalPath)
-        state.sdkHome = sdkHome?.canonicalPath
+        sdkHome?.canonicalPath?.let { state.sdkHome = it }
     }
 
     override fun disposeComponent() {
@@ -38,12 +41,13 @@ class ESP2866SDKSettings(val project: Project) : ProjectComponent, Configurable 
 
     override fun createComponent() = panel() {
         val state = project.getComponent(ESP8266SettingsState::class.java, DEFAULT) as ESP8266SettingsState
-        row("Root path: ") {
-            textFieldWithBrowseButton(
+        row("Root path: "){
+            textFieldWithHistoryWithBrowseButton(
+                    project = project,
                     browseDialogTitle = "ESP2866 free rtos path",
                     value = state.sdkHome,
                     fileChooserDescriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor(),
-                    fileChoosen = {
+                    fileChosen = {
                         sdkHome = it
                         it.path
                     })
