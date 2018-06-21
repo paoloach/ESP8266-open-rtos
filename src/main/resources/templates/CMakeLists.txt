@@ -175,7 +175,6 @@ target_link_libraries(__{project_name}__
         -Wl,--no-whole-archive
         program
         __{EXTRAS_STATIC_LIBRARIES}__
-        wificfg
         freeRTOS
         lwip
         core
@@ -196,7 +195,6 @@ target_include_directories(open_esplibs_libmain PUBLIC
         ./include
         ${ESP_OPEN_RTOS_DIR}/include
         ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
-        ${ESP_OPEN_RTOS_DIR}/extras/wificfg/..
         ${FREE_RTOS}/include
         ${FREE_RTOS}/portable/esp8266
         ${LWIP_DIR}/include
@@ -214,7 +212,6 @@ target_include_directories(open_esplibs_net PUBLIC
         ./include
         ${ESP_OPEN_RTOS_DIR}/include
         ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
-        ${ESP_OPEN_RTOS_DIR}/extras/wificfg/..
         ${FREE_RTOS}/include
         ${FREE_RTOS}/portable/esp8266
         ${LWIP_DIR}/include
@@ -233,7 +230,6 @@ target_include_directories(open_esplibs_pp PUBLIC
         ./include
         ${ESP_OPEN_RTOS_DIR}/include
         ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
-        ${ESP_OPEN_RTOS_DIR}/extras/wificfg/..
         ${FREE_RTOS}/include
         ${FREE_RTOS}/portable/esp8266
         ${LWIP_DIR}/include
@@ -251,7 +247,6 @@ target_include_directories(open_esplibs_phy PUBLIC
         ./include
         ${ESP_OPEN_RTOS_DIR}/include
         ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
-        ${ESP_OPEN_RTOS_DIR}/extras/wificfg/..
         ${FREE_RTOS}/include
         ${FREE_RTOS}/portable/esp8266
         ${LWIP_DIR}/include
@@ -269,7 +264,6 @@ target_include_directories(open_esplibs_wpa PUBLIC
         ./include
         ${ESP_OPEN_RTOS_DIR}/include
         ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
-        ${ESP_OPEN_RTOS_DIR}/extras/wificfg/..
         ${FREE_RTOS}/include
         ${FREE_RTOS}/portable/esp8266
         ${LWIP_DIR}/include
@@ -287,7 +281,6 @@ target_include_directories(freeRTOS PUBLIC
         ./include
         ${ESP_OPEN_RTOS_DIR}/include
         ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
-        ${ESP_OPEN_RTOS_DIR}/extras/wificfg/..
         ${FREE_RTOS}/include
         ${FREE_RTOS}/portable/esp8266
         ${LWIP_DIR}/include
@@ -305,7 +298,6 @@ target_include_directories(lwip PUBLIC
         ./include
         ${ESP_OPEN_RTOS_DIR}/include
         ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
-        ${ESP_OPEN_RTOS_DIR}/extras/wificfg/..
         ${FREE_RTOS}/include
         ${FREE_RTOS}/portable/esp8266
         ${LWIP_DIR}/include
@@ -325,7 +317,6 @@ target_include_directories(core PUBLIC
         ./include
         ${ESP_OPEN_RTOS_DIR}/include
         ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
-        ${ESP_OPEN_RTOS_DIR}/extras/wificfg/..
         ${FREE_RTOS}/include
         ${FREE_RTOS}/portable/esp8266
         ${LWIP_DIR}/include
@@ -343,7 +334,6 @@ target_include_directories(program PUBLIC
         ./include
         ${ESP_OPEN_RTOS_DIR}/include
         ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
-        ${ESP_OPEN_RTOS_DIR}/extras/wificfg/..
         ${FREE_RTOS}/include
         ${FREE_RTOS}/portable/esp8266
         ${LWIP_DIR}/include
@@ -362,7 +352,6 @@ target_include_directories(__{project_name}__ PUBLIC
         ./include
         ${ESP_OPEN_RTOS_DIR}/include
         ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
-        ${ESP_OPEN_RTOS_DIR}/extras/wificfg/..
         ${FREE_RTOS}/include
         ${FREE_RTOS}/portable/esp8266
         ${LWIP_DIR}/include

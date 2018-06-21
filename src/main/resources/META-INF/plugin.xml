@@ -40,12 +40,11 @@ Disclaimer
     <actions>
     </actions>
 
-    <project-components>
-    <component>
-        <loadForDefaultProject>true</loadForDefaultProject>
-        <implementation-class>plugin.achdjian.it.ESP8266SettingsState</implementation-class>
-    </component>
-    </project-components>
+    <application-components>
+        <component>
+            <implementation-class>plugin.achdjian.it.ESP8266SettingsState</implementation-class>
+        </component>
+    </application-components>
     <!--<project-components>-->
         <!--<component>-->
             <!--<loadForDefaultProject>true</loadForDefaultProject>-->

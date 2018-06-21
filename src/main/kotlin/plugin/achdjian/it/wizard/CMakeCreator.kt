@@ -34,7 +34,7 @@ fun createExtrasSourceFilesSet(wizardData: WizardData): String {
                 .append(it.key.toUpperCase())
                 .append("_SRC \${ESP_OPEN_RTOS_DIR}/extras/")
                 .append(it.key)
-                .appendln("/*c)")
+                .appendln("/*.c)")
     }
 
     return builder.toString()
@@ -47,9 +47,9 @@ fun createExtrasLibraries(wizardData: WizardData): String {
         builder
                 .append("add_library(")
                 .append(it.key)
-                .append(" STATIC \${")
+                .append(" STATIC \${LIB_")
                 .append(it.key.toUpperCase())
-                .appendln("_SRC })")
+                .appendln("_SRC})")
     }
 
     return builder.toString()

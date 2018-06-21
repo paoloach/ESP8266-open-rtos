@@ -7,7 +7,6 @@ import com.jetbrains.cidr.cpp.cmake.CMakeSettings
 import com.jetbrains.cidr.cpp.cmake.projectWizard.generators.CMakeAbstractCProjectGenerator
 import com.jetbrains.cidr.cpp.cmake.projectWizard.generators.settings.CMakeProjectSettings
 import com.jetbrains.cidr.cpp.cmake.workspace.CMakeWorkspace
-import org.jetbrains.annotations.NotNull
 import javax.swing.JComponent
 
 class ESP2866ProjectGenerator : CMakeAbstractCProjectGenerator() {
@@ -30,7 +29,7 @@ class ESP2866ProjectGenerator : CMakeAbstractCProjectGenerator() {
     override fun getSettingsPanel(): JComponent? = ESP2866WizardPanel(createSettingsPanel(), wizardData)
 
     override fun generateProject(project: Project, path: VirtualFile, cmakeSetting: CMakeProjectSettings, module: Module) {
-        super.generateProject(project, path, cmakeSetting, module);
+        super.generateProject(project, path, cmakeSetting, module)
         val cMakeWorkspace = CMakeWorkspace.getInstance(project)
         val settings = cMakeWorkspace.settings
         val newProfiles = ArrayList<CMakeSettings.Profile>()
