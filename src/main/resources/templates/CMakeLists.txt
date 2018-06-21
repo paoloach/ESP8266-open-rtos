@@ -332,6 +332,7 @@ target_include_directories(core PUBLIC
 target_include_directories(program PUBLIC
         ./
         ./include
+        ${ESP_OPEN_RTOS_DIR}/extras
         ${ESP_OPEN_RTOS_DIR}/include
         ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
         ${FREE_RTOS}/include
