@@ -59,7 +59,10 @@ fun createExtraIncludeDirectories(wizardData: WizardData): String {
     val builder = StringBuilder()
 
     wizardData.extras.filter { it.value }.forEach {
-        builder.append("target_include_directories(")
+        builder.append("target_compile_options(")
+                .append(it.key)
+                .appendln(" PUBLIC \${COMMON_FLAGS})")
+                .append("target_include_directories(")
                 .append(it.key)
                 .appendln(" PUBLIC")
                 .appendln(" \t\t./")
