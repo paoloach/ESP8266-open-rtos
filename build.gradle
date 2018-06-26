@@ -16,7 +16,7 @@ plugins {
 }
 
 group 'plugin.achdjian.it'
-version '1.0-SNAPSHOT'
+version '1.0'
 
 sourceCompatibility = 1.8
 
@@ -27,7 +27,7 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile "org.jetbrains.kotlin:kotlin-stdlib"
-   compile files('/opt/clion/lib/clion.jar')
+    compileOnly files('/opt/clion/lib/clion.jar')
 }
 
 intellij {
@@ -36,8 +36,8 @@ intellij {
 }
 patchPluginXml {
     changeNotes """
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>"""
+      First release
+      """
 }
 
 compileKotlin {

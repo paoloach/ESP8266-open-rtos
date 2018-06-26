@@ -4,7 +4,7 @@
     <vendor email="pachdjian@gmail.com" ></vendor>
 
     <description><![CDATA[
-    Create a CMake file in order to create a ESP2866 rom<br>
+    Develop an entire ESP2866 free rtos C project inside CLion<br>
 
 Disclaimer
 <br>
