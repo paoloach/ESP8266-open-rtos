@@ -15,11 +15,7 @@ Disclaimer
     ]]></description>
 
 
-    <change-notes><![CDATA[
-        <ul>
-        <li>first release</li>
-        </ul>
-    ]]>
+    <change-notes>
     </change-notes>
 
     <idea-version since-build="131"/>
@@ -45,10 +41,4 @@ Disclaimer
             <implementation-class>plugin.achdjian.it.ESP8266SettingsState</implementation-class>
         </component>
     </application-components>
-    <!--<project-components>-->
-        <!--<component>-->
-            <!--<loadForDefaultProject>true</loadForDefaultProject>-->
-            <!--<implementation-class>plugin.achdjian.it.ESP2866SDKSettings</implementation-class>-->
-        <!--</component>-->
-    <!--</project-components>-->
 </idea-plugin>

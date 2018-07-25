@@ -27,10 +27,13 @@ SET(COMMON_FLAGS -mlongcalls -mtext-section-literals -DGITSHORTREV=\"93d43d7\" -
 SET(CMAKE_CXX_FLAGS "-std=c++11")
 SET(CMAKE_C_FLAGS "-std=gnu99")
 
+add_subdirectory(rboot)
+
 set(PROGRAM_SRC mainUser.c)
 
+SET(BOOT_FIRMWARE ${CMAKE_BINARY_DIR}/rboot/firmware/rboot.bin)
+
 __{ESP_OPEN_RTOS_DIR}__
-set(BOOT_FIRMWARE ${ESP_OPEN_RTOS_DIR}/bootloader/firmware_prebuilt/rboot.bin"
 set(LWIP_DIR ${ESP_OPEN_RTOS_DIR}/lwip/lwip/src/)
 set(LWIP_INCLUDE ${LWIP_DIR}/include ${ESP_OPEN_RTOS_DIR}/lwip/include)
 set(FREE_RTOS ${ESP_OPEN_RTOS_DIR}/FreeRTOS/Source)
@@ -202,6 +205,9 @@ SET(CORE_SOURCES_ASM
 
 SET_SOURCE_FILES_PROPERTIES( ${CORE_SOURCES_ASM} PROPERTIES LANGUAGE C )
 
+
+file(GLOB LIB_RBOOT_OTA_SRC ${ESP_OPEN_RTOS_DIR}/extras/rboot-ota/*.c)
+
 # Extras
 
 __{EXTRAS_SOURCE_FILES}__
@@ -216,12 +222,14 @@ add_library(open_esplibs_wpa STATIC ${LIB_WPA_SOURCES})
 add_library(freeRTOS STATIC ${FREE_RTOS_SOURCES})
 add_library(lwip STATIC ${LWIP_SOURCES})
 add_library(core STATIC ${CORE_SOURCES} ${CORE_SOURCES_ASM} )
+add_library(rboot_ota STATIC ${LIB_RBOOT_OTA_SRC})
 
 __{EXTRAS_LIBRARIES}__
 
-add_executable(__${project_name}__ FreeRTOSConfig.h )
-
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/sdklib)
+
+add_executable(__{project_name}__0 FreeRTOSConfig.h )
+add_executable(__{project_name}__1 FreeRTOSConfig.h )
 
 add_custom_target(remove)
 
@@ -268,11 +276,18 @@ add_custom_command(TARGET rename
         COMMAND ${CMAKE_OBJCOPY} --redefine-syms ${ESP_OPEN_RTOS_DIR}/lib/allsymbols.rename --weaken sdklib/libwpa_stage1.a sdklib/libwpa.a
         )
 
-add_custom_target(createImage)
-add_custom_command(TARGET createImage
+add_custom_target(createImage0)
+add_custom_command(TARGET createImage0
         POST_BUILD
-        COMMENT "create image for ESP2866"
-        COMMAND esptool.py elf2image --version=2 -fs ${FLASH_SIZE} -fm ${FLASH_MODE} -ff ${FLASH_SPEED}m __{project_name}__ -o __{project_name}__.bin
+        COMMENT "create image 0 for ESP2866"
+        COMMAND esptool.py elf2image --version=2 -fs ${FLASH_SIZE} -fm ${FLASH_MODE} -ff ${FLASH_SPEED}m __{project_name}__0 -o __{project_name}__0.bin
+        )
+
+add_custom_target(createImage1)
+add_custom_command(TARGET createImage1
+        POST_BUILD
+        COMMENT "create image 1 for ESP2866"
+        COMMAND esptool.py elf2image --version=2 -fs ${FLASH_SIZE} -fm ${FLASH_MODE} -ff ${FLASH_SPEED}m __{project_name}__1 -o __{project_name}__1.bin
         )
 
 add_custom_target(flash)
@@ -286,23 +301,40 @@ add_custom_command(TARGET flash
                -ff ${FLASH_SPEED}m
                0x0   ${BOOT_FIRMWARE}
                0x1000  ${ESP_OPEN_RTOS_DIR}/bootloader/firmware_prebuilt/blank_config.bin
-               0x2000
-               __{project_name}__.bin
+               0x2000 __{project_name}__0.bin
+               __{ROM2START}__ __{project_name}__1.bin
         )
 
 add_dependencies(rename remove)
-add_dependencies(__{project_name}__ rename)
-add_dependencies(createImage __{project_name}__)
-add_dependencies(flash createImage)
-
-
-SET(CMAKE_EXE_LINKER_FLAGS "-Wl,--no-check-sections  -u call_user_start -Wl,-static -Wl,-Map=./__{project_name}__.map  -Wl,-gc-sections -T${ESP_OPEN_RTOS_DIR}/ld/program.ld -T${ESP_OPEN_RTOS_DIR}/ld/rom.ld " )
+add_dependencies(__{project_name}__0 rename)
+add_dependencies(__{project_name}__1 rename)
+add_dependencies(createImage0 __{project_name}__0)
+add_dependencies(createImage1 __{project_name}__1)
+add_dependencies(flash createImage0)
+add_dependencies(flash createImage1)
+add_dependencies(flash rboot_bin)
 
 if (PRINTF_SCANF_FLOAT_SUPPORT)
     SET(CMAKE_EXE_LINKER_FLAGS, "-u _printf_float -u _scanf_float")
 endif(PRINTF_SCANF_FLOAT_SUPPORT)
 
-target_link_libraries(__{project_name}__
+
+set_target_properties(__{project_name}__0 PROPERTIES
+        LINK_FLAGS "-u call_user_start ${FLOAT_SUPPORT} -Wl,-static\
+                     -Wl,-Map=./__{project_name}__0.map\
+                     -Wl,-gc-sections\
+                     -T${CMAKE_SOURCE_DIR}/program0.ld\
+                     -T${ESP_OPEN_RTOS_DIR}/ld/rom.ld " )
+
+set_target_properties(__{project_name}__1 PROPERTIES
+        LINK_FLAGS "-u call_user_start ${FLOAT_SUPPORT} -Wl,-static\
+                     -Wl,-Map=./__{project_name}__1.map\
+                     -Wl,-gc-sections\
+                     -T${CMAKE_SOURCE_DIR}/program1.ld\
+                     -T${ESP_OPEN_RTOS_DIR}/ld/rom.ld " )
+
+
+target_link_libraries(__{project_name}__0
         -Wl,--start-group
         open_esplibs_libmain
         open_esplibs_net
@@ -312,6 +344,7 @@ target_link_libraries(__{project_name}__
         -Wl,--no-whole-archive
         program
         __{EXTRAS_STATIC_LIBRARIES}__
+        rboot_ota
         freeRTOS
         lwip
         core
@@ -324,6 +357,31 @@ target_link_libraries(__{project_name}__
         ${CMAKE_CURRENT_BINARY_DIR}/sdklib/libpp.a
         ${CMAKE_CURRENT_BINARY_DIR}/sdklib/libwpa.a
         -Wl,--end-group)
+
+target_link_libraries(__{project_name}__1
+        -Wl,--start-group
+        open_esplibs_libmain
+        open_esplibs_net
+        open_esplibs_phy
+        open_esplibs_pp
+        open_esplibs_wpa
+        -Wl,--no-whole-archive
+        program
+        __{EXTRAS_STATIC_LIBRARIES}__
+        rboot_ota
+        freeRTOS
+        lwip
+        core
+        ${CMAKE_CURRENT_BINARY_DIR}/libgcc.a
+        ${CMAKE_CURRENT_BINARY_DIR}/libc.a
+        hal
+        ${CMAKE_CURRENT_BINARY_DIR}/sdklib/libmain.a
+        ${CMAKE_CURRENT_BINARY_DIR}/sdklib/libnet80211.a
+        ${CMAKE_CURRENT_BINARY_DIR}/sdklib/libphy.a
+        ${CMAKE_CURRENT_BINARY_DIR}/sdklib/libpp.a
+        ${CMAKE_CURRENT_BINARY_DIR}/sdklib/libwpa.a
+        -Wl,--end-group)
+
 
 
 target_compile_options(open_esplibs_libmain PRIVATE "${COMMON_FLAGS}")
@@ -451,6 +509,21 @@ target_include_directories(lwip PUBLIC
         ${ESP_OPEN_RTOS_DIR}/open_esplibs/include
         )
 
+target_compile_options(rboot_ota PRIVATE "${COMMON_FLAGS}")
+target_include_directories(rboot_ota PUBLIC
+        ${ESP_OPEN_RTOS_DIR}/extras/rboot-ota
+        ${ESP_OPEN_RTOS_DIR}/include
+        ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
+        ${ESP_OPEN_RTOS_DIR}/bootloader
+        ${ESP_OPEN_RTOS_DIR}/bootloader/rboot
+        ${FREE_RTOS}/include
+        ${FREE_RTOS}/portable/esp8266
+        ${LWIP_DIR}/include
+        ${ESP_OPEN_RTOS_DIR}/lwip/include
+        ${LWIP_DIR}/include/lwip
+        ${ESP_OPEN_RTOS_DIR}/core/include
+        )
+
 __{EXTRA_INCLUDE_DIRECTORIES}__
 
 target_compile_options(core PRIVATE "${COMMON_FLAGS}")
@@ -490,8 +563,26 @@ target_include_directories(program PUBLIC
         ${ESP_OPEN_RTOS_DIR}/open_esplibs/include
         )
 
-target_compile_options(__{project_name}__ PRIVATE "${COMMON_FLAGS}")
-target_include_directories(__{project_name}__ PUBLIC
+target_compile_options(__{project_name}__0 PRIVATE "${COMMON_FLAGS}")
+target_compile_options(__{project_name}__1 PRIVATE "${COMMON_FLAGS}")
+target_include_directories(__{project_name}__0 PUBLIC
+        ./
+        ./include
+        ${ESP_OPEN_RTOS_DIR}/include
+        ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
+        ${FREE_RTOS}/include
+        ${FREE_RTOS}/portable/esp8266
+        ${LWIP_DIR}/include
+        ${ESP_OPEN_RTOS_DIR}/lwip/include
+        ${LWIP_DIR}/include/compat/posix
+        ${LWIP_DIR}/include/ipv4
+        ${LWIP_DIR}/include/ipv4/lwip
+        ${LWIP_DIR}/include/lwip
+        ${ESP_OPEN_RTOS_DIR}/core/include
+        ${ESP_OPEN_RTOS_DIR}/open_esplibs/include
+        )
+
+target_include_directories(__{project_name}__1 PUBLIC
         ./
         ./include
         ${ESP_OPEN_RTOS_DIR}/include

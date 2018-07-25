@@ -18,5 +18,4 @@ fun createCMakeCrossTool(path: VirtualFile,  requestor:Any ):VirtualFile{
     fileCrossCompiler.setBinaryContent(crossTool.toByteArray(Charsets.UTF_8))
 
     return fileCrossCompiler
-
 }

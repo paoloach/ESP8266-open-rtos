@@ -14,6 +14,8 @@ import com.intellij.ui.layout.panel
 class ESP2866SDKSettings(private val project: Project) : ProjectComponent, Configurable {
     private var ccPath: VirtualFile?=null
     private var cxxPath: VirtualFile?=null
+    private var rtosPath: VirtualFile?=null
+    private var esptool2Path: VirtualFile? = null
 
     companion object {
         const val GCC = "xtensa-lx106-elf-gcc"
@@ -24,7 +26,10 @@ class ESP2866SDKSettings(private val project: Project) : ProjectComponent, Confi
     override fun isModified(): Boolean {
         val state = ApplicationManager.getApplication().getComponent(ESP8266SettingsState::class.java,ESP2866SDKSettings.DEFAULT) as ESP8266SettingsState
 
-        val modified = (state.ccPath != ccPath?.canonicalPath) || (state.cxxPath != cxxPath?.canonicalPath)
+        val modified = (state.ccPath != ccPath?.canonicalPath)
+                || (state.cxxPath != cxxPath?.canonicalPath)
+                || (state.rtosPath != rtosPath?.canonicalPath)
+                || (state.esptool2 != esptool2Path?.canonicalPath)
         System.out.println("Is modified: $modified")
         return modified
     }
@@ -36,6 +41,8 @@ class ESP2866SDKSettings(private val project: Project) : ProjectComponent, Confi
         val state = ApplicationManager.getApplication().getComponent(ESP8266SettingsState::class.java,ESP2866SDKSettings.DEFAULT) as ESP8266SettingsState
         ccPath?.canonicalPath?.let{state.ccPath = it}
         cxxPath?.canonicalPath?.let{state.cxxPath = it}
+        rtosPath?.canonicalPath?.let{state.rtosPath = it}
+        esptool2Path?.canonicalPath?.let{state.esptool2 = it}
     }
 
     override fun disposeComponent() {
@@ -44,6 +51,38 @@ class ESP2866SDKSettings(private val project: Project) : ProjectComponent, Confi
 
     override fun createComponent() = panel {
         val state = project.getComponent(ESP8266SettingsState::class.java, DEFAULT) as ESP8266SettingsState
+        row("ESP RTOS path: "){
+            val component = TextFieldWithHistoryWithBrowseButton()
+            val editor = component.childComponent.textEditor
+            editor.text = state.rtosPath
+            installFileCompletionAndBrowseDialog(
+                    project,
+                    component,
+                    editor,
+                    "ESP2866 free rtos path",
+                    FileChooserDescriptorFactory.createSingleFolderDescriptor(),
+                    TextComponentAccessor.TEXT_FIELD_WITH_HISTORY_WHOLE_TEXT){
+                rtosPath = it
+                it.path
+            }
+            component()
+        }
+        row("esptool2 path: "){
+            val component = TextFieldWithHistoryWithBrowseButton()
+            val editor = component.childComponent.textEditor
+            editor.text = state.rtosPath
+            installFileCompletionAndBrowseDialog(
+                    project,
+                    component,
+                    editor,
+                    "ESP2866 esptool2 path",
+                    FileChooserDescriptorFactory.createSingleFileDescriptor(),
+                    TextComponentAccessor.TEXT_FIELD_WITH_HISTORY_WHOLE_TEXT){
+                esptool2Path = it
+                it.path
+            }
+            component()
+        }
         row("GCC path: ") {
             val component = TextFieldWithHistoryWithBrowseButton()
             val editor = component.childComponent.textEditor

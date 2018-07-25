@@ -14,10 +14,14 @@ class ESP2866ProjectGenerator : CMakeAbstractCProjectGenerator() {
     val wizardData = WizardData()
 
     override fun createSourceFiles(projectName: String, path: VirtualFile): Array<VirtualFile> {
-        return arrayOf(
+        val files =  arrayOf(
                 createMainUser(path,this ),
                 createFreeRTOSConfig(path, this),
                 createCMakeCrossTool(path, this))
+        if (wizardData.otaSupport){
+            files.plus(createOTACMakeFileTool(path, this, wizardData, projectName))
+        }
+        return files;
     }
 
     override fun getCMakeFileContent(projectName: String): String {
@@ -32,10 +36,12 @@ class ESP2866ProjectGenerator : CMakeAbstractCProjectGenerator() {
         super.generateProject(project, path, cmakeSetting, module)
         val cMakeWorkspace = CMakeWorkspace.getInstance(project)
         val settings = cMakeWorkspace.settings
-        val newProfiles = ArrayList<CMakeSettings.Profile>()
-        settings.profiles.forEach {
-            newProfiles.add(it.withGenerationOptions("-DCMAKE_TOOLCHAIN_FILE=CrossCompiler.cmake"))
-        }
-        settings.profiles = newProfiles
+ //       val newProfiles = ArrayList<CMakeSettings.Profile>()
+        var releaseProfile = CMakeSettings.Profile("Release", "Release", "", "-DCMAKE_TOOLCHAIN_FILE=CrossCompiler.cmake",true, HashMap(), null, null)
+
+//        settings.profiles.forEach {
+//            newProfiles.add(it.withGenerationOptions("-DCMAKE_TOOLCHAIN_FILE=CrossCompiler.cmake"))
+//        }
+        settings.profiles = listOf(releaseProfile)
     }
 }

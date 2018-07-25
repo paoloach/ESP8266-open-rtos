@@ -1,19 +1,27 @@
 package plugin.achdjian.it.wizard
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.util.io.FileUtil
+import plugin.achdjian.it.ESP2866SDKSettings
+import plugin.achdjian.it.ESP8266SettingsState
 
 fun createCMake(wizardData: WizardData, projectName: String): String {
-    var cmakelists = getResourceAsString("templates/CMakeLists.txt")
-    cmakelists = cmakelists.replace("__{project_name}__", projectName)
-            .replace("__{FLASH_SIZE}__", wizardData.flashSize)
+
+    var cmakelists = selectCMakeListFile(wizardData.otaSupport)
+    val setting = ApplicationManager.getApplication().getComponent(ESP8266SettingsState::class.java, ESP2866SDKSettings.DEFAULT) as ESP8266SettingsState
+    cmakelists = cmakelists
+            .replace("__{project_name}__", projectName)
+            .replace("__{ESP_OPEN_RTOS_DIR}__", "set(ESP_OPEN_RTOS_DIR ${setting.rtosPath})")
+            .replace("__{FLASH_SIZE}__", wizardData.flashSize.strSize())
             .replace("__{FLASH_MODE}__", wizardData.flashMode)
             .replace("__{FLASH_SPEED}__", wizardData.flashSpeed)
-            .replace("__{FLASH_SPEED}__", wizardData.flashSpeed)
             .replace("__{ESP_PORT}__", wizardData.espPort)
+            .replace("__{ROM2START}__", wizardData.flashSize.startingFlashRom2())
             .replace("__{EXTRAS_SOURCE_FILES}__", createExtrasSourceFilesSet(wizardData))
             .replace("__{EXTRAS_LIBRARIES}__", createExtrasLibraries(wizardData))
             .replace("__{EXTRAS_STATIC_LIBRARIES}__", createExtrasStaticLibraries(wizardData))
             .replace("__{EXTRA_INCLUDE_DIRECTORIES}__", createExtraIncludeDirectories(wizardData))
+
 
 
     val floatSupport = if (wizardData.floatSupport) {
@@ -23,6 +31,13 @@ fun createCMake(wizardData: WizardData, projectName: String): String {
     }
     cmakelists = cmakelists.replace(" __{FLOAT_SUPPORT}__", floatSupport)
     return cmakelists
+}
+
+fun selectCMakeListFile(ota:Boolean): String {
+    if (ota)
+        return getResourceAsString("templates/CMakeLists_ota.txt")
+    else
+        return getResourceAsString("templates/CMakeLists.txt")
 }
 
 fun createExtrasSourceFilesSet(wizardData: WizardData): String {
@@ -36,7 +51,6 @@ fun createExtrasSourceFilesSet(wizardData: WizardData): String {
                 .append(it.key)
                 .appendln("/*.c)")
     }
-
     return builder.toString()
 }
 
@@ -51,7 +65,6 @@ fun createExtrasLibraries(wizardData: WizardData): String {
                 .append(it.key.toUpperCase())
                 .appendln("_SRC})")
     }
-
     return builder.toString()
 }
 
@@ -65,8 +78,8 @@ fun createExtraIncludeDirectories(wizardData: WizardData): String {
                 .append("target_include_directories(")
                 .append(it.key)
                 .appendln(" PUBLIC")
-                .appendln(" \t\t./")
-                .appendln(" \t\t./include")
+                .appendln("\t\t\${ESP_OPEN_RTOS_DIR}/extras/${it.key}")
+                .appendln("\t\t\${ESP_OPEN_RTOS_DIR}/extras/${it.key}/include")
                 .appendln("\t\t\${ESP_OPEN_RTOS_DIR}/include")
                 .appendln("\t\t\${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include")
                 .appendln("\t\t\${ESP_OPEN_RTOS_DIR}/extras/dhcpserver/include")
@@ -101,6 +114,16 @@ fun getResourceAsString(resourceName: String): String {
         FileUtil.loadTextAndClose(resource)
     } else {
         ""
+    }
+
+}
+
+fun getResourceAsBytes(resourceName: String): ByteArray {
+    val resource = WizardData::class.java.classLoader.getResourceAsStream(resourceName)
+    return if (resource != null) {
+        FileUtil.loadBytes(resource)
+    } else {
+        ByteArray(0)
     }
 
 }
