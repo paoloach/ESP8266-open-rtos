@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>plugin.achdjian.it.ESP2866</id>
     <name>ESP2866 plugin</name>
-    <vendor email="pachdjian@gmail.com" ></vendor>
+    <vendor email="pachdjian@gmail.com"></vendor>
 
     <description><![CDATA[
     Develop an entire ESP2866 free rtos C project inside CLion<br>
@@ -18,8 +18,6 @@ Disclaimer
     <change-notes>
     </change-notes>
 
-    <idea-version since-build="131"/>
-
     <!-- please see https://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
          on how to target different products -->
     <depends>com.intellij.modules.clion</depends>
@@ -28,7 +26,8 @@ Disclaimer
     <extensions defaultExtensionNs="com.intellij">
         <directoryProjectGenerator implementation="plugin.achdjian.it.wizard.ESP2866ProjectGenerator"/>
         <!--<configurationType implementation="plugin.achdjian.it.ESP2866SDKSettings" id="esp2866.plugin.achdjian.it"/>-->
-        <projectConfigurable order="last" id="ESP2866.plugin.achdjian.it" instance="plugin.achdjian.it.ESP2866SDKSettings"
+        <projectConfigurable order="last" id="ESP2866.plugin.achdjian.it"
+                             instance="plugin.achdjian.it.ESP2866SDKSettings"
                              displayName="ESP2866 config" groupId="build.tools"/>
 
     </extensions>

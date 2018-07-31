@@ -16,7 +16,7 @@ plugins {
 }
 
 group 'plugin.achdjian.it'
-version '1.1'
+version '1.1.1'
 
 sourceCompatibility = 1.8
 
@@ -35,6 +35,8 @@ intellij {
     pluginName 'ESP2866'
 }
 patchPluginXml {
+    sinceBuild "181.5087"
+    untilBuild "182.*"
     changeNotes """
       Added OTA support.
       ------------------------
@@ -46,10 +48,16 @@ compileKotlin {
     kotlinOptions.jvmTarget = 1.8
 }
 
-task copyPlugin(type: Copy){
+task copyPlugin2018_1(type: Copy){
 
         from file("${buildDir}/libs/ESP2866-1.0.jar")
     into file("${project.gradle.gradleUserHomeDir}/../.CLion2018.1/config/plugins/ESP2866/lib")
+}
+
+task copyPlugin2018_2(type: Copy){
+
+    from file("${buildDir}/libs/ESP2866-1.0.jar")
+    into file("${project.gradle.gradleUserHomeDir}/../.CLion2018.2/config/plugins/ESP2866/lib")
 }
 
 task execCLion(type: Exec) {
