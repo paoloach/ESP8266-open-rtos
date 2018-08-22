@@ -1,12 +1,14 @@
-package plugin.achdjian.it.wizard
+package esp8266.plugin.achdjian.it.wizard.free.rtos
 
-import plugin.achdjian.it.ui.panel
+import esp8266.plugin.achdjian.it.ui.panel
+import esp8266.plugin.achdjian.it.wizard.FlashSize
+import esp8266.plugin.achdjian.it.wizard.WizardData
 import java.awt.BorderLayout
 import java.awt.event.ItemEvent
 import javax.swing.JPanel
 
 
-class ESP2866WizardPanel(clionPanel: JPanel, val wizardData: WizardData) : JPanel(BorderLayout()) {
+class ESP8266WizardPanel(clionPanel: JPanel, val wizardData: WizardData) : JPanel(BorderLayout()) {
     companion object {
         val extraModules = arrayListOf("ad770x", "ads111x", "bearssl", "bh1750", "bme680", "bmp180", "bmp280", "ccs811", "cpp_support", "crc_generic",
                 "dhcpserver", "dht", "ds1302", "ds1307", "ds18b20", "ds3231", "dsm", "fatfs", "fonts", "fram",
@@ -22,7 +24,7 @@ class ESP2866WizardPanel(clionPanel: JPanel, val wizardData: WizardData) : JPane
 
     init {
         add(clionPanel, BorderLayout.PAGE_START)
-        val p = panel("ESP 2866 Free RTOS configuration") {
+        val p = panel("ESP 8266 Free RTOS configuration") {
             row("flash Size") { comboBox(availableSize, "512KB", { wizardData.flashSize = FlashSize.getElement(it.item.toString()) }) }
             row("Flash Mode") { comboBox(availableMode, "qio", { wizardData.flashMode = it.item.toString() }) }
             row("Flash Speed") { comboBox(availableSpeed, "40", { wizardData.flashSpeed = it.item.toString() }) }

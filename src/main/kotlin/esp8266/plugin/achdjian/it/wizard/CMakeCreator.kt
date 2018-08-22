@@ -1,9 +1,9 @@
-package plugin.achdjian.it.wizard
+package esp8266.plugin.achdjian.it.wizard
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.util.io.FileUtil
-import plugin.achdjian.it.ESP2866SDKSettings
-import plugin.achdjian.it.ESP8266SettingsState
+import esp8266.plugin.achdjian.it.settings.ESP2866SDKSettings
+import esp8266.plugin.achdjian.it.settings.ESP8266SettingsState
 
 fun createCMake(wizardData: WizardData, projectName: String): String {
 
@@ -11,7 +11,7 @@ fun createCMake(wizardData: WizardData, projectName: String): String {
     val setting = ApplicationManager.getApplication().getComponent(ESP8266SettingsState::class.java, ESP2866SDKSettings.DEFAULT) as ESP8266SettingsState
     cmakelists = cmakelists
             .replace("__{project_name}__", projectName)
-            .replace("__{ESP_OPEN_RTOS_DIR}__", "set(ESP_OPEN_RTOS_DIR ${setting.rtosPath})")
+            .replace("__{ESP_OPEN_RTOS_DIR}__", "set(ESP_OPEN_RTOS_DIR ${setting.freeRtosPath})")
             .replace("__{FLASH_SIZE}__", wizardData.flashSize.strSize())
             .replace("__{FLASH_MODE}__", wizardData.flashMode)
             .replace("__{FLASH_SPEED}__", wizardData.flashSpeed)
@@ -35,9 +35,9 @@ fun createCMake(wizardData: WizardData, projectName: String): String {
 
 fun selectCMakeListFile(ota:Boolean): String {
     if (ota)
-        return getResourceAsString("templates/CMakeLists_ota.txt")
+        return getResourceAsString("templates/free/CMakeLists_ota.txt")
     else
-        return getResourceAsString("templates/CMakeLists.txt")
+        return getResourceAsString("templates/free/CMakeLists.txt")
 }
 
 fun createExtrasSourceFilesSet(wizardData: WizardData): String {

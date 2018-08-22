@@ -1,11 +1,11 @@
-package plugin.achdjian.it.ui
+package esp8266.plugin.achdjian.it.ui
 
 import java.awt.GridLayout
 import javax.swing.JComponent
 import javax.swing.JPanel
 
 class LayoutBuilder {
-    val rows = ArrayList<Row>()
+    private val rows = ArrayList<Row>()
 
     fun row(text:String?=null,init: Row.() -> Unit){
         val row = Row(text)
@@ -22,14 +22,16 @@ class LayoutBuilder {
     fun build(panel: JPanel) {
         var colSize=1
 
-        if (rows.filterNotNull().any())
+        if (rows.any())
             colSize = 2
-        val layout = GridLayout(rows.size, colSize)
-        panel.layout = layout
+        panel.layout = GridLayout(rows.size, colSize)
 
         if (colSize==1)
-            rows.forEach({panel.add(it.component)})
+            rows.forEach{panel.add(it.component)}
         else
-            rows.forEach({panel.add(it.label());panel.add(it.component)})
+            rows.forEach {
+                panel.add(it.label())
+                panel.add(it.component)
+            }
     }
 }

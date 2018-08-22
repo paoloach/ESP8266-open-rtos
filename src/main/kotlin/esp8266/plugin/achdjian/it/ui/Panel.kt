@@ -1,4 +1,4 @@
-package plugin.achdjian.it.ui
+package esp8266.plugin.achdjian.it.ui
 
 import com.intellij.BundleBase
 import com.intellij.openapi.ui.ComboBox
@@ -11,7 +11,7 @@ import javax.swing.JPanel
 
 fun panel(title: String? = null, init : LayoutBuilder.()->Any): JPanel {
     val panel = JPanel()
-    title?.let{ addTitleBorder(it, panel)}
+    title?.let{ addTitleBorder(it, panel) }
     val layoutBuilder = LayoutBuilder()
     layoutBuilder.init()
     layoutBuilder.build(panel)

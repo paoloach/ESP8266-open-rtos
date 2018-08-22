@@ -24,10 +24,11 @@ Disclaimer
 
 
     <extensions defaultExtensionNs="com.intellij">
-        <directoryProjectGenerator implementation="plugin.achdjian.it.wizard.ESP2866ProjectGenerator"/>
+        <directoryProjectGenerator implementation="esp8266.plugin.achdjian.it.wizard.free.rtos.ESP8266FreeRTOSProjectGenerator"/>
+        <directoryProjectGenerator implementation="esp8266.plugin.achdjian.it.wizard.espressif.rtos.ESP8266EspressifRTOSProjectGenerator"/>
         <!--<configurationType implementation="plugin.achdjian.it.ESP2866SDKSettings" id="esp2866.plugin.achdjian.it"/>-->
         <projectConfigurable order="last" id="ESP2866.plugin.achdjian.it"
-                             instance="plugin.achdjian.it.ESP2866SDKSettings"
+                             instance="esp8266.plugin.achdjian.it.settings.ESP2866SDKSettings"
                              displayName="ESP2866 config" groupId="build.tools"/>
 
     </extensions>
@@ -37,7 +38,7 @@ Disclaimer
 
     <application-components>
         <component>
-            <implementation-class>plugin.achdjian.it.ESP8266SettingsState</implementation-class>
+            <implementation-class>esp8266.plugin.achdjian.it.settings.ESP8266SettingsState</implementation-class>
         </component>
     </application-components>
 </idea-plugin>

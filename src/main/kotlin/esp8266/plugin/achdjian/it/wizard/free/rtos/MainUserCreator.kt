@@ -1,4 +1,4 @@
-package plugin.achdjian.it.wizard
+package esp8266.plugin.achdjian.it.wizard.free.rtos
 
 import com.intellij.openapi.vfs.VirtualFile
 import org.apache.commons.codec.Charsets

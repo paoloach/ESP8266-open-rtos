@@ -15,8 +15,13 @@ plugins {
     id "org.jetbrains.kotlin.jvm" version "1.2.50"
 }
 
+publishPlugin {
+    username 'pachdjian@gmail.com'
+    password 'nutellaC++17'
+}
+
 group 'plugin.achdjian.it'
-version '1.1.1'
+version '1.2.0'
 
 sourceCompatibility = 1.8
 
@@ -26,21 +31,22 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile "org.jetbrains.kotlin:kotlin-stdlib"
+    compile "org.jetbrains.kotlin:kotlin-stdlib:1.2.51"
     compileOnly files('/opt/clion/lib/clion.jar')
 }
 
 intellij {
     version '2018.1.4'
-    pluginName 'ESP2866'
+    pluginName 'ESP8266'
 }
 patchPluginXml {
     sinceBuild "181.5087"
     untilBuild "182.*"
     changeNotes """
-      Added OTA support.
-      ------------------------
-      First release
+      <p>&#8226; 1.2.0 &#8594; Added support for espressif RTOS</p>
+      <p>&#8226; 1.1.2 &#8594; Added support for CLion 2018.2</p>
+      <p>&#8226; 1.1.0 &#8594; Added OTA support</p>
+      <p>&#8226; 1.0.0 &#8594; First release</p>
       """
 }
 
@@ -48,20 +54,20 @@ compileKotlin {
     kotlinOptions.jvmTarget = 1.8
 }
 
-task copyPlugin2018_1(type: Copy){
+task copyPlugin2018_1(type: Copy) {
 
-        from file("${buildDir}/libs/ESP2866-1.0.jar")
-    into file("${project.gradle.gradleUserHomeDir}/../.CLion2018.1/config/plugins/ESP2866/lib")
+    from file("${buildDir}/libs/ESP2866-1.2.0.jar")
+    into file("${project.gradle.gradleUserHomeDir}/../.CLion2018.1/config/plugins/ESP8266/lib")
 }
 
-task copyPlugin2018_2(type: Copy){
+task copyPlugin2018_2(type: Copy) {
 
-    from file("${buildDir}/libs/ESP2866-1.0.jar")
-    into file("${project.gradle.gradleUserHomeDir}/../.CLion2018.2/config/plugins/ESP2866/lib")
+    from file("${buildDir}/libs/ESP2866-1.2.0.jar")
+    into file("${project.gradle.gradleUserHomeDir}/../.CLion2018.2/config/plugins/ESP8266/lib")
 }
 
 task execCLion(type: Exec) {
-    workingDir='~'
+    workingDir = '~'
     commandLine '/opt/clion/bin/clion_debug.sh'
 }
 

@@ -1,4 +1,4 @@
-package plugin.achdjian.it.ui
+package esp8266.plugin.achdjian.it.ui
 
 import com.intellij.BundleBase
 import com.intellij.openapi.fileChooser.FileChooserDescriptor

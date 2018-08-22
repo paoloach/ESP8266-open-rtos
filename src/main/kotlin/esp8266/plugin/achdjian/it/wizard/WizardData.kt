@@ -1,4 +1,4 @@
-package plugin.achdjian.it.wizard
+package esp8266.plugin.achdjian.it.wizard
 
 data class WizardData(val extras: MutableMap<String, Boolean>,
                       var flashSize: FlashSize,

@@ -1,4 +1,4 @@
-package plugin.achdjian.it.wizard
+package esp8266.plugin.achdjian.it.wizard
 
 enum class FlashSize (val size: Int){
     KB_256(256*1024),
@@ -8,7 +8,7 @@ enum class FlashSize (val size: Int){
     MB_4(4*1024*1024);
 
     companion object {
-        fun getElement(name:String): FlashSize{
+        fun getElement(name:String): FlashSize {
             return values().first { it.strSize() == name }
         }
     }
