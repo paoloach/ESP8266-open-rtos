@@ -1,7 +1,7 @@
 package esp8266.plugin.achdjian.it.wizard.espressif.rtos
 
 import com.intellij.openapi.ui.ComboBox
-import esp8266.plugin.achdjian.it.ui.ButtonTitleBorder
+import esp8266.plugin.achdjian.it.ui.ButtonTitledBorder
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.GridLayout
@@ -154,7 +154,7 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
 
     class BoolConfigEntry(text: String, configEntry: String, defaultValue: Boolean = false, dependsOn: List<BoolConfigEntry>, val associated: List<BoolConfigEntry> = listOf<BoolConfigEntry>()) : ConfigurationEntry(text, configEntry, dependsOn), ItemListener {
         private val listener = ArrayList<ConfigurationEntry>()
-        var value: Boolean by Delegates.observable(defaultValue) { prop, old, new ->
+        var value: Boolean by Delegates.observable(defaultValue) { _, _, _ ->
             listener.forEach { it.dependsChangValue() }
         }
 
@@ -223,9 +223,10 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
             internalPanel.layout = BoxLayout(internalPanel, BoxLayout.Y_AXIS)
             entries.forEach { internalPanel.add(it.createRow()) }
             internalPanel.isVisible = false
-            panel.border = ButtonTitleBorder(text, panel) {
+            panel.border = ButtonTitledBorder(text, panel) {
                 internalPanel.setVisible(!it)
             }
+
             panel.isVisible = dependsOn.all { it.value == true }
             this.panel = panel
             return panel
