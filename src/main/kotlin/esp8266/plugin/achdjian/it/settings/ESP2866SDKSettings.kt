@@ -32,7 +32,6 @@ class ESP2866SDKSettings(private val project: Project) : ProjectComponent, Confi
                 || (state.freeRtosPath != freeRtosPath?.canonicalPath)
                 || (state.espressifRtosPath != espressifRtosPath?.canonicalPath)
                 || (state.esptool2 != esptool2Path?.canonicalPath)
-        System.out.println("Is modified: $modified")
         return modified
     }
 
@@ -78,7 +77,7 @@ class ESP2866SDKSettings(private val project: Project) : ProjectComponent, Confi
                     project,
                     component,
                     editor,
-                    "ESP8266 free rtos path",
+                    "ESPRESSIF rtos path",
                     FileChooserDescriptorFactory.createSingleFolderDescriptor(),
                     TextComponentAccessor.TEXT_FIELD_WITH_HISTORY_WHOLE_TEXT){
                 espressifRtosPath = it
@@ -89,7 +88,7 @@ class ESP2866SDKSettings(private val project: Project) : ProjectComponent, Confi
         row("esptool2 path: "){
             val component = TextFieldWithHistoryWithBrowseButton()
             val editor = component.childComponent.textEditor
-            editor.text = state.freeRtosPath
+            editor.text = state.esptool2
             installFileCompletionAndBrowseDialog(
                     project,
                     component,

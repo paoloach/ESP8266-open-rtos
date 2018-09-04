@@ -1,10 +1,15 @@
 cmake_minimum_required(VERSION 3.10)
-project(buttonFirmware C CXX ASM)
+project(__{project_name}__ C CXX ASM)
+
+__{ESPRESSIF_RTOS_DIR}__
+execute_process(COMMAND git describe --always --tags --dirty
+        WORKING_DIRECTORY ${RTOS_DIR}
+        OUTPUT_VARIABLE IDF_VER
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_C_STANDARD 99)
-__{ESPRESSIF_RTOS_DIR}__
-set(COMMON_FLAGS -Os -ggdb -ffunction-sections -fdata-sections -fstrict-volatile-bitfields -mlongcalls -nostdlib -DICACHE_FLASH -DESP_PLATFORM -DIDF_VER='v2.0.0-699-gea34c2a-dirty' -MMD -MP -DMQTT_TASK -DMQTTCLIENT_PLATFORM_HEADER=MQTTFreeRTOS.h -DWOLFSSL_USER_SETTINGS)
+set(COMMON_FLAGS -Os -ggdb -ffunction-sections -fdata-sections -fstrict-volatile-bitfields -mlongcalls -nostdlib -DICACHE_FLASH -DESP_PLATFORM -DIDF_VER=\"${IDF_VER}\" -MMD -MP -DMQTT_TASK -DMQTTCLIENT_PLATFORM_HEADER=MQTTFreeRTOS.h -DWOLFSSL_USER_SETTINGS)
 set(WARNING_FLAGS -Wall -Werror=all -Wno-error=unused-function -Wno-error=unused-but-set-variable -Wno-error=unused-variable -Wno-error=deprecated-declarations -Wextra -Wno-unused-parameter -Wno-sign-compare -Wno-error=char-subscripts -Wno-error=unknown-pragmas -Wno-error=implicit-function-declaration -Wno-error=pointer-sign -Wno-error=switch -Wno-error=maybe-uninitialized -Wno-error=format= -Wno-error=unused-value -Wno-error=address -Wno-error=return-type -Wno-error=format-extra-args -Wno-error=format-zero-length -Wno-error=unused-label -Wno-error=sizeof-pointer-memaccess)
 
 add_subdirectory(bootloader)
@@ -34,11 +39,23 @@ add_custom_target(linkerDef
         COMMENT "create linker file")
 
 add_custom_target(image
-        COMMAND ${RTOS_DIR}/components/esptool_py/esptool/esptool.py --chip esp8266 elf2image --flash_mode "qio" --flash_freq "40m" --flash_size "4MB" --version=3 -o ./firmware.bin ./firmware
+        COMMAND ${RTOS_DIR}/components/esptool_py/esptool/esptool.py --chip esp8266 elf2image --flash_mode __{flash_mode}__ --flash_freq __{flash_freq}__ --flash_size __{flash_size}__ --version=3 -o ./firmware.bin ./firmware
         COMMENT "create image file")
 
 add_custom_target(flash_image
-        COMMAND python ${RTOS_DIR}/components/esptool_py/esptool/esptool.py --chip esp8266 --port "/dev/ttyUSB0" --baud 115200 --before "no_reset" --after "no_reset" write_flash -z --flash_mode "qio" --flash_freq "40m" --flash_size "4MB" 0x0000 /home/paolo/workspace/drindrin/button/expressif/test/http_request/build/bootloader/bootloader.bin 0x10000 ./firmware.bin 0x8000 /home/paolo/workspace/drindrin/button/expressif/test/http_request/build/partitions_singleapp.bin
+        COMMAND python ${RTOS_DIR}/components/esptool_py/esptool/esptool.py
+        --chip esp8266
+        --port "/dev/ttyUSB0"
+        --baud 115200
+        --before "no_reset"
+        --after "no_reset"
+        write_flash -z
+        --flash_mode __{flash_mode}__
+        --flash_freq __{flash_freq}__
+        --flash_size __{flash_size}__
+        0x0000 ${CMAKE_BINARY_DIR}/bootloader/bootloader0x00000.bin
+        0x10000 ./firmware.bin
+        0x8000 ${CMAKE_BINARY_DIR}/bootloader/partitions_singleapp.bin
         COMMENT "flash image")
 
 
@@ -64,7 +81,7 @@ add_dependencies(firmware
         tcpipAdapter)
 
 add_dependencies(image firmware linkerDef)
-
+add_dependencies(flash_image image bootloader.bin partitions_singleapp.bin)
 
 set_target_properties(firmware PROPERTIES
         LINK_FLAGS "-nostdlib\
@@ -83,7 +100,6 @@ set_target_properties(firmware PROPERTIES
 
 target_link_libraries(firmware
         -Wl,--start-group
-        bootloader
         bootloaderSupport
         log
         esp8266

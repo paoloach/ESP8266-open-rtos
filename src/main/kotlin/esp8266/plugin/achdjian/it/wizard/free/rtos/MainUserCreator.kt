@@ -3,7 +3,7 @@ package esp8266.plugin.achdjian.it.wizard.free.rtos
 import com.intellij.openapi.vfs.VirtualFile
 import org.apache.commons.codec.Charsets
 
-fun createMainUser(path: VirtualFile,  requestor:Any): VirtualFile {
+fun createFreeRTOSMainUser(path: VirtualFile, requestor:Any): VirtualFile {
     val fileMainUser = path.findOrCreateChildData(requestor, "mainUser.c")
 
     val builder = StringBuilder()

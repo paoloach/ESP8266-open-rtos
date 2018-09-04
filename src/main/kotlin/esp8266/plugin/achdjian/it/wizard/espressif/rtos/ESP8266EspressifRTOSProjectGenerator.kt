@@ -15,16 +15,14 @@ class ESP8266EspressifRTOSProjectGenerator : CMakeAbstractCProjectGenerator() {
     val wizardData = MenuWizardData()
 
     override fun createSourceFiles(projectName: String, path: VirtualFile): Array<VirtualFile> {
-        val files =  arrayOf(
-//                createMainUser(path, this),
-//                createFreeRTOSConfig(path, this),
-                createCMakeCrossTool(path, this))
-        return files;
+        createEspressifRTORSubCMand(projectName, wizardData, path)
+        createCMakeCrossTool(path, this)
+        createSdkConfigFile(wizardData, path)
+        return arrayOf(createEspressifRTOSMain(path, this))
     }
 
     override fun getCMakeFileContent(projectName: String): String {
-        //return createCMake(wizardData, projectName)
-        return ""
+        return createEspressifRTOSCMake(projectName, wizardData)
     }
 
     override fun getName(): String = "C ESP8266 espressif rtos"
@@ -35,7 +33,7 @@ class ESP8266EspressifRTOSProjectGenerator : CMakeAbstractCProjectGenerator() {
         super.generateProject(project, path, cmakeSetting, module)
         val cMakeWorkspace = CMakeWorkspace.getInstance(project)
         val settings = cMakeWorkspace.settings
-        var releaseProfile = CMakeSettings.Profile("Release", "Release", "", "-DCMAKE_TOOLCHAIN_FILE=CrossCompiler.cmake",true, HashMap(), null, null)
+        var releaseProfile = CMakeSettings.Profile("Release", "Release", "", "-DCMAKE_TOOLCHAIN_FILE=CrossCompiler.cmake", true, HashMap(), null, null)
 
         settings.profiles = listOf(releaseProfile)
     }

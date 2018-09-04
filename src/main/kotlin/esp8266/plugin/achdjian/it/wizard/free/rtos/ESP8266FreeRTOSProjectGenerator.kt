@@ -16,7 +16,7 @@ class ESP8266FreeRTOSProjectGenerator : CMakeAbstractCProjectGenerator() {
 
     override fun createSourceFiles(projectName: String, path: VirtualFile): Array<VirtualFile> {
         val files =  arrayOf(
-                createMainUser(path, this),
+                createFreeRTOSMainUser(path, this),
                 createFreeRTOSConfig(path, this),
                 createCMakeCrossTool(path, this))
         if (wizardData.otaSupport){
@@ -26,7 +26,7 @@ class ESP8266FreeRTOSProjectGenerator : CMakeAbstractCProjectGenerator() {
     }
 
     override fun getCMakeFileContent(projectName: String): String {
-        return createCMake(wizardData, projectName)
+        return createFreeRTOSCMake(wizardData, projectName)
     }
 
     override fun getName(): String = "C ESP2866 free rtos"

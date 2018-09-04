@@ -1,11 +1,12 @@
-package esp8266.plugin.achdjian.it.wizard
+package esp8266.plugin.achdjian.it.wizard.free.rtos
 
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.util.io.FileUtil
 import esp8266.plugin.achdjian.it.settings.ESP2866SDKSettings
 import esp8266.plugin.achdjian.it.settings.ESP8266SettingsState
+import esp8266.plugin.achdjian.it.wizard.WizardData
+import esp8266.plugin.achdjian.it.wizard.getResourceAsString
 
-fun createCMake(wizardData: WizardData, projectName: String): String {
+fun createFreeRTOSCMake(wizardData: WizardData, projectName: String): String {
 
     var cmakelists = selectCMakeListFile(wizardData.otaSupport)
     val setting = ApplicationManager.getApplication().getComponent(ESP8266SettingsState::class.java, ESP2866SDKSettings.DEFAULT) as ESP8266SettingsState
@@ -108,22 +109,3 @@ fun createExtrasStaticLibraries(wizardData: WizardData): String {
     return builder.toString()
 }
 
-fun getResourceAsString(resourceName: String): String {
-    val resource = WizardData::class.java.classLoader.getResourceAsStream(resourceName)
-    return if (resource != null) {
-        FileUtil.loadTextAndClose(resource)
-    } else {
-        ""
-    }
-
-}
-
-fun getResourceAsBytes(resourceName: String): ByteArray {
-    val resource = WizardData::class.java.classLoader.getResourceAsStream(resourceName)
-    return if (resource != null) {
-        FileUtil.loadBytes(resource)
-    } else {
-        ByteArray(0)
-    }
-
-}

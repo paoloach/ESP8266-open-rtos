@@ -17,13 +17,12 @@ import kotlin.properties.Delegates
 abstract class ConfigurationEntry(val text: String, val configEntry: List<String>, var dependsOn: List<BoolConfigEntry> = listOf()) {
     var panel: JPanel? = null
     abstract fun createRow(): JComponent
+    abstract fun addConfigution(configurations: MutableMap<String, String>)
     fun dependsChangValue() {
-        panel?.isVisible = dependsOn.all { it.value == true }
+        panel?.isVisible = dependsOn.all { it.value }
     }
 
-    constructor(text: String, configEntry: String, dependsOn: BoolConfigEntry) : this(text, listOf(configEntry), listOf(dependsOn))
-    constructor(text: String, configEntry: String) : this(text, listOf(configEntry))
-    constructor(text: String, configEntry: String, dependsOn: List<BoolConfigEntry>) : this(text, listOf(configEntry), dependsOn)
+    constructor(text: String, configEntry: String, dependsOn: List<BoolConfigEntry>) : this(text, listOf(configEntry), dependsOn = dependsOn)
 
     init {
         dependsOn.forEach {
@@ -73,14 +72,21 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
     }
 
     class IntConfigEntry(text: String, configEntry: String, private var value: Int, private val min: Int, private val max: Int, dependsOn: List<BoolConfigEntry>) : ConfigurationEntry(text, configEntry, dependsOn), DocumentListener {
+
+
         private val textField = IntegerTextField()
 
-        constructor(text: String, configEntry: String, value: Int,  min: Int,  max: Int, dependsOn: BoolConfigEntry):
-                this(text,configEntry, value, min,max, listOf(dependsOn))
+        constructor(text: String, configEntry: String, value: Int, min: Int, max: Int, dependsOn: BoolConfigEntry) :
+                this(text, configEntry, value, min, max, listOf(dependsOn))
 
-        constructor(text: String, configEntry: String, value: Int,  min: Int,  max: Int):
-                this(text,configEntry, value, min,max, listOf())
+        constructor(text: String, configEntry: String, value: Int, min: Int, max: Int) :
+                this(text, configEntry, value, min, max, listOf())
 
+        override fun addConfigution(configurations: MutableMap<String, String>) {
+            if (dependsOn.all { it.value }) {
+                configEntry.forEach { configurations[it] = value.toString() }
+            }
+        }
 
         override fun changedUpdate(documentEvent: DocumentEvent) {
             val length = documentEvent.document.length
@@ -132,9 +138,17 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
 
     }
 
-    class StringConfigEntry(text: String, configEntry: String, var value: String, dependsOn: List<BoolConfigEntry>) : ConfigurationEntry(text, configEntry, dependsOn) {
-        constructor(text: String, configEntry: String, value: String,dependsOn: BoolConfigEntry):this(text, configEntry, value, listOf(dependsOn))
-        constructor(text: String, configEntry: String, value: String):this(text, configEntry, value, listOf())
+    class StringConfigEntry(text: String, configEntry: String, private var value: String, dependsOn: List<BoolConfigEntry>) : ConfigurationEntry(text, configEntry, dependsOn) {
+        constructor(text: String, configEntry: String, value: String) : this(text, configEntry, value, listOf())
+        constructor(text: String, configEntry: String, value: String, dependsOn: BoolConfigEntry) : this(text, configEntry, value, listOf(dependsOn))
+
+
+        override fun addConfigution(configurations: MutableMap<String, String>) {
+            if (dependsOn.all { it.value }) {
+                configEntry.forEach { configurations[it] = "\"$value\"" }
+            }
+        }
+
         override fun createRow(): JComponent {
             val panel = JPanel()
             panel.layout = GridLayout(1, 2)
@@ -152,19 +166,52 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
         }
     }
 
-    class BoolConfigEntry(text: String, configEntry: String, defaultValue: Boolean = false, dependsOn: List<BoolConfigEntry>, val associated: List<BoolConfigEntry> = listOf<BoolConfigEntry>()) : ConfigurationEntry(text, configEntry, dependsOn), ItemListener {
+    class HexConfigEntry(text: String, configEntry: String, private var value: Int, dependsOn: List<BoolConfigEntry>) : ConfigurationEntry(text, configEntry, dependsOn) {
+        constructor(text: String, configEntry: String, value: Int) : this(text, configEntry, value, listOf())
+        constructor(text: String, configEntry: String, value: Int, dependsOn: BoolConfigEntry) : this(text, configEntry, value, listOf(dependsOn))
+
+
+        override fun addConfigution(configurations: MutableMap<String, String>) {
+            configEntry.forEach { configurations[it] = "0x" + value.toString(16) }
+        }
+
+        override fun createRow(): JComponent {
+            val panel = JPanel()
+            panel.layout = GridLayout(1, 2)
+            panel.add(JLabel(text))
+
+            val jTextField = JTextField()
+            jTextField.text = value.toString(16)
+            jTextField.addActionListener {
+                value = jTextField.text.toInt(16)
+            }
+            panel.add(jTextField)
+            panel.isVisible = dependsOn.all { it.value == true }
+            this.panel = panel
+            return panel
+        }
+    }
+
+    class BoolConfigEntry(text: String, configEntry: String, defaultValue: Boolean = false, dependsOn: List<BoolConfigEntry>, private val associated: List<BoolConfigEntry> = listOf()) : ConfigurationEntry(text, configEntry, dependsOn), ItemListener {
         private val listener = ArrayList<ConfigurationEntry>()
         var value: Boolean by Delegates.observable(defaultValue) { _, _, _ ->
             listener.forEach { it.dependsChangValue() }
         }
 
-        constructor(text: String, configEntry: String, defaultValue: Boolean = false, dependsOn: BoolConfigEntry, associated: List<BoolConfigEntry> = listOf<BoolConfigEntry>()) : this(text, configEntry, defaultValue, listOf(dependsOn), associated)
+        constructor(text: String, configEntry: String, defaultValue: Boolean = false, dependsOn: BoolConfigEntry, associated: List<BoolConfigEntry> = listOf()) : this(text, configEntry, defaultValue, listOf(dependsOn), associated)
         constructor(text: String, configEntry: String, value: Boolean, associated: List<BoolConfigEntry>) : this(text, configEntry, value, listOf(), associated)
-        constructor(text: String, configEntry: String, defaultValue: Boolean = false):this(text,configEntry, defaultValue, listOf(), listOf())
+        constructor(text: String, configEntry: String, defaultValue: Boolean = false) : this(text, configEntry, defaultValue, listOf(), listOf())
 
         override fun itemStateChanged(event: ItemEvent) {
             value = event.stateChange == ItemEvent.SELECTED
             associated.forEach { it.value = value }
+        }
+
+        override fun addConfigution(configurations: MutableMap<String, String>) {
+            if (value) {
+                configEntry.forEach { configurations[it] = "1" }
+                associated.forEach { it.configEntry.forEach { ce -> configurations[ce] = "1" } }
+            }
         }
 
         override fun createRow(): JComponent {
@@ -184,9 +231,23 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
         fun addListener(configurationEntry: ConfigurationEntry) = listener.add(configurationEntry)
     }
 
-    class ChoiceConfigEntry(text: String, private var choices: List<BoolConfigEntry>, private var default: BoolConfigEntry, dependsOn: List<BoolConfigEntry>) : ConfigurationEntry(text, "", dependsOn) {
-        constructor(text: String, choices: List<BoolConfigEntry>, default: BoolConfigEntry,dependsOn: BoolConfigEntry):this(text, choices, default, listOf(dependsOn))
-        constructor(text: String, choices: List<BoolConfigEntry>, default: BoolConfigEntry):this(text, choices, default, listOf())
+    class ChoiceConfigEntry(text: String, configEntry: String, private var choices: Map<BoolConfigEntry, String>, private val default: BoolConfigEntry, dependsOn: List<BoolConfigEntry>) : ConfigurationEntry(text, configEntry, dependsOn) {
+        constructor(text: String, configEntry: String, choices: List<BoolConfigEntry>, default: BoolConfigEntry) : this(text, configEntry, choices.associate { Pair(it, "") }, default, listOf<BoolConfigEntry>())
+        constructor(text: String, configEntry: String, choices: List<BoolConfigEntry>, default: BoolConfigEntry, dependsOn: BoolConfigEntry) : this(text, configEntry, choices.associate { Pair(it, "") }, default, listOf(dependsOn))
+        constructor(text: String, configEntry: String, choices: Map<BoolConfigEntry, String>, default: BoolConfigEntry) : this(text, configEntry, choices, default, listOf())
+
+        private var choiced = default
+        val choiceText: String get() = choices[choiced].orEmpty()
+
+        override fun addConfigution(configurations: MutableMap<String, String>) {
+            if (dependsOn.all { it.value }) {
+                if (choiceText.isNotBlank())
+                    configEntry.forEach { configurations[it] = choiceText }
+                choiced.addConfigution(configurations)
+            }
+        }
+
+
         override fun createRow(): JComponent {
             val panel = JPanel()
             panel.layout = GridLayout(1, 2)
@@ -194,9 +255,11 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
             val comboBox = ComboBox<String>()
             comboBox.addActionListener {
                 default.value = false
-                choices.firstOrNull() { c -> c.text.equals(it) }?.let { c -> c.value = true;default = c }
+                choices.keys.firstOrNull { c -> c.text.equals(comboBox.selectedItem) }?.let { c ->
+                    c.value = true;choiced = c
+                }
             }
-            choices.forEach {
+            choices.keys.forEach {
                 comboBox.addItem(it.text)
             }
             comboBox.selectedItem = default.text
@@ -209,11 +272,17 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
 
     }
 
-    class SubPanelConfigEntry(text: String, private val entries: List<ConfigurationEntry>, dependsOn: List<BoolConfigEntry>) : ConfigurationEntry(text, "", dependsOn) {
-        constructor(text: String, entries: List<ConfigurationEntry>, dependsOn: BoolConfigEntry):
-                this(text,entries, listOf(dependsOn))
-        constructor(text: String, entries: List<ConfigurationEntry>):
-                this(text,entries, listOf())
+    class SubPanelConfigEntry(text: String, private val entries: List<ConfigurationEntry>, dependsOn: List<BoolConfigEntry>) : ConfigurationEntry(text, "", dependsOn = dependsOn) {
+        constructor(text: String, entries: List<ConfigurationEntry>, dependsOn: BoolConfigEntry) :
+                this(text, entries, dependsOn = listOf(dependsOn))
+
+        constructor(text: String, entries: List<ConfigurationEntry>) :
+                this(text, entries, listOf())
+
+        override fun addConfigution(configurations: MutableMap<String, String>) {
+            if (dependsOn.all { it.value })
+                entries.forEach { it.addConfigution(configurations) }
+        }
 
         override fun createRow(): JComponent {
             val panel = JPanel()
