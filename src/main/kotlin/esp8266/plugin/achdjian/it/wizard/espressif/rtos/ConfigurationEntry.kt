@@ -5,9 +5,7 @@ import esp8266.plugin.achdjian.it.ui.ButtonTitledBorder
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.GridLayout
-import java.awt.event.ItemEvent
-import java.awt.event.ItemListener
-import java.awt.event.KeyEvent
+import java.awt.event.*
 import java.text.NumberFormat
 import javax.swing.*
 import javax.swing.event.DocumentEvent
@@ -138,10 +136,20 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
 
     }
 
-    class StringConfigEntry(text: String, configEntry: String, private var value: String, dependsOn: List<BoolConfigEntry>) : ConfigurationEntry(text, configEntry, dependsOn) {
+    class StringFocusListener(val stringConfigEntry: StringConfigEntry) : FocusListener{
+        override fun focusLost(p0: FocusEvent?) {
+            stringConfigEntry.updateValue()
+        }
+
+        override fun focusGained(p0: FocusEvent?) {
+        }
+
+    }
+
+    open class StringConfigEntry(text: String, configEntry: String, var value: String, dependsOn: List<BoolConfigEntry>) : ConfigurationEntry(text, configEntry, dependsOn) {
         constructor(text: String, configEntry: String, value: String) : this(text, configEntry, value, listOf())
         constructor(text: String, configEntry: String, value: String, dependsOn: BoolConfigEntry) : this(text, configEntry, value, listOf(dependsOn))
-
+        val jTextField = JTextField()
 
         override fun addConfigution(configurations: MutableMap<String, String>) {
             if (dependsOn.all { it.value }) {
@@ -154,8 +162,8 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
             panel.layout = GridLayout(1, 2)
             panel.add(JLabel(text))
 
-            val jTextField = JTextField()
             jTextField.text = value
+            jTextField.addFocusListener( StringFocusListener(this))
             jTextField.addActionListener {
                 value = jTextField.text
             }
@@ -164,32 +172,21 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
             this.panel = panel
             return panel
         }
+
+        public fun updateValue() {
+            value = jTextField.text;
+        }
     }
 
-    class HexConfigEntry(text: String, configEntry: String, private var value: Int, dependsOn: List<BoolConfigEntry>) : ConfigurationEntry(text, configEntry, dependsOn) {
+    class HexConfigEntry(text: String, configEntry: String, value: Int, dependsOn: List<BoolConfigEntry>) : StringConfigEntry(text, configEntry, value.toString(16), dependsOn) {
         constructor(text: String, configEntry: String, value: Int) : this(text, configEntry, value, listOf())
         constructor(text: String, configEntry: String, value: Int, dependsOn: BoolConfigEntry) : this(text, configEntry, value, listOf(dependsOn))
 
-
         override fun addConfigution(configurations: MutableMap<String, String>) {
-            configEntry.forEach { configurations[it] = "0x" + value.toString(16) }
+            configEntry.forEach { configurations[it] = "0x" + value.toInt(16) }
         }
 
-        override fun createRow(): JComponent {
-            val panel = JPanel()
-            panel.layout = GridLayout(1, 2)
-            panel.add(JLabel(text))
 
-            val jTextField = JTextField()
-            jTextField.text = value.toString(16)
-            jTextField.addActionListener {
-                value = jTextField.text.toInt(16)
-            }
-            panel.add(jTextField)
-            panel.isVisible = dependsOn.all { it.value == true }
-            this.panel = panel
-            return panel
-        }
     }
 
     class BoolConfigEntry(text: String, configEntry: String, defaultValue: Boolean = false, dependsOn: List<BoolConfigEntry>, private val associated: List<BoolConfigEntry> = listOf()) : ConfigurationEntry(text, configEntry, dependsOn), ItemListener {
