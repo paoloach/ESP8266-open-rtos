@@ -183,7 +183,7 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
         constructor(text: String, configEntry: String, value: Int, dependsOn: BoolConfigEntry) : this(text, configEntry, value, listOf(dependsOn))
 
         override fun addConfigution(configurations: MutableMap<String, String>) {
-            configEntry.forEach { configurations[it] = "0x" + value.toInt(16) }
+            configEntry.forEach { configurations[it] = "0x" + value }
         }
 
 
@@ -255,6 +255,8 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
                 choices.keys.firstOrNull { c -> c.text.equals(comboBox.selectedItem) }?.let { c ->
                     c.value = true;choiced = c
                 }
+                print("Action: $it")
+                println("new value: ${choiced.text}")
             }
             choices.keys.forEach {
                 comboBox.addItem(it.text)

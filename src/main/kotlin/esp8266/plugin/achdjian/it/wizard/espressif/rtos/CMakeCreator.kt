@@ -16,6 +16,9 @@ fun createEspressifRTOSCMake(projectName: String, wizardData: MenuWizardData): S
             .replace("__{flash_mode}__", wizardData.flashMode)
             .replace("__{flash_freq}__", wizardData.flashFreq)
             .replace("__{flash_size}__", wizardData.flashSize)
+            .replace("__{esptool_port}__", wizardData.espToolPort)
+            .replace("__{esptool_before}__", wizardData.espToolBefore)
+            .replace("__{esptool_baudRate}__", wizardData.espToolBaudRate)
 
     return cmakelists
 }

@@ -6,6 +6,11 @@ class MenuWizardData() {
     val flashMode: String get() = flashModeConfigEntry.choiceText
     val flashFreq: String get() = flashFreqConfigEntry.choiceText
     val flashSize: String get() = flashSizeConfigEntry.choiceText
+    val espToolPort: String get() = esptoolPortEntry.value
+    val espToolBefore: String get() = esptoolBeforeEntry.choiceText
+    val espToolBaudRate: String get() = espToolBaudRateEntry.choiceText
+
+
     private val defaultBaudRate = BoolConfigEntry("115200 baud", "ESPTOOLPY_BAUD_115200B", true)
     private val defaultFlashMode = BoolConfigEntry("QIO", "FLASHMODE_QIO", true)
     private val defaultFlashFreq = BoolConfigEntry("40 MHz", "ESPTOOLPY_FLASHFREQ_40M", true)
@@ -30,22 +35,25 @@ class MenuWizardData() {
             BoolConfigEntry("16 MB", "ESPTOOLPY_FLASHSIZE_16MB", true) to "\"16MB\""
     ), defaultFlashSize)
     private val defaultResetBeforeFlash = BoolConfigEntry("Reset to bootloader", "ESPTOOLPY_BEFORE_RESET", true)
+    val esptoolPortEntry = StringConfigEntry("Default serial port", "ESPTOOLPY_PORT", "/dev/ttyUSB0")
+    val esptoolBeforeEntry = ChoiceConfigEntry("Before flashing", "ESPTOOLPY_BEFORE", mapOf(
+            defaultResetBeforeFlash to "\"default_reset\"",
+            BoolConfigEntry("No reset", "ESPTOOLPY_BEFORE_NORESET") to "\"no_reset\""
+    ), defaultResetBeforeFlash)
+    val espToolBaudRateEntry = ChoiceConfigEntry("Default baud rate", "ESPTOOLPY_BAUD", mapOf(
+            defaultBaudRate to "\"115200\"",
+            BoolConfigEntry("230400 baud", "ESPTOOLPY_BAUD_230400B") to "\"230400\"",
+            BoolConfigEntry("921600 baud", "ESPTOOLPY_BAUD_921600B") to "\"921600\"",
+            BoolConfigEntry("2M baud", "ESPTOOLPY_BAUD_2MB") to "\"2000000\""
+    ), defaultBaudRate)
     private val entriesESPTool = listOf(
-            StringConfigEntry("Default serial port", "ESPTOOLPY_PORT", "/dev/ttyUSB0"),
-            ChoiceConfigEntry("Default baud rate", "ESPTOOLPY_BAUD", mapOf(
-                    defaultBaudRate to "\"115200\"",
-                    BoolConfigEntry("230400 baud", "ESPTOOLPY_BAUD_230400B") to "\"230400\"",
-                    BoolConfigEntry("921600 baud", "ESPTOOLPY_BAUD_921600B") to "\"921600\"",
-                    BoolConfigEntry("2M baud", "ESPTOOLPY_BAUD_2MB") to "\"2000000\""
-            ), defaultBaudRate),
+            esptoolPortEntry,
+            espToolBaudRateEntry,
             BoolConfigEntry("Use compressed upload", "ESPTOOLPY_COMPRESSED", true),
             flashModeConfigEntry,
             flashFreqConfigEntry,
             flashSizeConfigEntry,
-            ChoiceConfigEntry("Before flashing", "ESPTOOLPY_BEFORE", mapOf(
-                    defaultResetBeforeFlash to "\"default_reset\"",
-                    BoolConfigEntry("No reset", "ESPTOOLPY_BEFORE_NORESET") to "\"no_reset\""
-            ), defaultResetBeforeFlash)
+            esptoolBeforeEntry
     )
 
     private val entriesWIFIConfig = listOf(
@@ -426,7 +434,7 @@ class MenuWizardData() {
             BoolConfigEntry("'make' warns on undefined variables", "MAKE_WARN_UNDEFINED_VARIABLES", true)
     )
 
-    val entriesMenu = listOf(
+    val entriesMenu: List<ConfigurationEntry> = listOf(
             SubPanelConfigEntry("Serial flasher config", entriesESPTool),
             bootloaderLogLevel,
             SubPanelConfigEntry("SDK tool configuration", sdkTooConfiguration),

@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.10)
 project(__{project_name}__ C CXX ASM)
 
+set(CMAKE_C_FLAGS_RELEASE "-Os" )
+set(CMAKE_CXX_FLAGS_RELEASE "-Os" )
+set(CMAKE_C_FLAGS_DEBUG "-O1" )
+set(CMAKE_CXX_FLAGS_DEBUG "-O1" )
+
 __{ESPRESSIF_RTOS_DIR}__
 execute_process(COMMAND git describe --always --tags --dirty
         WORKING_DIRECTORY ${RTOS_DIR}
@@ -45,9 +50,9 @@ add_custom_target(image
 add_custom_target(flash_image
         COMMAND python ${RTOS_DIR}/components/esptool_py/esptool/esptool.py
         --chip esp8266
-        --port "/dev/ttyUSB0"
-        --baud 115200
-        --before "no_reset"
+        --port "__{esptool_port}__"
+        --baud __{esptool_baudRate}__
+        --before __{esptool_before}__
         --after "no_reset"
         write_flash -z
         --flash_mode __{flash_mode}__

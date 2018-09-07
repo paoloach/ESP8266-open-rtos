@@ -13,6 +13,7 @@ import javax.swing.JComponent
 class ESP8266EspressifRTOSProjectGenerator : CMakeAbstractCProjectGenerator() {
 
     val wizardData = MenuWizardData()
+    val settingPanel = ESP8266EspressifWizardPanel(createSettingsPanel(), wizardData.entriesMenu)
 
     override fun createSourceFiles(projectName: String, path: VirtualFile): Array<VirtualFile> {
         createEspressifRTORSubCMand(projectName, wizardData, path)
@@ -27,7 +28,7 @@ class ESP8266EspressifRTOSProjectGenerator : CMakeAbstractCProjectGenerator() {
 
     override fun getName(): String = "C ESP8266 espressif rtos"
 
-    override fun getSettingsPanel(): JComponent? = ESP8266EspressifWizardPanel(createSettingsPanel(), wizardData.entriesMenu)
+    override fun getSettingsPanel(): JComponent? = settingPanel
 
     override fun generateProject(project: Project, path: VirtualFile, cmakeSetting: CMakeProjectSettings, module: Module) {
         super.generateProject(project, path, cmakeSetting, module)
