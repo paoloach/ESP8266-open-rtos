@@ -18,12 +18,16 @@ fun createEspressifRTOSCMake(projectName: String, wizardData: MenuWizardData): S
             .replace("__{flash_size}__", wizardData.flashSize)
             .replace("__{esptool_port}__", wizardData.espToolPort)
             .replace("__{esptool_before}__", wizardData.espToolBefore)
+            .replace("__{esptool_after}__", wizardData.espToolAfter)
             .replace("__{esptool_baudRate}__", wizardData.espToolBaudRate)
-
+    if (wizardData.compressUpload)
+        cmakelists = cmakelists.replace("__{esptool_compression}__", "-z")
+    else
+        cmakelists = cmakelists.replace("__{esptool_compression}__", "-u")
     return cmakelists
 }
 
-fun createEspressifRTORSubCMand(projectName: String, wizardMenu: MenuWizardData, path: VirtualFile){
+fun createEspressifRTORSubCMand(projectName: String, wizardMenu: MenuWizardData, path: VirtualFile) {
     makeSubCMake("bootloader", projectName, wizardMenu, path)
     makeSubCMake("bootloaderSupport", projectName, wizardMenu, path)
     makeSubCMake("cjson", projectName, wizardMenu, path)
@@ -44,15 +48,16 @@ fun createEspressifRTORSubCMand(projectName: String, wizardMenu: MenuWizardData,
     makeSubCMake("util", projectName, wizardMenu, path)
 }
 
-fun createSdkConfigFile(wizardMenu: MenuWizardData, path: VirtualFile){
-    val subFolder= path.createChildDirectory(null, "include")
+fun createSdkConfigFile(wizardMenu: MenuWizardData, path: VirtualFile) {
+    val subFolder = path.createChildDirectory(null, "include")
     val sdkConfig = subFolder.findOrCreateChildData(null, "sdkconfig.h")
     val configurations = HashMap<String, String>()
     wizardMenu.entriesMenu.forEach { it.addConfigution(configurations) }
-    val builder =  StringBuilder()
+    val builder = StringBuilder()
     builder.appendln("#define CONFIG_TOOLPREFIX \"xtensa-lx106-elf-\"")
     builder.appendln("#define CONFIG_TARGET_PLATFORM_ESP8266 1")
-    configurations.forEach{
+    builder.appendln("#define CONFIG_APP_OFFSET  0x1000")
+    configurations.forEach {
         builder.append("#define CONFIG_").append(it.key).append(" ").appendln(it.value)
     }
     sdkConfig.setBinaryContent(builder.toString().toByteArray())
@@ -68,7 +73,7 @@ private fun makeSubCMake(subdir: String, projectName: String, wizardMenu: MenuWi
             .replace("__{flash_freq}__", wizardMenu.flashFreq)
             .replace("__{flash_size}__", wizardMenu.flashSize)
 
-    val subFolder= path.createChildDirectory(null, subdir)
+    val subFolder = path.createChildDirectory(null, subdir)
     val cmakeFile = subFolder.findOrCreateChildData(null, "CMakeLists.txt")
     cmakeFile.setBinaryContent(cmakelists.toByteArray(Charsets.UTF_8))
 }

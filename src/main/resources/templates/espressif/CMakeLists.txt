@@ -53,8 +53,8 @@ add_custom_target(flash_image
         --port "__{esptool_port}__"
         --baud __{esptool_baudRate}__
         --before __{esptool_before}__
-        --after "no_reset"
-        write_flash -z
+        --after __{esptool_after}__
+        write_flash __{esptool_compression}__
         --flash_mode __{flash_mode}__
         --flash_freq __{flash_freq}__
         --flash_size __{flash_size}__

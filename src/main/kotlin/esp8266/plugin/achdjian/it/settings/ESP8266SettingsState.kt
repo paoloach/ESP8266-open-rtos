@@ -18,7 +18,6 @@ data class ESP8266SettingsState(
     }
 
     override fun loadState(state: ESP8266SettingsState) {
-        System.out.println("load state: $state")
         freeRtosPath = state.freeRtosPath
         espressifRtosPath = state.espressifRtosPath
         esptool2 = state.esptool2

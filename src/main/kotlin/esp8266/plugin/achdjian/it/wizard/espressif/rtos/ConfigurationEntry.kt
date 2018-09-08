@@ -255,8 +255,6 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
                 choices.keys.firstOrNull { c -> c.text.equals(comboBox.selectedItem) }?.let { c ->
                     c.value = true;choiced = c
                 }
-                print("Action: $it")
-                println("new value: ${choiced.text}")
             }
             choices.keys.forEach {
                 comboBox.addItem(it.text)
