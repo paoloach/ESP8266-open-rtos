@@ -2,14 +2,14 @@ package esp8266.plugin.achdjian.it.wizard.espressif.rtos
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.vfs.VirtualFile
-import esp8266.plugin.achdjian.it.settings.ESP2866SDKSettings
+import esp8266.plugin.achdjian.it.settings.ESP8266SDKSettings
 import esp8266.plugin.achdjian.it.settings.ESP8266SettingsState
 import esp8266.plugin.achdjian.it.wizard.getResourceAsString
 import org.apache.commons.codec.Charsets
 
 fun createEspressifRTOSCMake(projectName: String, wizardData: MenuWizardData): String {
     var cmakelists = getResourceAsString("templates/espressif/CMakeLists.txt")
-    val setting = ApplicationManager.getApplication().getComponent(ESP8266SettingsState::class.java, ESP2866SDKSettings.DEFAULT) as ESP8266SettingsState
+    val setting = ApplicationManager.getApplication().getComponent(ESP8266SettingsState::class.java, ESP8266SDKSettings.DEFAULT) as ESP8266SettingsState
     cmakelists = cmakelists
             .replace("__{project_name}__", projectName)
             .replace("__{ESPRESSIF_RTOS_DIR}__", "set(RTOS_DIR ${setting.espressifRtosPath})")
@@ -65,7 +65,7 @@ fun createSdkConfigFile(wizardMenu: MenuWizardData, path: VirtualFile) {
 
 private fun makeSubCMake(subdir: String, projectName: String, wizardMenu: MenuWizardData, path: VirtualFile) {
     var cmakelists = getResourceAsString("templates/espressif/$subdir/CMakeLists.txt")
-    val setting = ApplicationManager.getApplication().getComponent(ESP8266SettingsState::class.java, ESP2866SDKSettings.DEFAULT) as ESP8266SettingsState
+    val setting = ApplicationManager.getApplication().getComponent(ESP8266SettingsState::class.java, ESP8266SDKSettings.DEFAULT) as ESP8266SettingsState
     cmakelists = cmakelists
             .replace("__{project_name}__", projectName)
             .replace("__{ESPRESSIF_RTOS_DIR}__", "set(RTOS_DIR ${setting.espressifRtosPath})")

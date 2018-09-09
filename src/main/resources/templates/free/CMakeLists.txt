@@ -271,14 +271,14 @@ add_custom_command(TARGET rename
 add_custom_target(createImage)
 add_custom_command(TARGET createImage
         POST_BUILD
-        COMMENT "create image for ESP2866"
+        COMMENT "create image for ESP8266"
         COMMAND esptool.py elf2image --version=2 -fs ${FLASH_SIZE} -fm ${FLASH_MODE} -ff ${FLASH_SPEED}m __{project_name}__ -o __{project_name}__.bin
         )
 
 add_custom_target(flash)
 add_custom_command(TARGET flash
         POST_BUILD
-        COMMENT "Flash esp2866"
+        COMMENT "Flash esp8266"
         COMMAND esptool.py -p ${ESPPORT} --baud 115200
                write_flash
                -fs ${FLASH_SIZE}

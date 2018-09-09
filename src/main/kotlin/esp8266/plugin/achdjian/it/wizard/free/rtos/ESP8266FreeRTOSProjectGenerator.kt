@@ -29,7 +29,7 @@ class ESP8266FreeRTOSProjectGenerator : CMakeAbstractCProjectGenerator() {
         return createFreeRTOSCMake(wizardData, projectName)
     }
 
-    override fun getName(): String = "C ESP2866 free rtos"
+    override fun getName(): String = "C ESP8266 free rtos"
 
     override fun getSettingsPanel(): JComponent? = ESP8266WizardPanel(createSettingsPanel(), wizardData)
 

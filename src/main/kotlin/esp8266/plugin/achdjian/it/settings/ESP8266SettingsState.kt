@@ -5,13 +5,13 @@ import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 
 
-@State(name = "ESP2866.configuration", storages = [(Storage("ESP2866.xml"))])
+@State(name = "ESP8266.configuration", storages = [(Storage("ESP8266.xml"))])
 data class ESP8266SettingsState(
         var freeRtosPath: String = "",
         var espressifRtosPath: String = "",
         var esptool2: String = "",
-        var ccPath: String= ESP2866SDKSettings.GCC,
-        var cxxPath: String= ESP2866SDKSettings.CXX) : PersistentStateComponent<ESP8266SettingsState> {
+        var ccPath: String= ESP8266SDKSettings.GCC,
+        var cxxPath: String= ESP8266SDKSettings.CXX) : PersistentStateComponent<ESP8266SettingsState> {
 
     override fun getState(): ESP8266SettingsState? {
         return this

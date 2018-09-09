@@ -1,7 +1,7 @@
 package esp8266.plugin.achdjian.it.wizard.free.rtos
 
 import com.intellij.openapi.application.ApplicationManager
-import esp8266.plugin.achdjian.it.settings.ESP2866SDKSettings
+import esp8266.plugin.achdjian.it.settings.ESP8266SDKSettings
 import esp8266.plugin.achdjian.it.settings.ESP8266SettingsState
 import esp8266.plugin.achdjian.it.wizard.WizardData
 import esp8266.plugin.achdjian.it.wizard.getResourceAsString
@@ -9,7 +9,7 @@ import esp8266.plugin.achdjian.it.wizard.getResourceAsString
 fun createFreeRTOSCMake(wizardData: WizardData, projectName: String): String {
 
     var cmakelists = selectCMakeListFile(wizardData.otaSupport)
-    val setting = ApplicationManager.getApplication().getComponent(ESP8266SettingsState::class.java, ESP2866SDKSettings.DEFAULT) as ESP8266SettingsState
+    val setting = ApplicationManager.getApplication().getComponent(ESP8266SettingsState::class.java, ESP8266SDKSettings.DEFAULT) as ESP8266SettingsState
     cmakelists = cmakelists
             .replace("__{project_name}__", projectName)
             .replace("__{ESP_OPEN_RTOS_DIR}__", "set(ESP_OPEN_RTOS_DIR ${setting.freeRtosPath})")

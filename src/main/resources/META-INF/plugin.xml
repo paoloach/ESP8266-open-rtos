@@ -1,10 +1,10 @@
 <idea-plugin>
-    <id>plugin.achdjian.it.ESP2866</id>
-    <name>ESP2866 plugin</name>
+    <id>plugin.achdjian.it.ESP8266</id>
+    <name>ESP8266 plugin</name>
     <vendor email="pachdjian@gmail.com"></vendor>
 
     <description><![CDATA[
-    Develop an entire ESP2866 free rtos C project inside CLion<br>
+    Develop an entire ESP8266 free rtos C project inside CLion<br>
 
 Disclaimer
 <br>
@@ -26,10 +26,9 @@ Disclaimer
     <extensions defaultExtensionNs="com.intellij">
         <directoryProjectGenerator implementation="esp8266.plugin.achdjian.it.wizard.free.rtos.ESP8266FreeRTOSProjectGenerator"/>
         <directoryProjectGenerator implementation="esp8266.plugin.achdjian.it.wizard.espressif.rtos.ESP8266EspressifRTOSProjectGenerator"/>
-        <!--<configurationType implementation="plugin.achdjian.it.ESP2866SDKSettings" id="esp2866.plugin.achdjian.it"/>-->
-        <projectConfigurable order="last" id="ESP2866.plugin.achdjian.it"
-                             instance="esp8266.plugin.achdjian.it.settings.ESP2866SDKSettings"
-                             displayName="ESP2866 config" groupId="build.tools"/>
+        <projectConfigurable order="last" id="ESP8266.plugin.achdjian.it"
+                             instance="esp8266.plugin.achdjian.it.settings.ESP8266SDKSettings"
+                             displayName="ESP8266 config" groupId="build.tools"/>
 
     </extensions>
 

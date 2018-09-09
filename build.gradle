@@ -15,6 +15,10 @@ plugins {
     id "org.jetbrains.kotlin.jvm" version "1.2.50"
 }
 
+publishPlugin {
+    username 'pachdjian@gmail.com'
+    password 'nutellaC++17'
+}
 
 group 'plugin.achdjian.it'
 version '1.2.0'
@@ -52,13 +56,13 @@ compileKotlin {
 
 task copyPlugin2018_1(type: Copy) {
 
-    from file("${buildDir}/libs/ESP2866-1.2.0.jar")
+    from file("${buildDir}/libs/ESP8266-1.2.0.jar")
     into file("${project.gradle.gradleUserHomeDir}/../.CLion2018.1/config/plugins/ESP8266/lib")
 }
 
 task copyPlugin2018_2(type: Copy) {
 
-    from file("${buildDir}/libs/ESP2866-1.2.0.jar")
+    from file("${buildDir}/libs/ESP8266-1.2.0.jar")
     into file("${project.gradle.gradleUserHomeDir}/../.CLion2018.2/config/plugins/ESP8266/lib")
 }
 

@@ -11,7 +11,7 @@ import com.intellij.ui.TextFieldWithHistoryWithBrowseButton
 import com.intellij.ui.components.installFileCompletionAndBrowseDialog
 import com.intellij.ui.layout.panel
 
-class ESP2866SDKSettings(private val project: Project) : ProjectComponent, Configurable {
+class ESP8266SDKSettings(private val project: Project) : ProjectComponent, Configurable {
     private var ccPath: VirtualFile?=null
     private var cxxPath: VirtualFile?=null
     private var freeRtosPath: VirtualFile?=null
@@ -93,7 +93,7 @@ class ESP2866SDKSettings(private val project: Project) : ProjectComponent, Confi
                     project,
                     component,
                     editor,
-                    "ESP2866 esptool2 path",
+                    "ESP8266 esptool2 path",
                     FileChooserDescriptorFactory.createSingleFileDescriptor(),
                     TextComponentAccessor.TEXT_FIELD_WITH_HISTORY_WHOLE_TEXT){
                 esptool2Path = it
@@ -109,7 +109,7 @@ class ESP2866SDKSettings(private val project: Project) : ProjectComponent, Confi
                     project,
                     component,
                     editor,
-                    "ESP2866 free sdk gcc path",
+                    "ESP8266 free sdk gcc path",
                     FileChooserDescriptorFactory.createSingleFileDescriptor(),
                     TextComponentAccessor.TEXT_FIELD_WITH_HISTORY_WHOLE_TEXT){
                 ccPath = it
@@ -125,7 +125,7 @@ class ESP2866SDKSettings(private val project: Project) : ProjectComponent, Confi
                     project,
                     component,
                     editor,
-                    "ESP2866 free sdk g++ path",
+                    "ESP8266 free sdk g++ path",
                     FileChooserDescriptorFactory.createSingleFileDescriptor(),
                     TextComponentAccessor.TEXT_FIELD_WITH_HISTORY_WHOLE_TEXT){
                         cxxPath = it
