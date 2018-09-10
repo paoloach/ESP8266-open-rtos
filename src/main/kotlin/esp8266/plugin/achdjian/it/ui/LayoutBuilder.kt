@@ -1,5 +1,6 @@
 package esp8266.plugin.achdjian.it.ui
 
+import com.intellij.uiDesigner.core.GridLayoutManager
 import java.awt.GridLayout
 import javax.swing.JComponent
 import javax.swing.JPanel
@@ -24,14 +25,16 @@ class LayoutBuilder {
 
         if (rows.any())
             colSize = 2
-        panel.layout = GridLayout(rows.size, colSize)
 
-        if (colSize==1)
-            rows.forEach{panel.add(it.component)}
-        else
+        panel.layout = GridLayout2(rows.size, colSize)
+
+        if (colSize==1) {
+            rows.forEach { panel.add(it.component) }
+        }else {
             rows.forEach {
                 panel.add(it.label())
                 panel.add(it.component)
             }
+        }
     }
 }
