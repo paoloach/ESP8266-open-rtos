@@ -4,7 +4,9 @@
     <vendor email="pachdjian@gmail.com"></vendor>
 
     <description><![CDATA[
-    Develop an entire ESP8266 free rtos C project inside CLion<br>
+    Develop an entire ESP8266 rtos C project inside CLion.<br>
+    You can use both the Espressif RTOS distribution as the Free RTOS.<br>
+    It generate all the CMakefile for creating an image and flash it.<br>
 
 Disclaimer
 <br>
