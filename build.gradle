@@ -15,13 +15,9 @@ plugins {
     id "org.jetbrains.kotlin.jvm" version "1.2.50"
 }
 
-publishPlugin {
-    username 'pachdjian@gmail.com'
-    password 'nutellaC++17'
-}
 
 group 'plugin.achdjian.it'
-version '1.2.0'
+version '1.3.0'
 
 sourceCompatibility = 1.8
 
@@ -43,7 +39,7 @@ patchPluginXml {
     sinceBuild "181.5087"
     untilBuild "182.*"
     changeNotes """
-      <p>&#8226; 1.2.1 &#8594; Rename plugin from ESP2866 to ESP8266</p>
+      <p>&#8226; 1.3.0 &#8594; Rename plugin from ESP2866 to ESP8266</p>
       <p>&#8226; 1.2.0 &#8594; Added support for espressif RTOS</p>
       <p>&#8226; 1.1.2 &#8594; Added support for CLion 2018.2</p>
       <p>&#8226; 1.1.0 &#8594; Added OTA support</p>
