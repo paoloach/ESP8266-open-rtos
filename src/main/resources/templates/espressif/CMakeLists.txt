@@ -103,6 +103,8 @@ set_target_properties(firmware PROPERTIES
                     -L ${RTOS_DIR}/components/esp8266/ld\
                     -L ${RTOS_DIR}/components/esp8266/lib")
 
+add_dependencies(firmware linkerDef)
+
 target_link_libraries(firmware
         -Wl,--start-group
         bootloaderSupport
