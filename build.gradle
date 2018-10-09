@@ -15,7 +15,6 @@ plugins {
     id "org.jetbrains.kotlin.jvm" version "1.2.50"
 }
 
-
 group 'plugin.achdjian.it'
 version '1.3.1'
 
@@ -27,6 +26,10 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    // https://mvnrepository.com/artifact/org.mockito/mockito-core
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.10.0'
+    testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
+
     compile "org.jetbrains.kotlin:kotlin-stdlib:1.2.51"
     compileOnly files('/opt/clion/lib/clion.jar')
 }
@@ -54,13 +57,13 @@ compileKotlin {
 
 task copyPlugin2018_1(type: Copy) {
 
-    from file("${buildDir}/libs/ESP8266-1.2.0.jar")
+    from file("${buildDir}/libs/ESP8266-1.3.1.jar")
     into file("${project.gradle.gradleUserHomeDir}/../.CLion2018.1/config/plugins/ESP8266/lib")
 }
 
 task copyPlugin2018_2(type: Copy) {
 
-    from file("${buildDir}/libs/ESP8266-1.2.0.jar")
+    from file("${buildDir}/libs/ESP8266-1.3.1.jar")
     into file("${project.gradle.gradleUserHomeDir}/../.CLion2018.2/config/plugins/ESP8266/lib")
 }
 

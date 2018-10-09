@@ -16,9 +16,16 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
     var panel: JPanel? = null
     abstract fun createRow(): JComponent
     abstract fun addConfigution(configurations: MutableMap<String, String>)
+    abstract fun set(key: String, value: String)
+
+    open fun isConfig(configKey: String): Boolean {
+        return configEntry.any { it == configKey }
+    }
+
     fun dependsChangValue() {
         panel?.isVisible = dependsOn.all { it.value }
     }
+
 
     constructor(text: String, configEntry: String, dependsOn: List<BoolConfigEntry>) : this(text, listOf(configEntry), dependsOn = dependsOn)
 
@@ -70,15 +77,18 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
     }
 
     class IntConfigEntry(text: String, configEntry: String, private var value: Int, private val min: Int, private val max: Int, dependsOn: List<BoolConfigEntry>) : ConfigurationEntry(text, configEntry, dependsOn), DocumentListener {
-
-
         private val textField = IntegerTextField()
+
 
         constructor(text: String, configEntry: String, value: Int, min: Int, max: Int, dependsOn: BoolConfigEntry) :
                 this(text, configEntry, value, min, max, listOf(dependsOn))
 
         constructor(text: String, configEntry: String, value: Int, min: Int, max: Int) :
                 this(text, configEntry, value, min, max, listOf())
+
+        override fun set(key: String, value: String) {
+            this.value = value.toInt()
+        }
 
         override fun addConfigution(configurations: MutableMap<String, String>) {
             if (dependsOn.all { it.value }) {
@@ -136,7 +146,7 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
 
     }
 
-    class StringFocusListener(val stringConfigEntry: StringConfigEntry) : FocusListener{
+    class StringFocusListener(private val stringConfigEntry: StringConfigEntry) : FocusListener {
         override fun focusLost(p0: FocusEvent?) {
             stringConfigEntry.updateValue()
         }
@@ -149,7 +159,13 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
     open class StringConfigEntry(text: String, configEntry: String, var value: String, dependsOn: List<BoolConfigEntry>) : ConfigurationEntry(text, configEntry, dependsOn) {
         constructor(text: String, configEntry: String, value: String) : this(text, configEntry, value, listOf())
         constructor(text: String, configEntry: String, value: String, dependsOn: BoolConfigEntry) : this(text, configEntry, value, listOf(dependsOn))
-        val jTextField = JTextField()
+
+        private val jTextField = JTextField()
+
+        override fun set(key: String, value: String) {
+            if (isConfig(key))
+                this.value = value
+        }
 
         override fun addConfigution(configurations: MutableMap<String, String>) {
             if (dependsOn.all { it.value }) {
@@ -163,7 +179,7 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
             panel.add(JLabel(text))
 
             jTextField.text = value
-            jTextField.addFocusListener( StringFocusListener(this))
+            jTextField.addFocusListener(StringFocusListener(this))
             jTextField.addActionListener {
                 value = jTextField.text
             }
@@ -173,8 +189,8 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
             return panel
         }
 
-        public fun updateValue() {
-            value = jTextField.text;
+        fun updateValue() {
+            value = jTextField.text
         }
     }
 
@@ -183,7 +199,15 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
         constructor(text: String, configEntry: String, value: Int, dependsOn: BoolConfigEntry) : this(text, configEntry, value, listOf(dependsOn))
 
         override fun addConfigution(configurations: MutableMap<String, String>) {
-            configEntry.forEach { configurations[it] = "0x" + value }
+            configEntry.forEach { configurations[it] = "0x$value" }
+        }
+
+        override fun set(key: String, value: String) {
+            if (isConfig(key))
+                if (value.startsWith("0x"))
+                    this.value = value.substring(2)
+                else
+                    this.value = value
         }
 
 
@@ -198,6 +222,13 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
         constructor(text: String, configEntry: String, defaultValue: Boolean = false, dependsOn: BoolConfigEntry, associated: List<BoolConfigEntry> = listOf()) : this(text, configEntry, defaultValue, listOf(dependsOn), associated)
         constructor(text: String, configEntry: String, value: Boolean, associated: List<BoolConfigEntry>) : this(text, configEntry, value, listOf(), associated)
         constructor(text: String, configEntry: String, defaultValue: Boolean = false) : this(text, configEntry, defaultValue, listOf(), listOf())
+
+
+        override fun set(key: String, value: String) {
+            if (isConfig(key))
+                this.value = value == "1" || value.compareTo("true", true) == 0
+        }
+
 
         override fun itemStateChanged(event: ItemEvent) {
             value = event.stateChange == ItemEvent.SELECTED
@@ -236,6 +267,22 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
         private var choiced = default
         val choiceText: String get() = choices[choiced].orEmpty()
 
+        override fun isConfig(configKey: String): Boolean {
+            return configEntry.any { it == configKey } || choices.keys.any { it.isConfig(configKey) }
+        }
+
+
+        override fun set(key: String, value: String) {
+            if (configEntry.any { it == key }) {
+                choices.filter { it.value == value }.forEach { choiced = it.key }
+            }
+            if (choices.any { it.key.isConfig(key) }) {
+                choices.forEach {
+                    it.key.value = it.key.isConfig(key)
+                }
+            }
+        }
+
         override fun addConfigution(configurations: MutableMap<String, String>) {
             if (dependsOn.all { it.value }) {
                 if (choiceText.isNotBlank())
@@ -252,7 +299,7 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
             val comboBox = ComboBox<String>()
             comboBox.addActionListener {
                 default.value = false
-                choices.keys.firstOrNull { c -> c.text.equals(comboBox.selectedItem) }?.let { c ->
+                choices.keys.firstOrNull { c -> c.text == comboBox.selectedItem }?.let { c ->
                     c.value = true;choiced = c
                 }
             }
@@ -275,6 +322,14 @@ abstract class ConfigurationEntry(val text: String, val configEntry: List<String
 
         constructor(text: String, entries: List<ConfigurationEntry>) :
                 this(text, entries, listOf())
+
+        override fun isConfig(configKey: String): Boolean {
+            return entries.any { it.isConfig(configKey) }
+        }
+
+        override fun set(key: String, value: String) {
+            entries.first { it.isConfig(key) }.set(key, value)
+        }
 
         override fun addConfigution(configurations: MutableMap<String, String>) {
             if (dependsOn.all { it.value })

@@ -4,6 +4,8 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.vfs.VirtualFile
 import esp8266.plugin.achdjian.it.settings.ESP8266SDKSettings
 import esp8266.plugin.achdjian.it.settings.ESP8266SettingsState
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.Constants.CONFIG_DIR
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.Constants.CONFIG_FILE_NAME
 import esp8266.plugin.achdjian.it.wizard.getResourceAsString
 import org.apache.commons.codec.Charsets
 
@@ -49,10 +51,17 @@ fun createEspressifRTORSubCMand(projectName: String, wizardMenu: MenuWizardData,
 }
 
 fun createSdkConfigFile(wizardMenu: MenuWizardData, path: VirtualFile) {
-    val subFolder = path.createChildDirectory(null, "include")
-    val sdkConfig = subFolder.findOrCreateChildData(null, "sdkconfig.h")
+    createSdkConfigFile(wizardMenu.entriesMenu, path)
+}
+
+fun createSdkConfigFile(entries: List<ConfigurationEntry>, path: VirtualFile) {
+    var subFolder = path.findChild(CONFIG_DIR)
+    if (subFolder == null)
+        subFolder = path.createChildDirectory(null, CONFIG_DIR)
+
+    val sdkConfig = subFolder.findOrCreateChildData(null, CONFIG_FILE_NAME)
     val configurations = HashMap<String, String>()
-    wizardMenu.entriesMenu.forEach { it.addConfigution(configurations) }
+    entries.forEach { it.addConfigution(configurations) }
     val builder = StringBuilder()
     builder.appendln("#define CONFIG_TOOLPREFIX \"xtensa-lx106-elf-\"")
     builder.appendln("#define CONFIG_TARGET_PLATFORM_ESP8266 1")
@@ -60,7 +69,9 @@ fun createSdkConfigFile(wizardMenu: MenuWizardData, path: VirtualFile) {
     configurations.forEach {
         builder.append("#define CONFIG_").append(it.key).append(" ").appendln(it.value)
     }
-    sdkConfig.setBinaryContent(builder.toString().toByteArray())
+    ApplicationManager.getApplication().runWriteAction {
+        sdkConfig.setBinaryContent(builder.toString().toByteArray())
+    }
 }
 
 private fun makeSubCMake(subdir: String, projectName: String, wizardMenu: MenuWizardData, path: VirtualFile) {
@@ -75,5 +86,7 @@ private fun makeSubCMake(subdir: String, projectName: String, wizardMenu: MenuWi
 
     val subFolder = path.createChildDirectory(null, subdir)
     val cmakeFile = subFolder.findOrCreateChildData(null, "CMakeLists.txt")
-    cmakeFile.setBinaryContent(cmakelists.toByteArray(Charsets.UTF_8))
+    ApplicationManager.getApplication().runWriteAction {
+        cmakeFile.setBinaryContent(cmakelists.toByteArray(Charsets.UTF_8))
+    }
 }

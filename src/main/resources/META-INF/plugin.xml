@@ -30,12 +30,22 @@ Disclaimer
         <directoryProjectGenerator implementation="esp8266.plugin.achdjian.it.wizard.espressif.rtos.ESP8266EspressifRTOSProjectGenerator"/>
         <projectConfigurable order="last" id="ESP8266.plugin.achdjian.it"
                              instance="esp8266.plugin.achdjian.it.settings.ESP8266SDKSettings"
-                             displayName="ESP8266 config" groupId="build.tools"/>
+                             displayName="ESP8266 config" groupId="build.tools.ESP8266"/>
 
     </extensions>
-
     <actions>
+        <group id="esp8266.actions"  description="ESP8266 RTOS setting" text="ESP8266 RTOS setting">
+            <action id="esp8266.plugin.achdjian.settings" class="esp8266.plugin.achdjian.it.actions.Settings" text="RTOS Settings"/>
+        </group>
+
+
+        <group id="esp8266.Menu"  popup="true" text="_ESP8266" icon="/images/icon.png">
+            <reference ref="esp8266.actions"/>
+            <add-to-group group-id="ToolsMenu"/>
+        </group>
     </actions>
+
+
 
     <application-components>
         <component>
