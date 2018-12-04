@@ -30,7 +30,7 @@ SET(CMAKE_C_FLAGS "-std=gnu99")
 set(PROGRAM_SRC mainUser.c)
 
 __{ESP_OPEN_RTOS_DIR}__
-set(BOOT_FIRMWARE ${ESP_OPEN_RTOS_DIR}/bootloader/firmware_prebuilt/rboot.bin"
+set(BOOT_FIRMWARE ${ESP_OPEN_RTOS_DIR}/bootloader/firmware_prebuilt/rboot.bin")
 set(LWIP_DIR ${ESP_OPEN_RTOS_DIR}/lwip/lwip/src/)
 set(LWIP_INCLUDE ${LWIP_DIR}/include ${ESP_OPEN_RTOS_DIR}/lwip/include)
 set(FREE_RTOS ${ESP_OPEN_RTOS_DIR}/FreeRTOS/Source)
