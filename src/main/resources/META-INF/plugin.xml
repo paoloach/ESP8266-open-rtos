@@ -8,6 +8,17 @@
     You can use both the Espressif RTOS distribution as the Free RTOS.<br>
     It generate all the CMakefile for creating an image and flash it.<br>
 
+    Features:
+    <ul>
+        <li>rtos using both Expressif or esp-open-rtos version.</li>
+        <li>OTA integration.</li>
+        <li>Flashing staying inside the IDE.</li>
+        <li>Complete graphical options menu for Expressif.</li>
+        <li>Possibility to chose every extra modules in esp-open-rtos.</li>
+        <li>Configurable build tools (they doesn't need to be in the path)</li>
+        <li>Use graphics to set spidffs parameters, also the folder to include in the images.</li>
+    </ul>
+
 Disclaimer
 <br>
 <ul>

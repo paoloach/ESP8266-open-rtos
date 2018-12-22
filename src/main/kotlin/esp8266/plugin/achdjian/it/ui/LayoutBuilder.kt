@@ -1,12 +1,15 @@
 package esp8266.plugin.achdjian.it.ui
 
-import com.intellij.uiDesigner.core.GridLayoutManager
-import java.awt.GridLayout
+import esp8266.plugin.achdjian.it.wizard.free.rtos.extras.ExtraModule
 import javax.swing.JComponent
 import javax.swing.JPanel
 
 class LayoutBuilder {
     private val rows = ArrayList<Row>()
+
+    fun row(extra: ExtraModule){
+        rows.add(Row(extra))
+    }
 
     fun row(text:String?=null,init: Row.() -> Unit){
         val row = Row(text)

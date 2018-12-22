@@ -30,12 +30,13 @@ SET(CMAKE_C_FLAGS "-std=gnu99")
 set(PROGRAM_SRC mainUser.c)
 
 __{ESP_OPEN_RTOS_DIR}__
-set(BOOT_FIRMWARE ${ESP_OPEN_RTOS_DIR}/bootloader/firmware_prebuilt/rboot.bin")
+set(BOOT_FIRMWARE ${ESP_OPEN_RTOS_DIR}/bootloader/firmware_prebuilt/rboot.bin)
 set(LWIP_DIR ${ESP_OPEN_RTOS_DIR}/lwip/lwip/src/)
 set(LWIP_INCLUDE ${LWIP_DIR}/include ${ESP_OPEN_RTOS_DIR}/lwip/include)
 set(FREE_RTOS ${ESP_OPEN_RTOS_DIR}/FreeRTOS/Source)
 set(OPEN_ESPLISBS  ${ESP_OPEN_RTOS_DIR}/open_esplibs)
 
+__{ADD_EXTRAS_MODULES}__
 
 SET( LIB_MAIN_SOURCES
         ${ESP_OPEN_RTOS_DIR}/open_esplibs/libmain/user_interface.c
@@ -202,10 +203,6 @@ SET(CORE_SOURCES_ASM
 
 SET_SOURCE_FILES_PROPERTIES( ${CORE_SOURCES_ASM} PROPERTIES LANGUAGE C )
 
-# Extras
-
-__{EXTRAS_SOURCE_FILES}__
-
 
 add_library(program STATIC ${PROGRAM_SRC} )
 add_library(open_esplibs_libmain STATIC ${LIB_MAIN_SOURCES}  ${LIB_MAIN_SOURCES_ASM})
@@ -217,9 +214,7 @@ add_library(freeRTOS STATIC ${FREE_RTOS_SOURCES})
 add_library(lwip STATIC ${LWIP_SOURCES})
 add_library(core STATIC ${CORE_SOURCES} ${CORE_SOURCES_ASM} )
 
-__{EXTRAS_LIBRARIES}__
-
-add_executable(__${project_name}__ FreeRTOSConfig.h )
+add_executable(__{project_name}__ FreeRTOSConfig.h )
 
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/sdklib)
 
@@ -269,6 +264,9 @@ add_custom_command(TARGET rename
         )
 
 add_custom_target(createImage)
+
+__{extra_image_dependencies}__
+
 add_custom_command(TARGET createImage
         POST_BUILD
         COMMENT "create image for ESP8266"
@@ -286,8 +284,8 @@ add_custom_command(TARGET flash
                -ff ${FLASH_SPEED}m
                0x0   ${BOOT_FIRMWARE}
                0x1000  ${ESP_OPEN_RTOS_DIR}/bootloader/firmware_prebuilt/blank_config.bin
-               0x2000
-               __{project_name}__.bin
+               0x2000 __{project_name}__.bin
+               __{extra_flash_images}__
         )
 
 add_dependencies(rename remove)
@@ -450,8 +448,6 @@ target_include_directories(lwip PUBLIC
         ${ESP_OPEN_RTOS_DIR}/core/include
         ${ESP_OPEN_RTOS_DIR}/open_esplibs/include
         )
-
-__{EXTRA_INCLUDE_DIRECTORIES}__
 
 target_compile_options(core PRIVATE "${COMMON_FLAGS}")
 target_include_directories(core PUBLIC

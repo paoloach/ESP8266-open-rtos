@@ -7,7 +7,8 @@ import com.jetbrains.cidr.cpp.cmake.CMakeSettings
 import com.jetbrains.cidr.cpp.cmake.projectWizard.generators.CMakeAbstractCProjectGenerator
 import com.jetbrains.cidr.cpp.cmake.projectWizard.generators.settings.CMakeProjectSettings
 import com.jetbrains.cidr.cpp.cmake.workspace.CMakeWorkspace
-import esp8266.plugin.achdjian.it.wizard.*
+import esp8266.plugin.achdjian.it.wizard.WizardData
+import esp8266.plugin.achdjian.it.wizard.createCMakeCrossTool
 import javax.swing.JComponent
 
 class ESP8266FreeRTOSProjectGenerator : CMakeAbstractCProjectGenerator() {
@@ -22,6 +23,7 @@ class ESP8266FreeRTOSProjectGenerator : CMakeAbstractCProjectGenerator() {
         if (wizardData.otaSupport){
             files.plus(createOTACMakeFileTool(path, this, wizardData, projectName))
         }
+        wizardData.extras.filter { it.enabled }.forEach{it.createCMakeList(path, this, projectName)}
         return files;
     }
 

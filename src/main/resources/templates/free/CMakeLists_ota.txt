@@ -28,6 +28,7 @@ SET(CMAKE_CXX_FLAGS "-std=c++11")
 SET(CMAKE_C_FLAGS "-std=gnu99")
 
 add_subdirectory(rboot)
+__{ADD_EXTRAS_MODULES}__
 
 set(PROGRAM_SRC mainUser.c)
 
@@ -208,9 +209,6 @@ SET_SOURCE_FILES_PROPERTIES( ${CORE_SOURCES_ASM} PROPERTIES LANGUAGE C )
 
 file(GLOB LIB_RBOOT_OTA_SRC ${ESP_OPEN_RTOS_DIR}/extras/rboot-ota/*.c)
 
-# Extras
-
-__{EXTRAS_SOURCE_FILES}__
 
 
 add_library(program STATIC ${PROGRAM_SRC} )
@@ -223,8 +221,6 @@ add_library(freeRTOS STATIC ${FREE_RTOS_SOURCES})
 add_library(lwip STATIC ${LWIP_SOURCES})
 add_library(core STATIC ${CORE_SOURCES} ${CORE_SOURCES_ASM} )
 add_library(rboot_ota STATIC ${LIB_RBOOT_OTA_SRC})
-
-__{EXTRAS_LIBRARIES}__
 
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/sdklib)
 
@@ -284,12 +280,14 @@ add_custom_command(TARGET createImage0
         )
 
 add_custom_target(createImage1)
+
+__{extra_image_dependency}__
+
 add_custom_command(TARGET createImage1
         POST_BUILD
         COMMENT "create image 1 for ESP8266"
         COMMAND esptool.py elf2image --version=2 -fs ${FLASH_SIZE} -fm ${FLASH_MODE} -ff ${FLASH_SPEED}m __{project_name}__1 -o __{project_name}__1.bin
         )
-
 add_custom_target(flash)
 add_custom_command(TARGET flash
         POST_BUILD
@@ -523,8 +521,6 @@ target_include_directories(rboot_ota PUBLIC
         ${LWIP_DIR}/include/lwip
         ${ESP_OPEN_RTOS_DIR}/core/include
         )
-
-__{EXTRA_INCLUDE_DIRECTORIES}__
 
 target_compile_options(core PRIVATE "${COMMON_FLAGS}")
 target_include_directories(core PUBLIC
