@@ -8,7 +8,7 @@ import java.awt.event.ItemEvent
 import javax.swing.JCheckBox
 import javax.swing.JComponent
 
-class SimpleModule(override val name: String) : ExtraModule {
+open class SimpleModule(override val name: String) : ExtraModule {
     override var enabled = false
     override fun imageDependecy() = ""
     override fun flashImages() = ""
@@ -22,11 +22,13 @@ class SimpleModule(override val name: String) : ExtraModule {
         return checkBox
     }
 
+    open fun getCMakeFileLists() = "templates/free/extras/simpleCMakeLists.txt"
+
 
     override fun createCMakeList(path: VirtualFile, requestor: Any, projectName: String) {
         val rootFolder= path.createChildDirectory(requestor, name)
         val cMakeList = rootFolder.findOrCreateChildData(requestor, "CMakeLists.txt")
-        val template = getResourceAsString("templates/free/extras/simpleCMakeLists.txt")
+        val template = getResourceAsString(getCMakeFileLists())
 
         val spiffsCMakeFile =template
                 .replace("__{project_name}__", projectName)

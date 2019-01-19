@@ -1,0 +1,28 @@
+cmake_minimum_required(VERSION 3.10)
+project(__{project_name}__)
+
+
+set(CMAKE_CXX_STANDARD 11)
+
+file(GLOB LIB___{name}___SRC ${ESP_OPEN_RTOS_DIR}/extras/http-parser/http-parser/*.c)
+
+add_library(__{name}__ STATIC ${LIB___{name}___SRC})
+
+target_compile_options(__{name}__ PUBLIC ${COMMON_FLAGS} )
+
+target_include_directories(__{name}__ PUBLIC
+            ${ESP_OPEN_RTOS_DIR}/extras/__{name}__
+            ${ESP_OPEN_RTOS_DIR}/extras/__{name}__/include
+            ${ESP_OPEN_RTOS_DIR}/include
+            ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
+            ${FREE_RTOS}/include
+            ${FREE_RTOS}/portable/esp8266
+            ${LWIP_DIR}/include
+            ${ESP_OPEN_RTOS_DIR}/lwip/include
+            ${LWIP_DIR}/include/compat/posix
+            ${LWIP_DIR}/include/ipv4
+            ${LWIP_DIR}/include/ipv4/lwip
+            ${LWIP_DIR}/include/lwip
+            ${ESP_OPEN_RTOS_DIR}/core/include
+            ${ESP_OPEN_RTOS_DIR}/open_esplibs/include
+            )

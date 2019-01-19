@@ -4,7 +4,7 @@ project(__{project_name}__)
 set(CMAKE_CXX_STANDARD 11)
 
 # Flash size in megabits
-# Valid values are same as for esptool.py - 2,4,8,16,32
+# Valid values are same as for esptool.py - 512KB, 1MB, 2Mb, 4Mb, 8MB
 SET(FLASH_SIZE __{FLASH_SIZE}__)
 
 # Flash mode, valid values are same as for esptool.py - qio,qout,dio.dout
@@ -302,20 +302,22 @@ endif(PRINTF_SCANF_FLOAT_SUPPORT)
 
 target_link_libraries(__{project_name}__
         -Wl,--start-group
+        -Wl,--no-whole-archive
+        program
+        core
+        ${CMAKE_CURRENT_BINARY_DIR}/libgcc.a
+        ${CMAKE_CURRENT_BINARY_DIR}/libc.a
+        hal
+
         open_esplibs_libmain
         open_esplibs_net
         open_esplibs_phy
         open_esplibs_pp
         open_esplibs_wpa
-        -Wl,--no-whole-archive
-        program
-        __{EXTRAS_STATIC_LIBRARIES}__
         freeRTOS
         lwip
-        core
-        ${CMAKE_CURRENT_BINARY_DIR}/libgcc.a
-        ${CMAKE_CURRENT_BINARY_DIR}/libc.a
-        hal
+        __{EXTRAS_STATIC_LIBRARIES}__
+
         ${CMAKE_CURRENT_BINARY_DIR}/sdklib/libmain.a
         ${CMAKE_CURRENT_BINARY_DIR}/sdklib/libnet80211.a
         ${CMAKE_CURRENT_BINARY_DIR}/sdklib/libphy.a
@@ -468,6 +470,10 @@ target_include_directories(core PUBLIC
         )
 
 target_compile_options(program PRIVATE "${COMMON_FLAGS}")
+
+target_link_libraries(program   __{EXTRAS_STATIC_LIBRARIES}__ )
+
+
 target_include_directories(program PUBLIC
         ./
         ./include
@@ -487,6 +493,8 @@ target_include_directories(program PUBLIC
         )
 
 target_compile_options(__{project_name}__ PRIVATE "${COMMON_FLAGS}")
+
+
 target_include_directories(__{project_name}__ PUBLIC
         ./
         ./include

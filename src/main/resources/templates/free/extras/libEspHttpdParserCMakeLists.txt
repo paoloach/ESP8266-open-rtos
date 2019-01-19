@@ -1,0 +1,40 @@
+cmake_minimum_required(VERSION 3.10)
+project(__{project_name}__)
+
+
+set(CMAKE_CXX_STANDARD 11)
+
+file(GLOB LIB_libesphttpd_CORE_SRC ${ESP_OPEN_RTOS_DIR}/extras/libesphttpd/libesphttpd/core/*.c)
+file(GLOB LIB_libesphttpd_ESPFS_SRC ${ESP_OPEN_RTOS_DIR}/extras/libesphttpd/libesphttpd/espfs/*.c)
+file(GLOB LIB_libesphttpd_UTIL_SRC ${ESP_OPEN_RTOS_DIR}/extras/libesphttpd/libesphttpd/util/*.c)
+
+add_library(__{name}__ STATIC ${LIB_libesphttpd_CORE_SRC} ${LIB_libesphttpd_ESPFS_SRC} ${LIB_libesphttpd_UTIL_SRC})
+
+set(LIBESPHTTPD_MAX_CONNECTIONS  4)
+set(LIBESPHTTPD_STACKSIZE 2048)
+
+target_compile_options(__{name}__ PUBLIC ${COMMON_FLAGS}
+        -DFREERTOS -DUSE_OPEN_SDK
+        -DHTTPD_MAX_CONNECTIONS=${LIBESPHTTPD_MAX_CONNECTIONS}
+        -DHTTPD_STACKSIZE=${LIBESPHTTPD_STACKSIZE} -DESPFS_HEATSHRINK -D__ets__ -DRBOOT_OTA  )
+
+target_include_directories(__{name}__ PUBLIC
+            ${ESP_OPEN_RTOS_DIR}/bootloader
+            ${ESP_OPEN_RTOS_DIR}/bootloader/rboot
+            ${ESP_OPEN_RTOS_DIR}/extras/rboot-ota
+            ${ESP_OPEN_RTOS_DIR}/extras/libesphttpd/libesphttpd/include
+            ${ESP_OPEN_RTOS_DIR}/extras/libesphttpd/libesphttpd/espfs
+            ${ESP_OPEN_RTOS_DIR}/extras/libesphttpd/libesphttpd/lib/heatshrink
+            ${ESP_OPEN_RTOS_DIR}/include
+            ${ESP_OPEN_RTOS_DIR}/libc/xtensa-lx106-elf/include
+            ${FREE_RTOS}/include
+            ${FREE_RTOS}/portable/esp8266
+            ${LWIP_DIR}/include
+            ${ESP_OPEN_RTOS_DIR}/lwip/include
+            ${LWIP_DIR}/include/compat/posix
+            ${LWIP_DIR}/include/ipv4
+            ${LWIP_DIR}/include/ipv4/lwip
+            ${LWIP_DIR}/include/lwip
+            ${ESP_OPEN_RTOS_DIR}/core/include
+            ${ESP_OPEN_RTOS_DIR}/open_esplibs/include
+            )

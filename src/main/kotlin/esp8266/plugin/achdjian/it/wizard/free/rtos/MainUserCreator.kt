@@ -1,25 +1,12 @@
 package esp8266.plugin.achdjian.it.wizard.free.rtos
 
 import com.intellij.openapi.vfs.VirtualFile
+import esp8266.plugin.achdjian.it.wizard.getResourceAsString
 import org.apache.commons.codec.Charsets
 
 fun createFreeRTOSMainUser(path: VirtualFile, requestor:Any): VirtualFile {
     val fileMainUser = path.findOrCreateChildData(requestor, "mainUser.c")
-
-    val builder = StringBuilder()
-    builder
-            .appendln("#include <espressif/esp_common.h>")
-            .appendln("#include <espressif/user_interface.h>")
-            .appendln("#include <esp/uart.h>")
-            .appendln("#include <FreeRTOS.h>")
-            .appendln("#include <task.h>")
-            .appendln("")
-            .appendln("void user_init(void) {")
-            .appendln("    uart_set_baud(0, 115200);")
-            .appendln("    printf(\"SDK version:%s\\n\", sdk_system_get_sdk_version());")
-            .appendln("}")
-
-    fileMainUser.setBinaryContent(builder.toString().toByteArray(Charsets.UTF_8))
-
+    val content = getResourceAsString("templates/free/mainuser.c")
+    fileMainUser.setBinaryContent(content.toByteArray(Charsets.UTF_8))
     return fileMainUser
 }

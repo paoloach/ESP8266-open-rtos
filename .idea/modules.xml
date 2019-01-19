@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/ESP2866-open-rtos.iml" filepath="$PROJECT_DIR$/.idea/ESP2866-open-rtos.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ESP8266.iml" filepath="$PROJECT_DIR$/.idea/modules/ESP8266.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ESP8266_main.iml" filepath="$PROJECT_DIR$/.idea/modules/ESP8266_main.iml" group="ESP8266" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ESP8266_test.iml" filepath="$PROJECT_DIR$/.idea/modules/ESP8266_test.iml" group="ESP8266" />
     </modules>
   </component>
 </project>

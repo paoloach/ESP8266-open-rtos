@@ -42,7 +42,7 @@ fun selectCMakeListFile(ota: Boolean): String {
 }
 
 
-fun createExtrasStaticLibraries(wizardData: WizardData) = wizardData.extras.filter { it.enabled }.joinToString(separator = "") { it.name }
+fun createExtrasStaticLibraries(wizardData: WizardData) = wizardData.extras.filter { it.enabled }.joinToString(separator = "") { it.name + " "}
 fun createExtraModules(wizardData: WizardData) = wizardData.extras.filter { it.enabled }.joinToString(separator = "") { "add_subdirectory(${it.name})" }
 fun createExtraImageDependencies(wizardData: WizardData) = wizardData.extras.filter { it.enabled }.joinToString(separator = "") { it.imageDependecy() }
 fun createExtraFlashImages(wizardData: WizardData) = wizardData.extras.filter { it.enabled }.joinToString(separator = "") { it.flashImages() }

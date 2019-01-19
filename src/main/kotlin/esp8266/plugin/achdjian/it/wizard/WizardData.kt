@@ -1,5 +1,7 @@
 package esp8266.plugin.achdjian.it.wizard
 
+import esp8266.plugin.achdjian.it.wizard.free.rtos.extras.HttpParserModule
+import esp8266.plugin.achdjian.it.wizard.free.rtos.extras.LibEspHttpdModule
 import esp8266.plugin.achdjian.it.wizard.free.rtos.extras.SimpleModule
 import esp8266.plugin.achdjian.it.wizard.free.rtos.extras.SpiffsModule
 
@@ -26,7 +28,7 @@ class WizardData {
             SimpleModule("fram"),
             SimpleModule("hd44780"),
             SimpleModule("hmc5883l"),
-            SimpleModule("http-parser"),
+            HttpParserModule(),
             SimpleModule("http_client_ota"),
             SimpleModule("httpd"),
             SimpleModule("i2c"),
@@ -34,7 +36,7 @@ class WizardData {
             SimpleModule("ina3221"),
             SimpleModule("jsmn"),
             SimpleModule("l3gd20h"),
-            SimpleModule("libesphttpd"),
+            LibEspHttpdModule(),
             SimpleModule("lis3dh"),
             SimpleModule("lis3mdl"),
             SimpleModule("lsm303d"),
