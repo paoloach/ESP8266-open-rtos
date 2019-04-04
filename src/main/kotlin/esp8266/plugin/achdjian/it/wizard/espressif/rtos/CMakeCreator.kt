@@ -9,19 +9,26 @@ import esp8266.plugin.achdjian.it.wizard.espressif.rtos.Constants.CONFIG_FILE_NA
 import esp8266.plugin.achdjian.it.wizard.getResourceAsString
 import org.apache.commons.codec.Charsets
 
-fun createEspressifRTOSCMake(projectName: String, wizardData: MenuWizardData): String {
-    var cmakelists = getResourceAsString("templates/espressif/CMakeLists.txt")
+
+
+fun createEspressifRTOSCMake(projectName: String, wizardData: MenuWizardData, creator: Creator): String {
+    val templatePath = creator.createTemplatePath()
+    var cmakelists = getResourceAsString("$templatePath/CMakeLists.txt")
     val setting = ApplicationManager.getApplication().getComponent(ESP8266SettingsState::class.java, ESP8266SDKSettings.DEFAULT) as ESP8266SettingsState
+    val configFlags = creator.createConfigFlags(wizardData)
     cmakelists = cmakelists
             .replace("__{project_name}__", projectName)
             .replace("__{ESPRESSIF_RTOS_DIR}__", "set(RTOS_DIR ${setting.espressifRtosPath})")
             .replace("__{flash_mode}__", wizardData.flashMode)
             .replace("__{flash_freq}__", wizardData.flashFreq)
             .replace("__{flash_size}__", wizardData.flashSize)
+            .replace("__{flash_size_hex}__", wizardData.flashSizeHex)
             .replace("__{esptool_port}__", wizardData.espToolPort)
             .replace("__{esptool_before}__", wizardData.espToolBefore)
             .replace("__{esptool_after}__", wizardData.espToolAfter)
             .replace("__{esptool_baudRate}__", wizardData.espToolBaudRate)
+            .replace("__{flash_SPI_MODE}__", wizardData.spiFlashModeHex)
+            .replace("__{CONFIG_FLAS}__", configFlags)
     if (wizardData.compressUpload)
         cmakelists = cmakelists.replace("__{esptool_compression}__", "-z")
     else
@@ -29,32 +36,41 @@ fun createEspressifRTOSCMake(projectName: String, wizardData: MenuWizardData): S
     return cmakelists
 }
 
-fun createEspressifRTORSubCMand(projectName: String, wizardMenu: MenuWizardData, path: VirtualFile) {
-    makeSubCMake("bootloader", projectName, wizardMenu, path)
-    makeSubCMake("bootloaderSupport", projectName, wizardMenu, path)
-    makeSubCMake("cjson", projectName, wizardMenu, path)
-    makeSubCMake("esp8266", projectName, wizardMenu, path)
-    makeSubCMake("espOS", projectName, wizardMenu, path)
-    makeSubCMake("freeRTOS", projectName, wizardMenu, path)
-    makeSubCMake("jsmn", projectName, wizardMenu, path)
-    makeSubCMake("log", projectName, wizardMenu, path)
-    makeSubCMake("lwip", projectName, wizardMenu, path)
-    makeSubCMake("mqtt", projectName, wizardMenu, path)
-    makeSubCMake("newlib", projectName, wizardMenu, path)
-    makeSubCMake("nvs_flash", projectName, wizardMenu, path)
-    makeSubCMake("smartConfig", projectName, wizardMenu, path)
-    makeSubCMake("spiffs", projectName, wizardMenu, path)
-    makeSubCMake("spiFlash", projectName, wizardMenu, path)
-    makeSubCMake("ssl", projectName, wizardMenu, path)
-    makeSubCMake("tcpipAdapter", projectName, wizardMenu, path)
-    makeSubCMake("util", projectName, wizardMenu, path)
+fun createEspressifRTORSubCMake(projectName: String, wizardMenu: MenuWizardData, path: VirtualFile, creator: Creator) {
+    makeSubCMake("appUpdate", projectName, wizardMenu, path, creator)
+    makeSubCMake("awsIOT", projectName, wizardMenu, path, creator)
+    makeSubCMake("bootloader", projectName, wizardMenu, path, creator)
+    makeSubCMake("bootloaderSupport", projectName, wizardMenu, path, creator)
+    makeSubCMake("cjson", projectName, wizardMenu, path, creator)
+    makeSubCMake("coap", projectName, wizardMenu, path, creator)
+    makeSubCMake("esp8266", projectName, wizardMenu, path, creator)
+    makeSubCMake("espOS", projectName, wizardMenu, path, creator)
+    makeSubCMake("espTls", projectName, wizardMenu, path, creator)
+    makeSubCMake("heap", projectName, wizardMenu, path, creator)
+    makeSubCMake("freeRTOS", projectName, wizardMenu, path, creator)
+    makeSubCMake("jsmn", projectName, wizardMenu, path, creator)
+    makeSubCMake("log", projectName, wizardMenu, path, creator)
+    makeSubCMake("lwip", projectName, wizardMenu, path, creator)
+    makeSubCMake("mqtt", projectName, wizardMenu, path, creator)
+    makeSubCMake("mdns", projectName, wizardMenu, path, creator)
+    makeSubCMake("newlib", projectName, wizardMenu, path, creator)
+    makeSubCMake("nvs_flash", projectName, wizardMenu, path, creator)
+    makeSubCMake("pthread", projectName, wizardMenu, path, creator)
+    makeSubCMake("smartConfig", projectName, wizardMenu, path, creator)
+    makeSubCMake("sodium", projectName, wizardMenu, path, creator)
+    makeSubCMake("spiffs", projectName, wizardMenu, path, creator)
+    makeSubCMake("spiFlash", projectName, wizardMenu, path, creator)
+    makeSubCMake("ssl", projectName, wizardMenu, path, creator)
+    makeSubCMake("tcpipAdapter", projectName, wizardMenu, path, creator)
+    makeSubCMake("util", projectName, wizardMenu, path, creator)
+    makeSubCMake("wpaSupplicant", projectName, wizardMenu, path, creator)
+
 }
 
-fun createSdkConfigFile(wizardMenu: MenuWizardData, path: VirtualFile) {
-    createSdkConfigFile(wizardMenu.entriesMenu, path)
-}
 
-fun createSdkConfigFile(entries: List<ConfigurationEntry>, path: VirtualFile) {
+fun createSdkConfigFile(wizardData: MenuWizardData, path: VirtualFile, creator: Creator) {
+    val entries = wizardData.entriesMenu
+
     var subFolder = path.findChild(CONFIG_DIR)
     if (subFolder == null)
         subFolder = path.createChildDirectory(null, CONFIG_DIR)
@@ -66,6 +82,8 @@ fun createSdkConfigFile(entries: List<ConfigurationEntry>, path: VirtualFile) {
     builder.appendln("#define CONFIG_TOOLPREFIX \"xtensa-lx106-elf-\"")
     builder.appendln("#define CONFIG_TARGET_PLATFORM_ESP8266 1")
     builder.appendln("#define CONFIG_APP_OFFSET  0x1000")
+    builder.appendln(creator.config(wizardData))
+
     configurations.forEach {
         builder.append("#define CONFIG_").append(it.key).append(" ").appendln(it.value)
     }
@@ -74,8 +92,12 @@ fun createSdkConfigFile(entries: List<ConfigurationEntry>, path: VirtualFile) {
     }
 }
 
-private fun makeSubCMake(subdir: String, projectName: String, wizardMenu: MenuWizardData, path: VirtualFile) {
-    var cmakelists = getResourceAsString("templates/espressif/$subdir/CMakeLists.txt")
+
+private fun makeSubCMake(subdir: String, projectName: String, wizardMenu: MenuWizardData, path: VirtualFile, creator: Creator) {
+
+    val templatePath = creator.createTemplatePath()
+
+    var cmakelists = getResourceAsString("$templatePath/$subdir/CMakeLists.txt")
     val setting = ApplicationManager.getApplication().getComponent(ESP8266SettingsState::class.java, ESP8266SDKSettings.DEFAULT) as ESP8266SettingsState
     cmakelists = cmakelists
             .replace("__{project_name}__", projectName)

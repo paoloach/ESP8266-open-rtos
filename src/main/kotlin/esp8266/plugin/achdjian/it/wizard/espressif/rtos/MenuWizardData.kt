@@ -1,18 +1,71 @@
 package esp8266.plugin.achdjian.it.wizard.espressif.rtos
 
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.ConfigurationEntry.*
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.components.*
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configurations.*
 
 class MenuWizardData() {
+    val freeRTOSHZ: Int get() = freeRTOSHz.value
     val flashMode: String get() = flashModeConfigEntry.choiceText
     val flashFreq: String get() = flashFreqConfigEntry.choiceText
+    val flashFreqHex: Int
+        get() = when (flashFreqConfigEntry.choiceText) {
+            "ESPTOOLPY_FLASHFREQ_80M" -> 0xf
+            "ESPTOOLPY_FLASHFREQ_40M" -> 0x0
+            "ESPTOOLPY_FLASHFREQ_26M" -> 0x1
+            "ESPTOOLPY_FLASHFREQ_20M" -> 0x2
+            else -> 0
+        }
+    val flashModeHex: Int
+        get() = when (flashModeConfigEntry.choiceText) {
+            "FLASHMODE_QIO" -> 0
+            "FLASHMODE_QOUT" -> 1
+            "FLASHMODE_DIO" -> 2
+            "FLASHMODE_DOUT" -> 3
+            else -> 0
+        }
+    val taskWdtTimeout: String
+        get() = when (choiceWT.choiceText) {
+            "6.5536s" -> "13"
+            "13.1072s" -> "14"
+            "26.2144s" -> "15"
+            else -> "0"
+
+        }
     val flashSize: String get() = flashSizeConfigEntry.choiceText
     val espToolPort: String get() = esptoolPortEntry.value
     val espToolBefore: String get() = esptoolBeforeEntry.choiceText
     val espToolAfter: String get() = esptoolAfterEntry.choiceText
     val espToolBaudRate: String get() = espToolBaudRateEntry.choiceText
     val compressUpload: Boolean get() = compressUploadEntry.value
+    val crystalUsed: String get() = choiceCrystalUsed.choiceText
+    val bootloaderCheckAppSum: Boolean get() = bootloaderCheckData.value
+
+    val flashSizeHex: String
+        get() = when (flashSizeConfigEntry.choiceText) {
+            "2MB" -> "0x200000"
+            "4MB" -> "0x400000"
+            "8MB" -> "0x800000"
+            "16MB" -> "0x1000000"
+            else -> "0x200000"
+        }
+    val spiFlashModeHex: String
+        get() = when (flashModeConfigEntry.choiceText) {
+            "qio" -> "0"
+            "qout" -> "1"
+            "dio" -> "2"
+            "dout" -> "3"
+            else -> "0"
+        }
 
 
+    private val enableIPV6 = BoolConfigEntry("Enable IPv6", "LWIP_IPV6", true)
+    private val lwipSocketMultithread = BoolConfigEntry("LWIP socket supports multithread", "LWIP_SOCKET_MULTITHREAD", true)
+    private val espUdpSyncSend = BoolConfigEntry("LWIP socket UDP sync send", "ESP_UDP_SYNC_SEND", true)
+    private val wifiTxRateSequenceFromHigh = BoolConfigEntry("Set wifi tx rate from 54M to 1M", "WIFI_TX_RATE_SEQUENCE_FROM_HIGH", defaultValue = false)
+    private val socFullICache = BooleanInteger("Enable full cache mode", "SOC_IRAM_SIZE", false, 0x8000, 0xC000)
+    private val tcpHighSpeedRetransmission = BoolConfigEntry("TCP high speed retransmissions", "TCP_HIGH_SPEED_RETRANSMISSION", defaultValue = false)
+    private val tcpQueueOoseq = BoolConfigEntry("Queue incoming out-of-order segments", "TCP_QUEUE_OOSEQ")
+    private val lwipHighThroughput = BoolConfigEntry("Enable lwip high throughput", "LWIP_HIGH_THROUGHPUT", false, associated = listOf(tcpQueueOoseq, tcpHighSpeedRetransmission, socFullICache, wifiTxRateSequenceFromHigh))
     private val defaultBaudRate = BoolConfigEntry("115200 baud", "ESPTOOLPY_BAUD_115200B", true)
     private val defaultFlashMode = BoolConfigEntry("QIO", "FLASHMODE_QIO", true)
     private val defaultFlashFreq = BoolConfigEntry("40 MHz", "ESPTOOLPY_FLASHFREQ_40M", true)
@@ -76,7 +129,7 @@ class MenuWizardData() {
     private val defaultPartitionTable = BoolConfigEntry("Single factory app, no OTA", "PARTITION_TABLE_SINGLE_APP", true)
     private val otaPartitionTable = BoolConfigEntry("Factory app, two OTA definitions", "PARTITION_TABLE_TWO_OTA")
     private val customPartitionTable = BoolConfigEntry("Custom partition table CSV", "PARTITION_TABLE_CUSTOM")
-    private val entriesPartitionTable = listOf(
+    private val entriesPartitionTable = listOf<ConfigurationEntry>(
             ChoiceConfigEntry("Partition Table", "PARTITION_TABLE_FILENAME", mapOf(
                     defaultPartitionTable to "\"partitions_singleapp.csv\"",
                     otaPartitionTable to "\"partitions_two_ota.csv\"",
@@ -134,16 +187,10 @@ class MenuWizardData() {
             IntConfigEntry("Auto reconnect maximum interval (ms)", "AWS_IOT_MQTT_MAX_RECONNECT_WAIT_INTERVAL", 128000, 1, 100),
             SubPanelConfigEntry("Thing Shadow", entriesEditorThingShadow)
     )
-    private val defaultLineEnding = BoolConfigEntry("CRLF", "NEWLIB_STDOUT_LINE_ENDING_CRLF", true)
     private val defaultLogLevel = BoolConfigEntry("Info", "LOG_DEFAULT_LEVEL_INFO", true)
     private val entriesComponentConfig = listOf(
             amazonIOT,
             SubPanelConfigEntry("Amazon Web Services IoT config", entriesAmazon, amazonIOT),
-            ChoiceConfigEntry("Line ending for UART output", "NEWLIB_STDOUT_LINE_ENDING", listOf(
-                    defaultLineEnding,
-                    BoolConfigEntry("LF", "NEWLIB_STDOUT_LINE_ENDING_LF"),
-                    BoolConfigEntry("CR", "NEWLIB_STDOUT_LINE_ENDING_CR")
-            ), defaultLineEnding),
             BoolConfigEntry("Store phy calibration data in NVS", "ESP_PHY_CALIBRATION_AND_DATA_STORAGE", true),
             BoolConfigEntry("Use a partition to store PHY init data", "ESP_PHY_INIT_DATA_IN_PARTITION"),
             BoolConfigEntry("Enable \"reent\" function", "FREERTOS_ENABLE_REENT"),
@@ -162,7 +209,7 @@ class MenuWizardData() {
     private val icmp = BoolConfigEntry("ICMP", "LWIP_ICMP", true)
     private val lwipAutoip = BoolConfigEntry("Enable IPV4 Link-Local Addressing (AUTOIP)", "LWIP_AUTOIP", false)
     private val perInterfaceLoopback = BoolConfigEntry("nable per-interface loopback", "LWIP_NETIF_LOOPBACK", false)
-    private val enableIPV6 = BoolConfigEntry("Enable IPv6", "LWIP_IPV6", true)
+
     private val enableDebug = BoolConfigEntry("Enable lwip Debug", "LWIP_DEBUG", false)
 
     private val entriesARP = listOf(
@@ -170,7 +217,11 @@ class MenuWizardData() {
             IntConfigEntry("The time an ARP entry stays valid after its last update", "LWIP_ARP_MAXAGE", 300, 100, 65535)
     )
     private val entriesSocket = listOf<ConfigurationEntry>(
-            BoolConfigEntry("LWIP socket supports multithread", "LWIP_SOCKET_MULTITHREAD", true),
+            BoolConfigEntry("LWIP socket supports IPv6 multicast configuration", "LWIP_IPV6_MLD_SOCK", true, dependsOn = enableIPV6),
+            lwipSocketMultithread,
+            BoolConfigEntry("set socket SO_LINGER default", "SET_SOLINGER_DEFAULT", true, dependsOn = lwipSocketMultithread),
+            espUdpSyncSend,
+            IntConfigEntry("LWIP socket UDP sync send retry max count", "ESP_UDP_SYNC_RETRY_MAX", 5, 1, 5, dependsOn = espUdpSyncSend),
             IntConfigEntry("Max number of open sockets", "LWIP_MAX_SOCKETS", 10, 1, 16),
             soReuse,
             BoolConfigEntry("SO_REUSEADDR copies broadcast/multicast to all matches", "LWIP_SO_REUSE_RXTOALL", true, soReuse),
@@ -181,7 +232,8 @@ class MenuWizardData() {
 
     private val entryICMP = listOf(
             BoolConfigEntry("Respond to multicast pings", "LWIP_MULTICAST_PING", false),
-            BoolConfigEntry("Respond to broadcast pings", "LWIP_BROADCAST_PING", false)
+            BoolConfigEntry("Respond to broadcast pings", "LWIP_BROADCAST_PING", false),
+            BoolConfigEntry("Enable application layer to hook into the IP layer itself", "LWIP_RAW", false)
     )
 
     private val entriesDHCP = listOf<ConfigurationEntry>(
@@ -192,7 +244,9 @@ class MenuWizardData() {
     )
 
     private val entriesLwipAutoip = listOf(
-            IntConfigEntry("DHCP Probes before self-assigning IPv4 LL address", "LWIP_DHCP_AUTOIP_COOP_TRIES", 2, 1, 100)
+            IntConfigEntry("DHCP Probes before self-assigning IPv4 LL address", "LWIP_DHCP_AUTOIP_COOP_TRIES", 2, 1, 100),
+            IntConfigEntry("Max IP conflicts before rate limiting", "LWIP_AUTOIP_MAX_CONFLICTS", 9, 1, 100),
+            IntConfigEntry("Rate limited interval (seconds)", "LWIP_AUTOIP_RATE_LIMIT_INTERVAL", 20, 1, 120)
     )
 
     private val entriesPerInterfaceLoopback = listOf(
@@ -201,6 +255,7 @@ class MenuWizardData() {
 
     private val defaultTCPOversize = BoolConfigEntry("MSS", "TCP_OVERSIZE_MSS", true)
     private val entriesTCP = listOf(
+            tcpHighSpeedRetransmission,
             IntConfigEntry("Maximum active TCP Connections", "LWIP_MAX_ACTIVE_TCP", 5, 1, 32),
             IntConfigEntry("Maximum listening TCP Connections", "LWIP_MAX_LISTENING_TCP", 8, 1, 16),
             IntConfigEntry("Maximum number of retransmissions of data segments", "TCP_MAXRTX", 12, 3, 12),
@@ -209,7 +264,7 @@ class MenuWizardData() {
             IntConfigEntry("Default send buffer size", "TCP_SND_BUF_DEFAULT", 2920, 2920, 11680),
             IntConfigEntry("Default receive window size", "TCP_WND_DEFAULT", 5840, 2920, 11680),
             IntConfigEntry("Default TCP receive mail box size", "TCP_RECVMBOX_SIZE", 6, 6, 32),
-            BoolConfigEntry("Queue incoming out-of-order segments", "TCP_QUEUE_OOSEQ"),
+            tcpQueueOoseq,
             ChoiceConfigEntry("Pre-allocate transmit PBUF size", "TCP_OVERSIZE", listOf(
                     defaultTCPOversize,
                     BoolConfigEntry("25% MSS", "TCP_OVERSIZE_QUARTER_MSS", true),
@@ -226,7 +281,8 @@ class MenuWizardData() {
     private val entriesIPV6 = listOf<ConfigurationEntry>(
             IntConfigEntry("Number of IPv6 addresses per netif", "LWIP_IPV6_NUM_ADDRESSES", 3, 3, 5),
             BoolConfigEntry("Forward IPv6 packets across netifs", "LWIP_IPV6_FORWARD", false),
-            BoolConfigEntry("Fragment outgoing IPv6 packets that are too big", "LWIP_IPV6_FRAG", false)
+            BoolConfigEntry("Fragment outgoing IPv6 packets that are too big", "LWIP_IPV6_FRAG", false),
+            BoolConfigEntry("The IPv6 ND6 RDNSS max DNS servers", "LWIP_ND6_RDNSS_MAX_DNS_SERVERS", false)
     )
 
     private val entriesDebug = listOf<ConfigurationEntry>(
@@ -268,7 +324,12 @@ class MenuWizardData() {
             BoolConfigEntry("Enable debugging for LWIP thread safety", "LWIP_THREAD_SAFE_DEBUG", false)
     )
 
+
     private val entriesLWIP = listOf(
+            BoolConfigEntry("Enable lwip use iram option", "LWIP_USE_IRAM", false),
+            lwipHighThroughput,
+            BoolConfigEntry("Link LWIP global data to IRAM", "LWIP_GLOBAL_DATA_LINK_IRAM", true, And(Not(lwipHighThroughput), Not(socFullICache))),
+            IntConfigEntry("TCPIP task receive mail box size", "TCPIP_RECVMBOX_SIZE", 32, 6, 64),
             SubPanelConfigEntry("ARP", entriesARP),
             SubPanelConfigEntry("SOCKET", entriesSocket),
             BoolConfigEntry("Enable fragment outgoing IP packets", "LWIP_IP_FRAG", false),
@@ -306,6 +367,7 @@ class MenuWizardData() {
                     BoolConfigEntry("normal", "NEWLIB_LIBRARY_LEVEL_NORMAL")
             ), defaultNewLibLevel)
     )
+
 
     private val mbedTLS = BoolConfigEntry("mbedTLS", "SSL_USING_MBEDTLS", true)
     private val mbedTLSDebug = BoolConfigEntry("Enable mbedTLS debugging", "MBEDTLS_DEBUG")
@@ -391,9 +453,15 @@ class MenuWizardData() {
                     BoolConfigEntry("Show debugging message and block", "OPENSSL_ASSERT_DEBUG_BLOCK", false, openSSLDebug)
             ), default = defaultOpensslAssertFunction, dependsOn = mbedTLS)
     )
+    val mbedTLS_RSA_bitlen_2048 = BoolConfigEntry("2048", "MBEDTLS_RSA_BITLEN_2048", true)
+    val mbedTLS_RSA_bitlen_1024 = BoolConfigEntry("1024(not safe)", "MBEDTLS_RSA_BITLEN_1024", false)
 
     private val entriesMbedTLS = listOf(
-            IntConfigEntry("TLS maximum message content length", "MBEDTLS_SSL_MAX_CONTENT_LEN", 4096, 512, 16384),
+            IntConfigEntry("TLS maximum OUTPUT message content length", "MBEDTLS_SSL_OUT_CONTENT_LEN", 4096, 512, 16384),
+            IntConfigEntry("TLS maximum INPUT message content length", "MBEDTLS_SSL_IN_CONTENT_LEN", 4096, 512, 16384),
+            ChoiceConfigEntry("RSA minimum bit length", "MBEDTLS_RSA_BITLEN_MIN", listOf(
+                    mbedTLS_RSA_bitlen_2048,
+                    mbedTLS_RSA_bitlen_1024), mbedTLS_RSA_bitlen_2048),
             mbedTLSDebug,
             IntConfigEntry("Mbedtls debugging level", "MBEDTLS_DEBUG_LEVEL", 4, 0, 4, mbedTLSDebug),
             enableMbedTime,
@@ -430,8 +498,80 @@ class MenuWizardData() {
             SubPanelConfigEntry(text = "SSL", entries = entriesMbedTLS, dependsOn = mbedTLS)
     )
 
-    private val defaultBootloaderLogLevel = BoolConfigEntry("Info", "LOG_BOOTLOADER_LEVEL_INFO", true)
 
+    private val sdkTooConfiguration = listOf(
+            StringConfigEntry("Python 2 interpreter", "PYTHON", "python"),
+            BoolConfigEntry("'make' warns on undefined variables", "MAKE_WARN_UNDEFINED_VARIABLES", true)
+    )
+
+    private val defaultRTOSVersion = BoolConfigEntry("3.1", "RTOS_VERSION_3_1")
+    val version = ChoiceConfigEntry("Espressif RTOS version", "RTOS_VERSION", mapOf(
+            BoolConfigEntry("2.0", "RTOS_VERSION_2_0") to "0",
+            BoolConfigEntry("3.0", "RTOS_VERSION_3_1") to "1",
+            defaultRTOSVersion to "2"),
+            defaultRTOSVersion)
+
+    private val defaultTaskWatchdockS = BoolConfigEntry("26.2144s", "TASK_WDT_TIMEOUT_15N", true)
+    private val defaultLineEnding = BoolConfigEntry("CRLF", "NEWLIB_STDOUT_LINE_ENDING_CRLF", true)
+    private val defaultCrystalUsed = BoolConfigEntry("26Mh", "CRYSTAL_USED_26MHZ", true)
+    private val choiceCrystalUsed = ChoiceConfigEntry("Crystal Used", "CRYSTAL_USED", listOf(
+            defaultCrystalUsed,
+            BoolConfigEntry("40Mh", "CRYSTAL_USED_40MHZ")
+    ), defaultCrystalUsed)
+    private val choiceWT = ChoiceConfigEntry("Task Watchdog timeout period (seconds)", "TASK_WDT_TIMEOUT", listOf(
+            defaultTaskWatchdockS,
+            BoolConfigEntry("13.1072s", "TASK_WDT_TIMEOUT_14N"),
+            BoolConfigEntry("6.5536s", "TASK_WDT_TIMEOUT_13N")
+    ), defaultTaskWatchdockS)
+
+
+    private val wifiMenu = listOf<ConfigurationEntry>(
+            IntConfigEntry("Max scan AP numbe", "SCAN_AP_MAX", 32, 1, 64),
+            wifiTxRateSequenceFromHigh
+    )
+
+    private val esp8266ConfigurationMenu = listOf(
+            socFullICache,
+            ChoiceConfigEntry("Line ending for UART output", "NEWLIB_STDOUT_LINE_ENDING", listOf(
+                    defaultLineEnding,
+                    BoolConfigEntry("LF", "NEWLIB_STDOUT_LINE_ENDING_LF"),
+                    BoolConfigEntry("CR", "NEWLIB_STDOUT_LINE_ENDING_CR")
+            ), defaultLineEnding),
+            choiceWT,
+            choiceCrystalUsed,
+            IntConfigEntry("ppT task stack size", "WIFI_PPT_TASKSTACK_SIZE", 2048, 2048, 8192),
+            IntConfigEntry("Main task stack size", "MAIN_TASK_STACK_SIZE", 0, 10000, 3584),
+            IntConfigEntry("Event loop stack size", "EVENT_LOOP_STACK_SIZE", 0, 10000, 2048)
+    )
+
+    private val defaultMQTTVersion = BoolConfigEntry("V3.1", "MQTT_V3_1", true)
+    private val MQTTV3_1_1 = BoolConfigEntry("V3.1.1", "MQTT_V3_1_1", true)
+    private val MQTTVersion = ChoiceConfigEntry("MQTT version", "MQTT_VERSION", listOf(
+                defaultMQTTVersion,
+                MQTTV3_1_1
+            ), defaultMQTTVersion)
+    private val defaultMqttSession = BoolConfigEntry("Clean Session", "CLEAN_SESSION", true)
+
+    private val mqttMenu = listOf<ConfigurationEntry>(
+            MQTTVersion,
+            StringConfigEntry("MQTT client ID", "MQTT_CLIENT_ID", "espressif_sample"),
+            IntConfigEntry("MQTT keep-alive(seconds)", "MQTT_KEEP_ALIVE", 30, 1, 10000),
+            StringConfigEntry("MQTT username", "MQTT_USERNAME", "espressif"),
+            StringConfigEntry("MQTT password", "MQTT_PASSWORD", "admin"),
+            ChoiceConfigEntry("MQTT Session", "MQTT_SESSION", listOf(
+                    defaultMqttSession,
+                    BoolConfigEntry("Keep Session", "KEEP_SESSION", false)
+            ), defaultMqttSession),
+            IntConfigEntry("MQTT send buffer", "MQTT_SEND_BUFFER", 2048, 1, 10000),
+            IntConfigEntry("MQTT recv buffer", "MQTT_RECV_BUFFER", 2048, 1, 10000),
+            IntConfigEntry("MQTT send cycle(ms)", "MQTT_SEND_CYCLE", 30000, 1, 100000),
+            IntConfigEntry("MQTT recv cycle(ms)", "MQTT_RECV_CYCLE", 0, 0, 100000),
+            IntConfigEntry("MQTT ping timeout(ms)", "MQTT_PING_TIMEOUT", 3000, 0, 100000)
+    )
+
+
+
+    private val defaultBootloaderLogLevel = BoolConfigEntry("Info", "LOG_BOOTLOADER_LEVEL_INFO", true)
     private val bootloaderLogLevel = ChoiceConfigEntry("Bootloader log verbosity", "LOG_BOOTLOADER_LEVEL", mapOf(
             BoolConfigEntry("No output", "LOG_BOOTLOADER_LEVEL_NONE") to "0",
             BoolConfigEntry("Error", "LOG_BOOTLOADER_LEVEL_ERROR") to "1",
@@ -441,22 +581,41 @@ class MenuWizardData() {
             BoolConfigEntry("Verbose", "LOG_BOOTLOADER_LEVEL_VERBOSE") to "5"
     ), defaultBootloaderLogLevel)
 
-    private val sdkTooConfiguration = listOf(
-            StringConfigEntry("Python 2 interpreter", "PYTHON", "python"),
-            BoolConfigEntry("'make' warns on undefined variables", "MAKE_WARN_UNDEFINED_VARIABLES", true)
+    private val bootloaderCheckData = BoolConfigEntry("Check APP binary data sum before loading", "BOOTLOADER_CHECK_APP_SUM", true)
+
+    private val bootloaderConfiguration = listOf(
+            bootloaderLogLevel,
+            bootloaderCheckData
     )
 
+    private val enableAwsIOT = BoolConfigEntry("Enable Amazon Web Services IoT Platform", "AWS_IOT_SDK", false)
+    private val enablemDns = BoolConfigEntry("Enable mDNS", "ENABLE_MDNS", false)
+    private val enablePThread = BoolConfigEntry("Enable pthread", "ENABLE_PTHREAD", false)
+
     val entriesMenu: List<ConfigurationEntry> = listOf(
+            version,
+            SubPanelConfigEntry("App update",appUpdateMenu),
+            enableAwsIOT,
+            SubPanelConfigEntry("Amazon Web Services IoT Platform",awsIOTMenu, enableAwsIOT),
             SubPanelConfigEntry("Serial flasher config", entriesESPTool),
-            bootloaderLogLevel,
+            SubPanelConfigEntry("Boot configuration", bootloaderConfiguration),
             SubPanelConfigEntry("SDK tool configuration", sdkTooConfiguration),
             SubPanelConfigEntry("Wifi config", entriesWIFIConfig),
             SubPanelConfigEntry("Partition Table", entriesPartitionTable),
             SubPanelConfigEntry("Compiler options", entriesCompilerOptions),
+            SubPanelConfigEntry("ESP8266 specific ", esp8266ConfigurationMenu),
+            SubPanelConfigEntry("Wifi ", wifiMenu),
+            SubPanelConfigEntry("FreeRTOS", freeRTOSConfig),
+            BoolConfigEntry("Use mbedTLS SHA256 & SHA512 implementations", "LIBSODIUM_USE_MBEDTLS_SHA" ,   true),
             SubPanelConfigEntry("Component config", entriesComponentConfig),
             SubPanelConfigEntry("LWIP", entriesLWIP),
+            enablemDns,
+            enablePThread,
+            SubPanelConfigEntry("Enable mDNS", mDNSMenu,enablemDns),
+            SubPanelConfigEntry("MQTT(Paho)", mqttMenu),
             SubPanelConfigEntry("Newlib", entriesNewLib),
             SubPanelConfigEntry("SSL", entriesSSL),
+            SubPanelConfigEntry("wpa supplicant", wpaSupplicantMenu),
             IntConfigEntry("IP Address lost timer interval (seconds)", "IP_LOST_TIMER_INTERVAL", 120, 0, 65535)
     )
 }

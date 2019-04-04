@@ -7,7 +7,7 @@ import com.jetbrains.cidr.cpp.cmake.CMakeSettings
 import com.jetbrains.cidr.cpp.cmake.projectWizard.generators.CMakeAbstractCProjectGenerator
 import com.jetbrains.cidr.cpp.cmake.projectWizard.generators.settings.CMakeProjectSettings
 import com.jetbrains.cidr.cpp.cmake.workspace.CMakeWorkspace
-import esp8266.plugin.achdjian.it.wizard.*
+import esp8266.plugin.achdjian.it.wizard.createCMakeCrossTool
 import javax.swing.JComponent
 
 class ESP8266EspressifRTOSProjectGenerator : CMakeAbstractCProjectGenerator() {
@@ -16,14 +16,17 @@ class ESP8266EspressifRTOSProjectGenerator : CMakeAbstractCProjectGenerator() {
     val settingPanel = ESP8266EspressifWizardPanel(createSettingsPanel(), wizardData.entriesMenu)
 
     override fun createSourceFiles(projectName: String, path: VirtualFile): Array<VirtualFile> {
-        createEspressifRTORSubCMand(projectName, wizardData, path)
+        val creator = creatorFactory(wizardData)
+
+        createEspressifRTORSubCMake(projectName, wizardData, path, creator)
         createCMakeCrossTool(path, this)
-        createSdkConfigFile(wizardData, path)
-        return arrayOf(createEspressifRTOSMain(path, this))
+
+        createSdkConfigFile(wizardData, path, creator)
+        return arrayOf(createEspressifRTOSMain(path, this, creator))
     }
 
     override fun getCMakeFileContent(projectName: String): String {
-        return createEspressifRTOSCMake(projectName, wizardData)
+        return createEspressifRTOSCMake(projectName, wizardData, creatorFactory(wizardData))
     }
 
     override fun getName(): String = "C ESP8266 espressif rtos"
@@ -38,4 +41,13 @@ class ESP8266EspressifRTOSProjectGenerator : CMakeAbstractCProjectGenerator() {
 
         settings.profiles = listOf(releaseProfile)
     }
+
+    private fun creatorFactory(wizardMenu: MenuWizardData) =
+            when (wizardMenu.version.choiceText) {
+                "0" -> Creator2_0()
+                "1" -> Creator3_1()
+                "2" -> Creator3_1()
+                else -> Creator3_1()
+            }
 }
+

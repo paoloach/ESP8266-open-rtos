@@ -9,11 +9,8 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.DialogWrapper.OK_EXIT_CODE
 import com.intellij.openapi.ui.Messages
 import com.intellij.ui.ScrollPaneFactory
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.ConfigurationEntry
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.*
 import esp8266.plugin.achdjian.it.wizard.espressif.rtos.Constants.CONFIG_FILE_NAME
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.MenuWizardData
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configParsing
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.createSdkConfigFile
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 import javax.swing.BoxLayout
@@ -21,9 +18,9 @@ import javax.swing.JPanel
 
 class Settings : AnAction("ESP8266 RTOS setting...") {
 
-    class SaveAction(val listEntry: List<ConfigurationEntry>, val project: Project, private val dialogWrapper: DialogWrapper) : AbstractAction("Save") {
+    class SaveAction(val menuWizardData: MenuWizardData, val project: Project, private val dialogWrapper: DialogWrapper) : AbstractAction("Save") {
         override fun actionPerformed(p0: ActionEvent?) {
-            createSdkConfigFile(listEntry, project.baseDir)
+            createSdkConfigFile(menuWizardData, project.baseDir, creatorFactory(menuWizardData))
             dialogWrapper.close(OK_EXIT_CODE)
         }
 
@@ -43,8 +40,8 @@ class Settings : AnAction("ESP8266 RTOS setting...") {
             val menuWizard = MenuWizardData()
             val listEntry = menuWizard.entriesMenu
             val configEntries = configParsing(project)
-            if (configEntries.isEmpty()){
-                Messages.showErrorDialog(project, "Unable to find $CONFIG_FILE_NAME file" , "RTOS ESP 8266")
+            if (configEntries.isEmpty()) {
+                Messages.showErrorDialog(project, "Unable to find $CONFIG_FILE_NAME file", "RTOS ESP 8266")
             } else {
 
                 configEntries.forEach {
@@ -64,7 +61,7 @@ class Settings : AnAction("ESP8266 RTOS setting...") {
                         .centerPanel(scrollPane)
                         .title("Settings")
 
-                dialog.addAction(SaveAction(listEntry, project, dialog.dialogWrapper))
+                dialog.addAction(SaveAction(menuWizard, project, dialog.dialogWrapper))
                 dialog.addCancelAction()
                 dialog.show()
             }
@@ -73,3 +70,11 @@ class Settings : AnAction("ESP8266 RTOS setting...") {
         }
     }
 }
+
+private fun creatorFactory(wizardMenu: MenuWizardData) =
+        when (wizardMenu.version.choiceText) {
+            "0" -> Creator2_0()
+            "1" -> Creator3_1()
+            "2" -> Creator3_1()
+            else -> Creator3_1()
+        }
