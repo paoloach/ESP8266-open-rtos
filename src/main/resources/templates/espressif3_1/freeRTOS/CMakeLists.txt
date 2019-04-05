@@ -42,7 +42,7 @@ SET_SOURCE_FILES_PROPERTIES( ${PORT_SRC_ASM} PROPERTIES
 
 SET(C_FLAGS " -DICACHE_FLASH  ${COMMON_FLAGS} ${WARNING_FLAGS} "   )
 SET_SOURCE_FILES_PROPERTIES( ${PORT_SRC_C} ${FREE_RTOS_SRC} PROPERTIES
-        COMPILE_FLAGS "-DICACHE_FLASH  -Os -ggdb -ffunction-sections -fdata-sections -fstrict-volatile-bitfields -mlongcalls -D__ESP_FILE__=__FILE__ -DESP_PLATFORM -D IDF_VER=\"v2.0.0-699-gea34c2a-dirty\" -MMD -MP   -DMQTT_TASK -DMBEDTLS_CONFIG_FILE=\"mbedtls/esp_config.h\" -DWOLFSSL_USER_SETTINGS"
+        COMPILE_FLAGS "-mlongcalls -DICACHE_FLASH  -Os -ggdb -ffunction-sections -fdata-sections -fstrict-volatile-bitfields -mlongcalls -D__ESP_FILE__=__FILE__ -DESP_PLATFORM -D IDF_VER=\"v2.0.0-699-gea34c2a-dirty\" -MMD -MP   -DMQTT_TASK -DMBEDTLS_CONFIG_FILE=\"mbedtls/esp_config.h\" -DWOLFSSL_USER_SETTINGS"
         )
 
 target_compile_options(freeRTOS  PRIVATE  )

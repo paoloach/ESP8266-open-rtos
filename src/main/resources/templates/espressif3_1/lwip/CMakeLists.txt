@@ -72,7 +72,9 @@ add_library(lwip STATIC
 
         
         
-target_compile_options(lwip  PRIVATE  -DMBEDTLS_CONFIG_FILE="mbedtls/esp_config.h" ${COMMON_FLAGS} ${WARNING_FLAGS} )
+target_compile_options(lwip  PRIVATE  -DMBEDTLS_CONFIG_FILE="mbedtls/esp_config.h" ${COMMON_FLAGS} ${WARNING_FLAGS}  -Wno-address )
+set_source_files_properties(${SOURCE_DIR}/lwip/src/apps/sntp/sntp.c PROPERTIES COMPILE_FLAGS  -Wno-implicit-function-declaration)
+set_source_files_properties(${SOURCE_DIR}/lwip/src/core/ipv4/ip4.c PROPERTIES COMPILE_FLAGS  -Wno-implicit-function-declaration)
 
 
 target_include_directories(lwip PUBLIC
