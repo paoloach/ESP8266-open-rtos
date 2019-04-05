@@ -42,12 +42,6 @@ class ESP8266EspressifRTOSProjectGenerator : CMakeAbstractCProjectGenerator() {
         settings.profiles = listOf(releaseProfile)
     }
 
-    private fun creatorFactory(wizardMenu: MenuWizardData) =
-            when (wizardMenu.version.choiceText) {
-                "0" -> Creator2_0()
-                "1" -> Creator3_1()
-                "2" -> Creator3_1()
-                else -> Creator3_1()
-            }
+    private fun creatorFactory(wizardMenu: MenuWizardData) =Creator3_1()
 }
 

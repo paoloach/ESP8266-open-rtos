@@ -4,7 +4,6 @@ import esp8266.plugin.achdjian.it.wizard.espressif.rtos.components.*
 import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configurations.*
 
 class MenuWizardData() {
-    val freeRTOSHZ: Int get() = freeRTOSHz.value
     val flashMode: String get() = flashModeConfigEntry.choiceText
     val flashFreq: String get() = flashFreqConfigEntry.choiceText
     val flashFreqHex: Int
@@ -37,7 +36,6 @@ class MenuWizardData() {
     val espToolAfter: String get() = esptoolAfterEntry.choiceText
     val espToolBaudRate: String get() = espToolBaudRateEntry.choiceText
     val compressUpload: Boolean get() = compressUploadEntry.value
-    val crystalUsed: String get() = choiceCrystalUsed.choiceText
     val bootloaderCheckAppSum: Boolean get() = bootloaderCheckData.value
 
     val flashSizeHex: String
@@ -504,13 +502,6 @@ class MenuWizardData() {
             BoolConfigEntry("'make' warns on undefined variables", "MAKE_WARN_UNDEFINED_VARIABLES", true)
     )
 
-    private val defaultRTOSVersion = BoolConfigEntry("3.1", "RTOS_VERSION_3_1")
-    val version = ChoiceConfigEntry("Espressif RTOS version", "RTOS_VERSION", mapOf(
-            BoolConfigEntry("2.0", "RTOS_VERSION_2_0") to "0",
-            BoolConfigEntry("3.0", "RTOS_VERSION_3_1") to "1",
-            defaultRTOSVersion to "2"),
-            defaultRTOSVersion)
-
     private val defaultTaskWatchdockS = BoolConfigEntry("26.2144s", "TASK_WDT_TIMEOUT_15N", true)
     private val defaultLineEnding = BoolConfigEntry("CRLF", "NEWLIB_STDOUT_LINE_ENDING_CRLF", true)
     private val defaultCrystalUsed = BoolConfigEntry("26Mh", "CRYSTAL_USED_26MHZ", true)
@@ -593,7 +584,6 @@ class MenuWizardData() {
     private val enablePThread = BoolConfigEntry("Enable pthread", "ENABLE_PTHREAD", false)
 
     val entriesMenu: List<ConfigurationEntry> = listOf(
-            version,
             SubPanelConfigEntry("App update",appUpdateMenu),
             enableAwsIOT,
             SubPanelConfigEntry("Amazon Web Services IoT Platform",awsIOTMenu, enableAwsIOT),

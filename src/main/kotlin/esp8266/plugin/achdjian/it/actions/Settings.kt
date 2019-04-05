@@ -9,8 +9,11 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.DialogWrapper.OK_EXIT_CODE
 import com.intellij.openapi.ui.Messages
 import com.intellij.ui.ScrollPaneFactory
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.*
 import esp8266.plugin.achdjian.it.wizard.espressif.rtos.Constants.CONFIG_FILE_NAME
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.Creator3_1
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.MenuWizardData
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configParsing
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.createSdkConfigFile
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 import javax.swing.BoxLayout
@@ -71,10 +74,4 @@ class Settings : AnAction("ESP8266 RTOS setting...") {
     }
 }
 
-private fun creatorFactory(wizardMenu: MenuWizardData) =
-        when (wizardMenu.version.choiceText) {
-            "0" -> Creator2_0()
-            "1" -> Creator3_1()
-            "2" -> Creator3_1()
-            else -> Creator3_1()
-        }
+private fun creatorFactory(wizardMenu: MenuWizardData) = Creator3_1()
