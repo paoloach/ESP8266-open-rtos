@@ -81,7 +81,8 @@ fun createSdkConfigFile(wizardData: MenuWizardData, path: VirtualFile, creator: 
     val builder = StringBuilder()
     builder.appendln("#define CONFIG_TOOLPREFIX \"xtensa-lx106-elf-\"")
     builder.appendln("#define CONFIG_TARGET_PLATFORM_ESP8266 1")
-    builder.appendln("#define CONFIG_APP_OFFSET  0x1000")
+    builder.appendln("#define CONFIG_APP1_OFFSET  0x10000")
+    builder.appendln("#define CONFIG_APP1_SIZE  0xF0000")
     builder.appendln(creator.config(wizardData))
 
     configurations.forEach {
@@ -110,5 +111,17 @@ private fun makeSubCMake(subdir: String, projectName: String, wizardMenu: MenuWi
     val cmakeFile = subFolder.findOrCreateChildData(null, "CMakeLists.txt")
     ApplicationManager.getApplication().runWriteAction {
         cmakeFile.setBinaryContent(cmakelists.toByteArray(Charsets.UTF_8))
+    }
+}
+
+fun copyLinkScript(path: VirtualFile, creator: Creator) {
+
+    val templatePath = creator.createTemplatePath()
+
+    var sourceLinkScript = getResourceAsString("$templatePath/ld/esp8266.common.ld")
+    val subFolder = path.createChildDirectory(null, "ld")
+    val destLinkScript = subFolder.findOrCreateChildData(null, "esp8266.common.ld")
+    ApplicationManager.getApplication().runWriteAction {
+        destLinkScript.setBinaryContent(sourceLinkScript.toByteArray(Charsets.UTF_8))
     }
 }

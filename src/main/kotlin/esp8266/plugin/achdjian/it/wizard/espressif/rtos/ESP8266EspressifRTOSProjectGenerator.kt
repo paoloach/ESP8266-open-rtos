@@ -20,6 +20,7 @@ class ESP8266EspressifRTOSProjectGenerator : CMakeAbstractCProjectGenerator() {
 
         createEspressifRTORSubCMake(projectName, wizardData, path, creator)
         createCMakeCrossTool(path, this)
+        copyLinkScript(path, creator)
 
         createSdkConfigFile(wizardData, path, creator)
         return arrayOf(createEspressifRTOSMain(path, this, creator))

@@ -100,3 +100,19 @@ class And(val aValue: BoolValue, val bValue: BoolValue) : BoolValue {
     }
 
 }
+
+class Or(val aValue: BoolValue, val bValue: BoolValue) : BoolValue {
+    override var value: Boolean
+        get() = aValue.value || bValue.value
+        set(value) {
+            aValue.value = value
+            bValue.value = value
+        }
+
+    override fun addListener(configurationEntry: ConfigurationEntry): Boolean {
+        aValue.addListener((configurationEntry))
+        bValue.addListener((configurationEntry))
+        return true
+    }
+
+}

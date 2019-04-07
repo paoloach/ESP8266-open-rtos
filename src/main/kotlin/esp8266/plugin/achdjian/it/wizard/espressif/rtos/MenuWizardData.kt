@@ -4,6 +4,24 @@ import esp8266.plugin.achdjian.it.wizard.espressif.rtos.components.*
 import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configurations.*
 
 class MenuWizardData() {
+    val consoleUartNum: String get() : String = if (consoleUartCustom1.value) "1" else "0"
+
+    val socIRAMSize: String get() = when(socFullICache.value){
+        true->"0x8000"
+        false->"0xC000"
+    }
+
+    val mqttSessionType: Int get()  = when(mqttSession.choiceText){
+        cleanMqttSession.text -> 1
+        keepMqttSession.text-> 0
+        else -> 1
+    }
+    val mqttVersionType: Int get() = when(mqttVersion.choiceText){
+        mqttV3_1.text->3
+        mqttV3_1_1.text->4
+        else -> 3
+
+    }
     val flashMode: String get() = flashModeConfigEntry.choiceText
     val flashFreq: String get() = flashFreqConfigEntry.choiceText
     val flashFreqHex: Int
@@ -24,10 +42,10 @@ class MenuWizardData() {
         }
     val taskWdtTimeout: String
         get() = when (choiceWT.choiceText) {
-            "6.5536s" -> "13"
-            "13.1072s" -> "14"
-            "26.2144s" -> "15"
-            else -> "0"
+            taskWdTimeout13N.text -> "13"
+            taskWdTimeout14N.text -> "14"
+            taskWdTimeout15N.text -> "15"
+            else -> "15"
 
         }
     val flashSize: String get() = flashSizeConfigEntry.choiceText
@@ -40,40 +58,34 @@ class MenuWizardData() {
 
     val flashSizeHex: String
         get() = when (flashSizeConfigEntry.choiceText) {
-            "2MB" -> "0x200000"
-            "4MB" -> "0x400000"
-            "8MB" -> "0x800000"
-            "16MB" -> "0x1000000"
+            "\"2MB\"" -> "0x200000"
+            "\"4MB\"" -> "0x400000"
+            "\"8MB\"" -> "0x800000"
+            "\"16MB\"" -> "0x1000000"
             else -> "0x200000"
         }
     val spiFlashModeHex: String
         get() = when (flashModeConfigEntry.choiceText) {
-            "qio" -> "0"
-            "qout" -> "1"
-            "dio" -> "2"
-            "dout" -> "3"
+            "\"qio\"" -> "0"
+            "\"qout\"" -> "1"
+            "\"dio\"" -> "2"
+            "\"dout\"" -> "3"
             else -> "0"
         }
 
 
-    private val enableIPV6 = BoolConfigEntry("Enable IPv6", "LWIP_IPV6", true)
-    private val lwipSocketMultithread = BoolConfigEntry("LWIP socket supports multithread", "LWIP_SOCKET_MULTITHREAD", true)
-    private val espUdpSyncSend = BoolConfigEntry("LWIP socket UDP sync send", "ESP_UDP_SYNC_SEND", true)
-    private val wifiTxRateSequenceFromHigh = BoolConfigEntry("Set wifi tx rate from 54M to 1M", "WIFI_TX_RATE_SEQUENCE_FROM_HIGH", defaultValue = false)
-    private val socFullICache = BooleanInteger("Enable full cache mode", "SOC_IRAM_SIZE", false, 0x8000, 0xC000)
-    private val tcpHighSpeedRetransmission = BoolConfigEntry("TCP high speed retransmissions", "TCP_HIGH_SPEED_RETRANSMISSION", defaultValue = false)
-    private val tcpQueueOoseq = BoolConfigEntry("Queue incoming out-of-order segments", "TCP_QUEUE_OOSEQ")
-    private val lwipHighThroughput = BoolConfigEntry("Enable lwip high throughput", "LWIP_HIGH_THROUGHPUT", false, associated = listOf(tcpQueueOoseq, tcpHighSpeedRetransmission, socFullICache, wifiTxRateSequenceFromHigh))
     private val defaultBaudRate = BoolConfigEntry("115200 baud", "ESPTOOLPY_BAUD_115200B", true)
-    private val defaultFlashMode = BoolConfigEntry("QIO", "FLASHMODE_QIO", true)
+    private val flashModeQIO = BoolConfigEntry("QIO", "FLASHMODE_QIO", false)
+    private val flashModeDIO = BoolConfigEntry("DIO", "FLASHMODE_DIO", true)
     private val defaultFlashFreq = BoolConfigEntry("40 MHz", "ESPTOOLPY_FLASHFREQ_40M", true)
-    private val defaultFlashSize = BoolConfigEntry("4 MB", "ESPTOOLPY_FLASHSIZE_4MB", true)
+    private val flashSize4Mb = BoolConfigEntry("4 MB", "ESPTOOLPY_FLASHSIZE_4MB", false)
+    private val flashSize8Mb = BoolConfigEntry("8 MB", "ESPTOOLPY_FLASHSIZE_8MB", true)
     private val flashModeConfigEntry = ChoiceConfigEntry("Flash SPI mode", "ESPTOOLPY_FLASHMODE", mapOf(
-            defaultFlashMode to "\"qio\"",
+            flashModeQIO to "\"qio\"",
             BoolConfigEntry("QOUT", "FLASHMODE_QOUT", true) to "\"qout\"",
-            BoolConfigEntry("DIO", "FLASHMODE_DIO", true) to "\"dio\"",
+            flashModeDIO to "\"dio\"",
             BoolConfigEntry("DOUT", "FLASHMODE_DOUT", true) to "\"dout\""
-    ), defaultFlashMode)
+    ), flashModeDIO)
 
     private val flashFreqConfigEntry = ChoiceConfigEntry("Flash SPI speed", "ESPTOOLPY_FLASHFREQ", mapOf(
             BoolConfigEntry("80 MHz", "ESPTOOLPY_FLASHFREQ_80M", true) to "\"80m\"",
@@ -83,10 +95,10 @@ class MenuWizardData() {
     ), defaultFlashFreq)
     private val flashSizeConfigEntry = ChoiceConfigEntry("Flash size", "ESPTOOLPY_FLASHSIZE", mapOf(
             BoolConfigEntry("2 MB", "ESPTOOLPY_FLASHSIZE_2MB", true) to "\"2MB\"",
-            defaultFlashSize to "\"4MB\"",
-            BoolConfigEntry("8 MB", "ESPTOOLPY_FLASHSIZE_8MB", true) to "\"8MB\"",
+            flashSize4Mb to "\"4 MB\"",
+            flashSize8Mb to "\"8MB\"",
             BoolConfigEntry("16 MB", "ESPTOOLPY_FLASHSIZE_16MB", true) to "\"16MB\""
-    ), defaultFlashSize)
+    ), flashSize8Mb)
     private val defaultResetBeforeFlash = BoolConfigEntry("Reset to bootloader", "ESPTOOLPY_BEFORE_RESET", true)
     private val defaultResetAfterFlash = BoolConfigEntry("Reset after flashing", "ESPTOOLPY_AFTER_RESET", true)
     private val esptoolPortEntry = StringConfigEntry("Default serial port", "ESPTOOLPY_PORT", "/dev/ttyUSB0")
@@ -203,158 +215,8 @@ class MenuWizardData() {
             BoolConfigEntry("Use ANSI terminal colors in log output", "LOG_COLORS", true)
     )
 
-    private val soReuse = BoolConfigEntry("Enable SO_REUSEADDR option", "LWIP_SO_REUSE", true)
-    private val icmp = BoolConfigEntry("ICMP", "LWIP_ICMP", true)
-    private val lwipAutoip = BoolConfigEntry("Enable IPV4 Link-Local Addressing (AUTOIP)", "LWIP_AUTOIP", false)
-    private val perInterfaceLoopback = BoolConfigEntry("nable per-interface loopback", "LWIP_NETIF_LOOPBACK", false)
-
-    private val enableDebug = BoolConfigEntry("Enable lwip Debug", "LWIP_DEBUG", false)
-
-    private val entriesARP = listOf(
-            IntConfigEntry("Number of active MAC-IP address pairs cached", "LWIP_ARP_TABLE_SIZE", 10, 1, 16),
-            IntConfigEntry("The time an ARP entry stays valid after its last update", "LWIP_ARP_MAXAGE", 300, 100, 65535)
-    )
-    private val entriesSocket = listOf<ConfigurationEntry>(
-            BoolConfigEntry("LWIP socket supports IPv6 multicast configuration", "LWIP_IPV6_MLD_SOCK", true, dependsOn = enableIPV6),
-            lwipSocketMultithread,
-            BoolConfigEntry("set socket SO_LINGER default", "SET_SOLINGER_DEFAULT", true, dependsOn = lwipSocketMultithread),
-            espUdpSyncSend,
-            IntConfigEntry("LWIP socket UDP sync send retry max count", "ESP_UDP_SYNC_RETRY_MAX", 5, 1, 5, dependsOn = espUdpSyncSend),
-            IntConfigEntry("Max number of open sockets", "LWIP_MAX_SOCKETS", 10, 1, 16),
-            soReuse,
-            BoolConfigEntry("SO_REUSEADDR copies broadcast/multicast to all matches", "LWIP_SO_REUSE_RXTOALL", true, soReuse),
-            BoolConfigEntry("Enable SO_RCVBUF option", "LWIP_SO_RCVBUF", false),
-            IntConfigEntry("The default value for recv_bufsize", "LWIP_RECV_BUFSIZE_DEFAULT", 11680, 2920, 11680),
-            IntConfigEntry("TCP socket/netconn close waits time to send the FIN", "LWIP_TCP_CLOSE_TIMEOUT_MS_DEFAULT", 10000, 10000, 20000)
-    )
-
-    private val entryICMP = listOf(
-            BoolConfigEntry("Respond to multicast pings", "LWIP_MULTICAST_PING", false),
-            BoolConfigEntry("Respond to broadcast pings", "LWIP_BROADCAST_PING", false),
-            BoolConfigEntry("Enable application layer to hook into the IP layer itself", "LWIP_RAW", false)
-    )
-
-    private val entriesDHCP = listOf<ConfigurationEntry>(
-            BoolConfigEntry("DHCP: Perform ARP check on any offered address", "LWIP_DHCP_DOES_ARP_CHECK", true),
-            IntConfigEntry("Maximum number of NTP servers", "LWIP_DHCP_MAX_NTP_SERVERS", 1, 1, 8),
-            IntConfigEntry("Multiplier for lease time, in seconds", "LWIP_DHCPS_LEASE_UNIT", 60, 1, 3600),
-            IntConfigEntry("Maximum number of stations", "LWIP_DHCPS_MAX_STATION_NUM", 8, 1, 8)
-    )
-
-    private val entriesLwipAutoip = listOf(
-            IntConfigEntry("DHCP Probes before self-assigning IPv4 LL address", "LWIP_DHCP_AUTOIP_COOP_TRIES", 2, 1, 100),
-            IntConfigEntry("Max IP conflicts before rate limiting", "LWIP_AUTOIP_MAX_CONFLICTS", 9, 1, 100),
-            IntConfigEntry("Rate limited interval (seconds)", "LWIP_AUTOIP_RATE_LIMIT_INTERVAL", 20, 1, 120)
-    )
-
-    private val entriesPerInterfaceLoopback = listOf(
-            IntConfigEntry("Max queued loopback packets per interface", "LWIP_LOOPBACK_MAX_PBUFS", 0, 0, 16)
-    )
-
-    private val defaultTCPOversize = BoolConfigEntry("MSS", "TCP_OVERSIZE_MSS", true)
-    private val entriesTCP = listOf(
-            tcpHighSpeedRetransmission,
-            IntConfigEntry("Maximum active TCP Connections", "LWIP_MAX_ACTIVE_TCP", 5, 1, 32),
-            IntConfigEntry("Maximum listening TCP Connections", "LWIP_MAX_LISTENING_TCP", 8, 1, 16),
-            IntConfigEntry("Maximum number of retransmissions of data segments", "TCP_MAXRTX", 12, 3, 12),
-            IntConfigEntry("Maximum number of retransmissions of SYN segments", "TCP_SYNMAXRTX", 6, 3, 12),
-            IntConfigEntry("Maximum Segment Size (MSS)", "TCP_MSS", 1460, 536, 1460),
-            IntConfigEntry("Default send buffer size", "TCP_SND_BUF_DEFAULT", 2920, 2920, 11680),
-            IntConfigEntry("Default receive window size", "TCP_WND_DEFAULT", 5840, 2920, 11680),
-            IntConfigEntry("Default TCP receive mail box size", "TCP_RECVMBOX_SIZE", 6, 6, 32),
-            tcpQueueOoseq,
-            ChoiceConfigEntry("Pre-allocate transmit PBUF size", "TCP_OVERSIZE", listOf(
-                    defaultTCPOversize,
-                    BoolConfigEntry("25% MSS", "TCP_OVERSIZE_QUARTER_MSS", true),
-                    BoolConfigEntry("Disabled", "TCP_OVERSIZE_DISABLE", true)),
-                    defaultTCPOversize),
-            BoolConfigEntry("Support the TCP timestamp option", "LWIP_TCP_TIMESTAMPS", false)
-    )
-
-    private val entriesUDP = listOf(
-            IntConfigEntry("Maximum active UDP control blocks", "LWIP_MAX_UDP_PCBS", 4, 1, 32),
-            IntConfigEntry("Default UDP receive mail box size", "UDP_RECVMBOX_SIZE", 6, 6, 64)
-    )
-
-    private val entriesIPV6 = listOf<ConfigurationEntry>(
-            IntConfigEntry("Number of IPv6 addresses per netif", "LWIP_IPV6_NUM_ADDRESSES", 3, 3, 5),
-            BoolConfigEntry("Forward IPv6 packets across netifs", "LWIP_IPV6_FORWARD", false),
-            BoolConfigEntry("Fragment outgoing IPv6 packets that are too big", "LWIP_IPV6_FRAG", false),
-            BoolConfigEntry("The IPv6 ND6 RDNSS max DNS servers", "LWIP_ND6_RDNSS_MAX_DNS_SERVERS", false)
-    )
-
-    private val entriesDebug = listOf<ConfigurationEntry>(
-            BoolConfigEntry("Enable debugging in etharp.c", "LWIP_ETHARP_DEBUG", false),
-            BoolConfigEntry("Enable debugging in netif.c", "LWIP_NETIF_DEBUG", false),
-            BoolConfigEntry("Enable debugging in pbuf.c", "LWIP_PBUF_DEBUG", false),
-            BoolConfigEntry("Enable debugging in api_lib.c", "LWIP_API_LIB_DEBUG", false),
-            BoolConfigEntry("Enable debugging in api_msg.c", "LWIP_API_MSG_DEBUG", false),
-            BoolConfigEntry("Enable debugging in sockets.c", "LWIP_SOCKETS_DEBUG", false),
-            BoolConfigEntry("Enable debugging in icmp.c", "LWIP_ICMP_DEBUG", false),
-            BoolConfigEntry("Enable debugging in igmp.c", "LWIP_IGMP_DEBUG", false),
-            BoolConfigEntry("Enable debugging in inet.c", "LWIP_INET_DEBUG", false),
-            BoolConfigEntry("Enable debugging in ethernetif.c", "LWIP_ETHERNETIF_DEBUG", false),
-            BoolConfigEntry("Enable debugging for IP", "LWIP_IP_DEBUG", false),
-            BoolConfigEntry("Enable debugging in ip_frag.c for both frag & reass", "LWIP_IP_REASS_DEBUG", false),
-            BoolConfigEntry("Enable debugging in raw.c", "LWIP_RAW_DEBUG", false),
-            BoolConfigEntry("Enable debugging in mem.c", "LWIP_MEM_DEBUG", false),
-            BoolConfigEntry("Enable debugging in memp.c", "LWIP_MEMP_DEBUG", false),
-            BoolConfigEntry("Enable debugging in sys.c", "LWIP_SYS_DEBUG", false),
-            BoolConfigEntry("Enable debugging in timers.c", "LWIP_TIMERS_DEBUG", false),
-            BoolConfigEntry("Enable debugging for TCP", "LWIP_TCP_DEBUG", false),
-            BoolConfigEntry("Enable debugging in tcp_in.c for incoming debug", "LWIP_TCP_INPUT_DEBUG", false),
-            BoolConfigEntry("Enable debugging in tcp_in.c for fast retransmit", "LWIP_TCP_FR_DEBUG", false),
-            BoolConfigEntry("Enable debugging in TCP for retransmit", "LWIP_TCP_RTO_DEBUG", false),
-            BoolConfigEntry("Enable debugging for TCP congestion window", "LWIP_TCP_CWND_DEBUG", false),
-            BoolConfigEntry("Enable debugging in tcp_in.c for window updating", "LWIP_TCP_WND_DEBUG", false),
-            BoolConfigEntry("Enable debugging in tcp_out.c output functions", "LWIP_TCP_OUTPUT_DEBUG", false),
-            BoolConfigEntry("Enable debugging for TCP with the RST message", "LWIP_TCP_RST_DEBUG", false),
-            BoolConfigEntry("Enable debugging for TCP queue lengths", "LWIP_TCP_QLEN_DEBUG", false),
-            BoolConfigEntry("Enable debugging in UDP", "LWIP_UDP_DEBUG", false),
-            BoolConfigEntry("Enable debugging in tcpip.c", "LWIP_TCPIP_DEBUG", false),
-            BoolConfigEntry("Enable debugging in slipif.c", "LWIP_SLIP_DEBUG", false),
-            BoolConfigEntry("Enable debugging in dhcp.c", "LWIP_DHCP_DEBUG", false),
-            BoolConfigEntry("Enable debugging in dhcpserver.c", "LWIP_DHCP_SERVER_DEBUG", false),
-            BoolConfigEntry("Enable debugging in autoip.c", "LWIP_AUTOIP_DEBUG", false),
-            BoolConfigEntry("Enable debugging for DNS", "LWIP_DNS_DEBUG", false),
-            BoolConfigEntry("Enable debugging for IPv6", "LWIP_IP6_DEBUG", false),
-            BoolConfigEntry("Enable debugging for SNTP", "LWIP_SNTP_DEBUG", false),
-            BoolConfigEntry("Enable debugging for LWIP thread safety", "LWIP_THREAD_SAFE_DEBUG", false)
-    )
 
 
-    private val entriesLWIP = listOf(
-            BoolConfigEntry("Enable lwip use iram option", "LWIP_USE_IRAM", false),
-            lwipHighThroughput,
-            BoolConfigEntry("Link LWIP global data to IRAM", "LWIP_GLOBAL_DATA_LINK_IRAM", true, And(Not(lwipHighThroughput), Not(socFullICache))),
-            IntConfigEntry("TCPIP task receive mail box size", "TCPIP_RECVMBOX_SIZE", 32, 6, 64),
-            SubPanelConfigEntry("ARP", entriesARP),
-            SubPanelConfigEntry("SOCKET", entriesSocket),
-            BoolConfigEntry("Enable fragment outgoing IP packets", "LWIP_IP_FRAG", false),
-            BoolConfigEntry("Enable reassembly incoming fragmented IP packets", "LWIP_IP_REASSEMBLY", false),
-            IntConfigEntry("Total maximum amount of pbufs waiting to be reassembled", "LWIP_IP_REASS_MAX_PBUFS", 10, 1, 16),
-            BoolConfigEntry("Enable broadcast filter per pcb on udp and raw send operation", "LWIP_IP_SOF_BROADCAST", false),
-            BoolConfigEntry("Enable the broadcast filter on recv operations", "LWIP_IP_SOF_BROADCAST_RECV", false),
-            icmp,
-            SubPanelConfigEntry("ICMP", entryICMP, icmp),
-            BoolConfigEntry("Enable application layer to hook into the IP layer itself", "LWIP_RAW", false),
-            SubPanelConfigEntry("DHCP", entriesDHCP),
-            lwipAutoip,
-            SubPanelConfigEntry("AUTOIP", entriesLwipAutoip, lwipAutoip),
-            BoolConfigEntry("Enable IGMP module", "LWIP_IGMP", true),
-            IntConfigEntry("The maximum of DNS servers", "DNS_MAX_SERVERS", 2, 1, 5),
-            perInterfaceLoopback,
-            SubPanelConfigEntry("per-interface loopback", entriesPerInterfaceLoopback, perInterfaceLoopback),
-            SubPanelConfigEntry("TCP", entriesTCP),
-            SubPanelConfigEntry("UDP", entriesUDP),
-            IntConfigEntry("TCP/IP Task Stack Size", "TCPIP_TASK_STACK_SIZE", 2048, 2048, 8192),
-            IntConfigEntry("Maximum LWIP RAW PCBs", "LWIP_MAX_RAW_PCBS", 4, 1, 32),
-            enableIPV6,
-            SubPanelConfigEntry("IPV6", entriesIPV6, enableIPV6),
-            BoolConfigEntry("Enable statistics collection in lwip_stats", "LWIP_STATS", false),
-            enableDebug,
-            SubPanelConfigEntry("Debug", entriesDebug, enableDebug)
-    )
 
     private val newLibEnable = BoolConfigEntry("Enable newlib", "NEWLIB_ENABLE", true)
     private val defaultNewLibLevel = BoolConfigEntry("nano", "NEWLIB_LIBRARY_LEVEL_NANO", true)
@@ -502,82 +364,7 @@ class MenuWizardData() {
             BoolConfigEntry("'make' warns on undefined variables", "MAKE_WARN_UNDEFINED_VARIABLES", true)
     )
 
-    private val defaultTaskWatchdockS = BoolConfigEntry("26.2144s", "TASK_WDT_TIMEOUT_15N", true)
-    private val defaultLineEnding = BoolConfigEntry("CRLF", "NEWLIB_STDOUT_LINE_ENDING_CRLF", true)
-    private val defaultCrystalUsed = BoolConfigEntry("26Mh", "CRYSTAL_USED_26MHZ", true)
-    private val choiceCrystalUsed = ChoiceConfigEntry("Crystal Used", "CRYSTAL_USED", listOf(
-            defaultCrystalUsed,
-            BoolConfigEntry("40Mh", "CRYSTAL_USED_40MHZ")
-    ), defaultCrystalUsed)
-    private val choiceWT = ChoiceConfigEntry("Task Watchdog timeout period (seconds)", "TASK_WDT_TIMEOUT", listOf(
-            defaultTaskWatchdockS,
-            BoolConfigEntry("13.1072s", "TASK_WDT_TIMEOUT_14N"),
-            BoolConfigEntry("6.5536s", "TASK_WDT_TIMEOUT_13N")
-    ), defaultTaskWatchdockS)
 
-
-    private val wifiMenu = listOf<ConfigurationEntry>(
-            IntConfigEntry("Max scan AP numbe", "SCAN_AP_MAX", 32, 1, 64),
-            wifiTxRateSequenceFromHigh
-    )
-
-    private val esp8266ConfigurationMenu = listOf(
-            socFullICache,
-            ChoiceConfigEntry("Line ending for UART output", "NEWLIB_STDOUT_LINE_ENDING", listOf(
-                    defaultLineEnding,
-                    BoolConfigEntry("LF", "NEWLIB_STDOUT_LINE_ENDING_LF"),
-                    BoolConfigEntry("CR", "NEWLIB_STDOUT_LINE_ENDING_CR")
-            ), defaultLineEnding),
-            choiceWT,
-            choiceCrystalUsed,
-            IntConfigEntry("ppT task stack size", "WIFI_PPT_TASKSTACK_SIZE", 2048, 2048, 8192),
-            IntConfigEntry("Main task stack size", "MAIN_TASK_STACK_SIZE", 0, 10000, 3584),
-            IntConfigEntry("Event loop stack size", "EVENT_LOOP_STACK_SIZE", 0, 10000, 2048)
-    )
-
-    private val defaultMQTTVersion = BoolConfigEntry("V3.1", "MQTT_V3_1", true)
-    private val MQTTV3_1_1 = BoolConfigEntry("V3.1.1", "MQTT_V3_1_1", true)
-    private val MQTTVersion = ChoiceConfigEntry("MQTT version", "MQTT_VERSION", listOf(
-                defaultMQTTVersion,
-                MQTTV3_1_1
-            ), defaultMQTTVersion)
-    private val defaultMqttSession = BoolConfigEntry("Clean Session", "CLEAN_SESSION", true)
-
-    private val mqttMenu = listOf<ConfigurationEntry>(
-            MQTTVersion,
-            StringConfigEntry("MQTT client ID", "MQTT_CLIENT_ID", "espressif_sample"),
-            IntConfigEntry("MQTT keep-alive(seconds)", "MQTT_KEEP_ALIVE", 30, 1, 10000),
-            StringConfigEntry("MQTT username", "MQTT_USERNAME", "espressif"),
-            StringConfigEntry("MQTT password", "MQTT_PASSWORD", "admin"),
-            ChoiceConfigEntry("MQTT Session", "MQTT_SESSION", listOf(
-                    defaultMqttSession,
-                    BoolConfigEntry("Keep Session", "KEEP_SESSION", false)
-            ), defaultMqttSession),
-            IntConfigEntry("MQTT send buffer", "MQTT_SEND_BUFFER", 2048, 1, 10000),
-            IntConfigEntry("MQTT recv buffer", "MQTT_RECV_BUFFER", 2048, 1, 10000),
-            IntConfigEntry("MQTT send cycle(ms)", "MQTT_SEND_CYCLE", 30000, 1, 100000),
-            IntConfigEntry("MQTT recv cycle(ms)", "MQTT_RECV_CYCLE", 0, 0, 100000),
-            IntConfigEntry("MQTT ping timeout(ms)", "MQTT_PING_TIMEOUT", 3000, 0, 100000)
-    )
-
-
-
-    private val defaultBootloaderLogLevel = BoolConfigEntry("Info", "LOG_BOOTLOADER_LEVEL_INFO", true)
-    private val bootloaderLogLevel = ChoiceConfigEntry("Bootloader log verbosity", "LOG_BOOTLOADER_LEVEL", mapOf(
-            BoolConfigEntry("No output", "LOG_BOOTLOADER_LEVEL_NONE") to "0",
-            BoolConfigEntry("Error", "LOG_BOOTLOADER_LEVEL_ERROR") to "1",
-            BoolConfigEntry("Warning", "LOG_BOOTLOADER_LEVEL_WARN") to "2",
-            defaultBootloaderLogLevel to "3",
-            BoolConfigEntry("Debug", "LOG_BOOTLOADER_LEVEL_DEBUG") to "4",
-            BoolConfigEntry("Verbose", "LOG_BOOTLOADER_LEVEL_VERBOSE") to "5"
-    ), defaultBootloaderLogLevel)
-
-    private val bootloaderCheckData = BoolConfigEntry("Check APP binary data sum before loading", "BOOTLOADER_CHECK_APP_SUM", true)
-
-    private val bootloaderConfiguration = listOf(
-            bootloaderLogLevel,
-            bootloaderCheckData
-    )
 
     private val enableAwsIOT = BoolConfigEntry("Enable Amazon Web Services IoT Platform", "AWS_IOT_SDK", false)
     private val enablemDns = BoolConfigEntry("Enable mDNS", "ENABLE_MDNS", false)

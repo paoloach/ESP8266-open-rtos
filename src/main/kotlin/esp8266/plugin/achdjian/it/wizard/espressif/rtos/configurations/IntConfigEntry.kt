@@ -1,5 +1,6 @@
 package esp8266.plugin.achdjian.it.wizard.espressif.rtos.configurations
 
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.BoolValue
 import esp8266.plugin.achdjian.it.wizard.espressif.rtos.ConfigurationEntry
 import java.awt.Color
 import java.awt.GridLayout
@@ -9,11 +10,11 @@ import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 
-class IntConfigEntry(text: String, configEntry: String, public var value: Int, private val min: Int, private val max: Int, dependsOn: List<BoolConfigEntry>) : ConfigurationEntry(text, configEntry, dependsOn), DocumentListener {
+class IntConfigEntry(text: String, configEntry: String, var value: Int, private val min: Int, private val max: Int, dependsOn: List<BoolValue>) : ConfigurationEntry(text, configEntry, dependsOn), DocumentListener {
     private val textField = IntegerTextField()
 
 
-    constructor(text: String, configEntry: String, value: Int, min: Int, max: Int, dependsOn: BoolConfigEntry) :
+    constructor(text: String, configEntry: String, value: Int, min: Int, max: Int, dependsOn: BoolValue) :
             this(text, configEntry, value, min, max, listOf(dependsOn))
 
     constructor(text: String, configEntry: String, value: Int, min: Int, max: Int) :

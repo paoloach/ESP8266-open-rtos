@@ -17,6 +17,17 @@ set(CMAKE_C_STANDARD 99)
 set(COMMON_FLAGS  -ggdb -ffunction-sections -fdata-sections -fstrict-volatile-bitfields -mlongcalls -nostdlib __{CONFIG_FLAS}__ -D__ESP_FILE__=__FILE__  -DMBEDTLS_CONFIG_FILE=\"mbedtls/esp_config.h\" -DICACHE_FLASH -DESP_PLATFORM -DIDF_VER=\"${IDF_VER}\" -MMD -MP   -DWITH_POSIX  )
 set(WARNING_FLAGS -Wall -Werror=all -Wno-error=unused-function -Wno-error=unused-but-set-variable -Wno-error=unused-variable -Wno-error=deprecated-declarations -Wextra -Wno-unused-parameter -Wno-sign-compare -Wno-error=char-subscripts -Wno-error=unknown-pragmas -Wno-error=implicit-function-declaration -Wno-error=pointer-sign -Wno-error=switch -Wno-error=maybe-uninitialized -Wno-error=format= -Wno-error=unused-value -Wno-error=address -Wno-error=return-type -Wno-error=format-extra-args -Wno-error=format-zero-length -Wno-error=unused-label -Wno-error=sizeof-pointer-memaccess)
 
+file(READ include/sdkconfig.h SDKCONFIG)
+string(FIND ${SDKCONFIG} "CONFIG_BOOTLOADER_CHECK_APP_SUM" FOUND_CHECK_APP_SUM)
+if (FOUND_CHECK_APP_SUM GREATER 1)
+    list(APPEND COMMON_FLAGS -DCONFIG_ENABLE_BOOT_CHECK_SUM=1 )
+endif()
+string(FIND ${SDKCONFIG} "CONFIG_BOOTLOADER_CHECK_APP_HASH" FOUND_CHECK_APP_HASH)
+if (FOUND_CHECK_APP_HASH GREATER 1)
+    list(APPEND COMMON_FLAGS -DCONFIG_ENABLE_BOOT_CHECK_SHA256=1 )
+endif()
+
+
 set(FLASH_SIZE __{flash_size_hex}__)
 set(SPI_FLASG_MODE __{flash_SPI_MODE}__)
 
@@ -54,7 +65,7 @@ set(PROGRAM_SRC main.c include/sdkconfig.h)
 
 add_custom_target(linkerDef
         COMMAND ${CMAKE_C_COMPILER} -DAPP_OFFSET=0x10000 -DAPP_SIZE=0xF0000  -I ../include -C -P -x c -E ${RTOS_DIR}/components/esp8266/ld/esp8266.ld -o esp8266_out.ld
-        COMMAND ${CMAKE_C_COMPILER} -I ../include -C -P -x c -E ${RTOS_DIR}/components/esp8266/ld/esp8266.common.ld -o esp8266_common_out.ld
+        COMMAND ${CMAKE_C_COMPILER} -I ../include -C -P -x c -E ${CMAKE_SOURCE_DIR}/ld/esp8266.common.ld -o esp8266_common_out.ld
         COMMENT "create linker files")
 
 add_custom_target(image
@@ -130,32 +141,30 @@ add_dependencies(firmware linkerDef)
 
 target_link_libraries(firmware
         -Wl,--start-group
-        bootloaderSupport
         appUpdate
-        log
-        esp8266
         awsIOT
+        bootloaderSupport
+        cjson
         coap
         espTls
-        util
-        heap
-        cjson
+        esp8266
         espOS
         freeRTOS
+        heap
         jsmn
+        sodium
+        log
         lwip
-        mqtt
         mdns
+        mqtt
         newlib
         nvs_flash
         smartConfig
-        sodium
         spiFlash
-        spiffs
         ssl
         tcpipAdapter
+        util
         wpaSupplicant
-        espnow
         gcc
         hal
         core
