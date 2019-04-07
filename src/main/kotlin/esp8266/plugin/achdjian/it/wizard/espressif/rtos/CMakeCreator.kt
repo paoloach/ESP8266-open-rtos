@@ -44,7 +44,6 @@ fun createEspressifRTORSubCMake(projectName: String, wizardMenu: MenuWizardData,
     makeSubCMake("cjson", projectName, wizardMenu, path, creator)
     makeSubCMake("coap", projectName, wizardMenu, path, creator)
     makeSubCMake("esp8266", projectName, wizardMenu, path, creator)
-    makeSubCMake("espOS", projectName, wizardMenu, path, creator)
     makeSubCMake("espTls", projectName, wizardMenu, path, creator)
     makeSubCMake("heap", projectName, wizardMenu, path, creator)
     makeSubCMake("freeRTOS", projectName, wizardMenu, path, creator)

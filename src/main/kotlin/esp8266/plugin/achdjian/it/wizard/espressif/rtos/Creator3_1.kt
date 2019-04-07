@@ -6,7 +6,8 @@ class Creator3_1 : Creator {
     override fun config(wizardMenu: MenuWizardData): String {
         val builder = StringBuilder()
 
-
+        builder.appendln("#define CONFIG_IDF_TARGET_ESP8266 1")
+        builder.appendln("#define CONFIG_MQTT_USING_ESP 1")
         builder.appendln("#define CONFIG_MONITOR_BAUD 115200")
         builder.appendln("#define CONFIG_MONITOR_BAUD_115200B 1")
         builder.appendln("#define CONFIG_MONITOR_BAUD_OTHER_VAL 74880")

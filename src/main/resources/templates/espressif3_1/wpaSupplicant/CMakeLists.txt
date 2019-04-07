@@ -45,7 +45,6 @@ target_include_directories(wpaSupplicant PUBLIC
     ${RTOS_DIR}/components/cjson/include
     ${RTOS_DIR}/components/cjson/cJSON
     ${RTOS_DIR}/components/esp8266/include
-    ${RTOS_DIR}/components/espos/include
     ${RTOS_DIR}/components/freertos/include
     ${RTOS_DIR}/components/freertos/include/freertos
     ${RTOS_DIR}/components/freertos/include/freertos/private

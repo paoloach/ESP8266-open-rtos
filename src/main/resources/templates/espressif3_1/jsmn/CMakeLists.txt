@@ -19,7 +19,6 @@ target_include_directories(jsmn PUBLIC
         ${RTOS_DIR}/components/cjson/cJSON
         ${RTOS_DIR}/components/esp8266/include
         ${RTOS_DIR}/components/esp8266/include
-        ${RTOS_DIR}/components/espos/include
         ${RTOS_DIR}/components/jsmn/include
         ${RTOS_DIR}/components/log/include
         ${RTOS_DIR}/components/lwip/include

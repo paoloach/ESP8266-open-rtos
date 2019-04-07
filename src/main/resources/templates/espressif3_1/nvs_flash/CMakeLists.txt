@@ -33,8 +33,7 @@ target_include_directories(nvs_flash PUBLIC
         ${RTOS_DIR}/components/cjson/cJSON
         ${RTOS_DIR}/components/esp8266/include 
         ${RTOS_DIR}/components/esp8266/include 
-        ${RTOS_DIR}/components/espos/include
-        ${RTOS_DIR}/components/freertos/include 
+        ${RTOS_DIR}/components/freertos/include
         ${RTOS_DIR}/components/freertos/include 
         ${RTOS_DIR}/components/freertos/include/freertos 
         ${RTOS_DIR}/components/freertos/include/freertos/private 

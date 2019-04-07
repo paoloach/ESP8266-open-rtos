@@ -3,30 +3,9 @@ project(__{project_name}__ )
 
 set(SOURCE_DIR ${RTOS_DIR}/components/freertos)
 
-set(PORT_SRC_ASM
-        ${SOURCE_DIR}/port/esp8266/xtensa_context.S
-        ${SOURCE_DIR}/port/esp8266/os_cpu_a.S
-        ${SOURCE_DIR}/port/esp8266/xtensa_vectors.S
-        )
-
-
-set(FREE_RTOS_SRC
-        ${SOURCE_DIR}/freertos/event_groups.c
-        ${SOURCE_DIR}/freertos/list.c
-        ${SOURCE_DIR}/freertos/queue.c
-        ${SOURCE_DIR}/freertos/ringbuf.c
-        ${SOURCE_DIR}/freertos/stream_buffer.c
-        ${SOURCE_DIR}/freertos/tasks.c
-        ${SOURCE_DIR}/freertos/timers.c
-        )
-
-set(PORT_SRC_C
-        ${SOURCE_DIR}/port/esp8266/freertos_hooks.c
-        ${SOURCE_DIR}/port/esp8266/impure.c
-        ${SOURCE_DIR}/port/esp8266/panic.c
-        ${SOURCE_DIR}/port/esp8266/port.c
-        ${SOURCE_DIR}/port/esp8266/xtensa_init.c
-)
+file(GLOB PORT_SRC_ASM ${SOURCE_DIR}/port/esp8266/*.S)
+file(GLOB PORT_SRC_C ${SOURCE_DIR}/port/esp8266/*.c)
+file(GLOB FREE_RTOS_SRC ${SOURCE_DIR}/freertos/*.c)
 
 
 add_library(freeRTOS STATIC
@@ -61,7 +40,6 @@ target_include_directories(freeRTOS PUBLIC
         ${RTOS_DIR}/components/cjson/cJSON
         ${RTOS_DIR}/components/esp8266/include
         ${RTOS_DIR}/components/esp8266/include
-        ${RTOS_DIR}/components/espos/include
         ${RTOS_DIR}/components/jsmn/include
         ${RTOS_DIR}/components/log/include
         ${RTOS_DIR}/components/lwip/include

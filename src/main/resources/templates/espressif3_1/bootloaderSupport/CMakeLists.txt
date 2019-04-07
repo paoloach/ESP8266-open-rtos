@@ -1,30 +1,18 @@
 cmake_minimum_required(VERSION 3.10)
-project(__{project_name}__ )
+project(untitled3 )
 
-set(SOURCE_DIR ${RTOS_DIR}/components/bootloader_support/src)
+set(SOURCE_DIR ${RTOS_DIR}/components/bootloader_support)
 
-set(SRC
-        ${SOURCE_DIR}/bootloader_clock.c
-        ${SOURCE_DIR}/bootloader_flash.c
-        ${SOURCE_DIR}/bootloader_random.c
-        ${SOURCE_DIR}/bootloader_utility.c
-        ${SOURCE_DIR}/esp_image_format.c
-        ${SOURCE_DIR}/flash_partitions.c
-        ${SOURCE_DIR}/secure_boot.c
-        ${SOURCE_DIR}/bootloader_common.c
-        ${SOURCE_DIR}/bootloader_init.c
-        ${SOURCE_DIR}/bootloader_sha.c
-        ${SOURCE_DIR}/efuse.c
-        ${SOURCE_DIR}/flash_encrypt.c
-        ${SOURCE_DIR}/flash_qio_mode.c
-        ${SOURCE_DIR}/secure_boot_signatures.c
-        )
+file(GLOB SOURCE  ${SOURCE_DIR}/src/*.c)
 
+add_library(bootloaderSupport STATIC ${SOURCE})
+add_library(bootloaderSupport_boot STATIC ${SOURCE})
 
-add_library(bootloaderSupport STATIC ${SRC})
-add_library(bootloaderSupport_boot STATIC ${SRC})
+target_compile_options(bootloaderSupport  PRIVATE  ${COMMON_FLAGS} ${WARNING_FLAGS} )
 
-target_compile_options(bootloaderSupport  PRIVATE  -DCONFIG_SPI_FLASH_MODE=${SPI_FLASG_MODE} ${COMMON_FLAGS} ${WARNING_FLAGS} )
+target_include_directories(bootloaderSupport PRIVATE  ${SOURCE_DIR}/include_priv)
+target_include_directories(bootloaderSupport_boot PRIVATE  ${SOURCE_DIR}/include_priv)
+
 target_include_directories(bootloaderSupport PUBLIC
         ${CMAKE_SOURCE_DIR}/include
 
@@ -75,10 +63,10 @@ target_include_directories(bootloaderSupport PUBLIC
         ${RTOS_DIR}/components/log/include
         ${RTOS_DIR}/components/esp8266/include
         ${RTOS_DIR}/components/util/include
-        ${SOURCE_DIR}
+        ${SOURCE_DIR}/include
         )
 
-target_compile_options(bootloaderSupport_boot   PRIVATE -DBOOTLOADER_BUILD=1   -DCONFIG_SPI_FLASH_MODE=${SPI_FLASG_MODE} ${COMMON_FLAGS} ${WARNING_FLAGS} )
+target_compile_options(bootloaderSupport_boot   PRIVATE -DBOOTLOADER_BUILD=1   ${COMMON_FLAGS} ${WARNING_FLAGS} )
 target_include_directories(bootloaderSupport_boot PUBLIC
         ${CMAKE_SOURCE_DIR}/include
         ${RTOS_DIR}/components/heap/include
@@ -93,5 +81,6 @@ target_include_directories(bootloaderSupport_boot PUBLIC
         ${RTOS_DIR}/components/log/include
         ${RTOS_DIR}/components/esp8266/include
         ${RTOS_DIR}/components/util/include
-        ${SOURCE_DIR}
+        ${SOURCE_DIR}/include
+        ${SOURCE_DIR}/include_priv
         )
