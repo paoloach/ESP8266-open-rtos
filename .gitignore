@@ -1,6 +1,8 @@
 
 .idea/
 
+password.txt
+
 # Compiled class file
 *.class
 

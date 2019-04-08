@@ -97,6 +97,7 @@ add_subdirectory(mqtt)
 add_subdirectory(mdns)
 add_subdirectory(newlib)
 add_subdirectory(nvs_flash)
+add_subdirectory(ringbuffer)
 add_subdirectory(smartConfig)
 add_subdirectory(sodium)
 add_subdirectory(spiFlash)
@@ -156,6 +157,7 @@ add_dependencies(firmware
         mdns
         newlib
         nvs_flash
+        espRingbuf
         smartConfig
         spiFlash
         spiffs
@@ -205,6 +207,7 @@ target_link_libraries(firmware
         nvs_flash
         smartConfig
         spiFlash
+        espRingbuf
         ssl
         tcpipAdapter
         util

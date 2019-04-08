@@ -13,7 +13,7 @@ buildscript {
 
 
 plugins {
-    id 'org.jetbrains.intellij' version '0.4.2'
+    id 'org.jetbrains.intellij' version '0.4.7'
     id "org.jetbrains.kotlin.jvm" version "1.3.21"
 }
 
@@ -47,7 +47,7 @@ patchPluginXml {
     sinceBuild "182.9999"
     untilBuild "191.*"
     changeNotes """
-      <p>&#8226; 1.4.2 &#8594; Fix dependency with espressif RTOS V3.1 
+      <p>&#8226; 1.4.2 &#8594; Fix dependency with espressif RTOS V3.1 and support for CLion 2019.1
       <p>&#8226; 1.4.1 &#8594; Fix some bugs (libEspHttpParser and  httpParser extras) 
       <p>&#8226; 1.4.0 &#8594; Add full support for spiffs for free RTOS
       <p>&#8226; 1.3.4 &#8594; Fix CmakeLists file for free RTOS</p>
