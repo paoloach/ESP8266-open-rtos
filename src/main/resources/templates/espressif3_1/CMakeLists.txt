@@ -90,7 +90,8 @@ add_subdirectory(log)
 add_subdirectory(esp8266)
 add_subdirectory(util)
 add_subdirectory(cjson)
-add_subdirectory(http_client)
+add_subdirectory(httpClient)
+add_subdirectory(httpServer)
 add_subdirectory(espTls)
 add_subdirectory(heap)
 add_subdirectory(freeRTOS)
@@ -161,6 +162,7 @@ add_dependencies(firmware
         newlib
         nvs_flash
         espHttpClient
+        espHttpServer
         espRingbuf
         smartConfig
         spiFlash
@@ -212,6 +214,7 @@ target_link_libraries(firmware
         smartConfig
         spiFlash
         espHttpClient
+        espHttpServer
         espRingbuf
         ssl
         tcpipAdapter
@@ -254,6 +257,7 @@ target_include_directories(firmware PUBLIC
         ${RTOS_DIR}/components/lwip/include/lwip/apps
         ${RTOS_DIR}/components/lwip/lwip/src/include
         ${RTOS_DIR}/components/lwip/port/esp8266/include
+        ${RTOS_DIR}/components/lwip/port/esp8266/include/port
         ${RTOS_DIR}/components/lwip/lwip/src/include/posix
         ${RTOS_DIR}/components/mqtt/include
         ${RTOS_DIR}/components/mqtt/paho/MQTTClient-C/src

@@ -383,6 +383,7 @@ class MenuWizardData() {
             SubPanelConfigEntry("ESP8266 specific ", esp8266ConfigurationMenu),
             SubPanelConfigEntry("Wifi ", wifiMenu),
             BoolConfigEntry("Enable https", "ESP_HTTP_CLIENT_ENABLE_HTTPS", true),
+            SubPanelConfigEntry("HTTP Server", httpServerMenu),
             SubPanelConfigEntry("FreeRTOS", freeRTOSConfig),
             BoolConfigEntry("Use mbedTLS SHA256 & SHA512 implementations", "LIBSODIUM_USE_MBEDTLS_SHA" ,   true),
             SubPanelConfigEntry("Component config", entriesComponentConfig),
