@@ -20,6 +20,8 @@ set(WARNING_FLAGS -Wall -Werror=all -Wno-error=unused-function -Wno-error=unused
 
 set(COMMON_INCLUDE
         ${CMAKE_SOURCE_DIR}/include
+        ${RTOS_DIR}/components/http_parser/include
+        ${RTOS_DIR}/components/tcp_transport/include
         ${RTOS_DIR}/components/esp_ringbuf/include/
         ${RTOS_DIR}/components/heap/include
         ${RTOS_DIR}/components/heap/port/esp8266/include
@@ -88,6 +90,7 @@ add_subdirectory(log)
 add_subdirectory(esp8266)
 add_subdirectory(util)
 add_subdirectory(cjson)
+add_subdirectory(http_client)
 add_subdirectory(espTls)
 add_subdirectory(heap)
 add_subdirectory(freeRTOS)
@@ -157,6 +160,7 @@ add_dependencies(firmware
         mdns
         newlib
         nvs_flash
+        espHttpClient
         espRingbuf
         smartConfig
         spiFlash
@@ -207,6 +211,7 @@ target_link_libraries(firmware
         nvs_flash
         smartConfig
         spiFlash
+        espHttpClient
         espRingbuf
         ssl
         tcpipAdapter
