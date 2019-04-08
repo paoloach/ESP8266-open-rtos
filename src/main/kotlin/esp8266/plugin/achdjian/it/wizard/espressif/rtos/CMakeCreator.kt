@@ -55,6 +55,7 @@ fun createEspressifRTORSubCMake(projectName: String, wizardMenu: MenuWizardData,
     makeSubCMake("newlib", projectName, wizardMenu, path, creator)
     makeSubCMake("nvs_flash", projectName, wizardMenu, path, creator)
     makeSubCMake("pthread", projectName, wizardMenu, path, creator)
+    makeSubCMake("ringbuffer", projectName, wizardMenu, path, creator)
     makeSubCMake("smartConfig", projectName, wizardMenu, path, creator)
     makeSubCMake("sodium", projectName, wizardMenu, path, creator)
     makeSubCMake("spiffs", projectName, wizardMenu, path, creator)
