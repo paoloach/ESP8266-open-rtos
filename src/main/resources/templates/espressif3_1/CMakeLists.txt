@@ -20,6 +20,7 @@ set(WARNING_FLAGS -Wall -Werror=all -Wno-error=unused-function -Wno-error=unused
 
 set(COMMON_INCLUDE
         ${CMAKE_SOURCE_DIR}/include
+        ${RTOS_DIR}/components/lwip/port/esp8266/include/port
         ${RTOS_DIR}/components/http_parser/include
         ${RTOS_DIR}/components/tcp_transport/include
         ${RTOS_DIR}/components/esp_ringbuf/include/

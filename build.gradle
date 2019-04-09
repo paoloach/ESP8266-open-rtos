@@ -48,7 +48,7 @@ patchPluginXml {
     sinceBuild "182.9999"
     untilBuild "191.*"
     changeNotes """
-      <p>&#8226; 1.4.3 &#8594; Added http client & server
+      <p>&#8226; 1.4.3 &#8594; Added http client & server, reorder espressif menu
       <p>&#8226; 1.4.2 &#8594; Fix dependency with espressif RTOS V3.1 and support for CLion 2019.1
       <p>&#8226; 1.4.1 &#8594; Fix some bugs (libEspHttpParser and  httpParser extras) 
       <p>&#8226; 1.4.0 &#8594; Add full support for spiffs for free RTOS
