@@ -36,7 +36,6 @@ set(COMMON_INCLUDE
         ${RTOS_DIR}/components/esp8266/include
         ${RTOS_DIR}/components/espos/include
         ${RTOS_DIR}/components/freertos/include
-        ${RTOS_DIR}/components/freertos/include
         ${RTOS_DIR}/components/freertos/include/freertos
         ${RTOS_DIR}/components/freertos/include/freertos/private
         ${RTOS_DIR}/components/freertos/port/esp8266/include

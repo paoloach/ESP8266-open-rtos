@@ -13,7 +13,7 @@ add_dependencies(bootloader
         spiFlash_boot
         log_boot
         esp8266_boot
-        util)
+        util_boot)
 
 
 add_custom_target(bootloader.bin
@@ -61,8 +61,7 @@ target_link_libraries(bootloader
         log_boot
         esp8266_boot
         spiFlash_boot
-        util
-
+        util_boot
         gcc
         stdc++
         gcov

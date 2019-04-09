@@ -186,24 +186,8 @@ class MenuWizardData() {
             IntConfigEntry("Maximum Thing Name length", "AWS_IOT_SHADOW_MAX_SIZE_OF_THING_NAME", 20, 4, 1000)
     )
 
-    private val amazonIOT = BoolConfigEntry("Amazon Web Services IoT Platform", "AWS_IOT_SDK", false)
-    private val entriesAmazon = listOf(
-            StringConfigEntry("AWS IoT Endpoint Hostname", "AWS_IOT_MQTT_HOST", ""),
-            IntConfigEntry("AWS IoT MQTT Port", "AWS_IOT_MQTT_PORT", 8883, 0, 65535),
-            IntConfigEntry("MQTT TX Buffer Length", "AWS_IOT_MQTT_TX_BUF_LEN", 512, 32, 65535),
-            IntConfigEntry("MQTT RX Buffer Length", "AWS_IOT_MQTT_RX_BUF_LEN", 512, 32, 65535),
-            IntConfigEntry("Maximum MQTT Topic Filters", "AWS_IOT_MQTT_NUM_SUBSCRIBE_HANDLERS", 5, 1, 100),
-            IntConfigEntry("Auto reconnect initial interval (ms)", "AWS_IOT_MQTT_MIN_RECONNECT_WAIT_INTERVAL", 1000, 10, 3600000),
-            IntConfigEntry("Auto reconnect maximum interval (ms)", "AWS_IOT_MQTT_MAX_RECONNECT_WAIT_INTERVAL", 128000, 1, 100),
-            SubPanelConfigEntry("Thing Shadow", entriesEditorThingShadow)
-    )
     private val defaultLogLevel = BoolConfigEntry("Info", "LOG_DEFAULT_LEVEL_INFO", true)
-    private val entriesComponentConfig = listOf(
-            amazonIOT,
-            SubPanelConfigEntry("Amazon Web Services IoT config", entriesAmazon, amazonIOT),
-            BoolConfigEntry("Store phy calibration data in NVS", "ESP_PHY_CALIBRATION_AND_DATA_STORAGE", true),
-            BoolConfigEntry("Use a partition to store PHY init data", "ESP_PHY_INIT_DATA_IN_PARTITION"),
-            BoolConfigEntry("Enable \"reent\" function", "FREERTOS_ENABLE_REENT"),
+    private val logMenu = listOf(
             ChoiceConfigEntry("Default log verbosity", "LOG_DEFAULT_LEVEL", mapOf(
                     BoolConfigEntry("No output\"", "LOG_DEFAULT_LEVEL_NONE", true) to "0",
                     BoolConfigEntry("Error", "LOG_DEFAULT_LEVEL_ERROR", true) to "1",
@@ -370,15 +354,12 @@ class MenuWizardData() {
     private val enablemDns = BoolConfigEntry("Enable mDNS", "ENABLE_MDNS", false)
     private val enablePThread = BoolConfigEntry("Enable pthread", "ENABLE_PTHREAD", false)
 
-    val entriesMenu: List<ConfigurationEntry> = listOf(
+
+    val components: List<ConfigurationEntry> = listOf(
             SubPanelConfigEntry("App update",appUpdateMenu),
             enableAwsIOT,
             SubPanelConfigEntry("Amazon Web Services IoT Platform",awsIOTMenu, enableAwsIOT),
-            SubPanelConfigEntry("Serial flasher config", entriesESPTool),
-            SubPanelConfigEntry("Boot configuration", bootloaderConfiguration),
-            SubPanelConfigEntry("SDK tool configuration", sdkTooConfiguration),
             SubPanelConfigEntry("Wifi config", entriesWIFIConfig),
-            SubPanelConfigEntry("Partition Table", entriesPartitionTable),
             SubPanelConfigEntry("Compiler options", entriesCompilerOptions),
             SubPanelConfigEntry("ESP8266 specific ", esp8266ConfigurationMenu),
             SubPanelConfigEntry("Wifi ", wifiMenu),
@@ -386,7 +367,7 @@ class MenuWizardData() {
             SubPanelConfigEntry("HTTP Server", httpServerMenu),
             SubPanelConfigEntry("FreeRTOS", freeRTOSConfig),
             BoolConfigEntry("Use mbedTLS SHA256 & SHA512 implementations", "LIBSODIUM_USE_MBEDTLS_SHA" ,   true),
-            SubPanelConfigEntry("Component config", entriesComponentConfig),
+            SubPanelConfigEntry("Log output", logMenu),
             SubPanelConfigEntry("LWIP", entriesLWIP),
             enablemDns,
             enablePThread,
@@ -396,5 +377,14 @@ class MenuWizardData() {
             SubPanelConfigEntry("SSL", entriesSSL),
             SubPanelConfigEntry("wpa supplicant", wpaSupplicantMenu),
             IntConfigEntry("IP Address lost timer interval (seconds)", "IP_LOST_TIMER_INTERVAL", 120, 0, 65535)
+    )
+
+    val entriesMenu: List<ConfigurationEntry> = listOf(
+            SubPanelConfigEntry("Serial flasher config", entriesESPTool),
+            SubPanelConfigEntry("SDK tool configuration", sdkTooConfiguration),
+            SubPanelConfigEntry("Boot configuration", bootloaderConfiguration),
+            SubPanelConfigEntry("Partition Table", entriesPartitionTable),
+            SubPanelConfigEntry("Components", components)
+
     )
 }
