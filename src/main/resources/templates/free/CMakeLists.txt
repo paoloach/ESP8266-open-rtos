@@ -32,7 +32,7 @@ set(PROGRAM_SRC mainUser.c)
 __{ESP_OPEN_RTOS_DIR}__
 set(BOOT_FIRMWARE ${ESP_OPEN_RTOS_DIR}/bootloader/firmware_prebuilt/rboot.bin)
 set(LWIP_DIR ${ESP_OPEN_RTOS_DIR}/lwip/lwip/src/)
-set(LWIP_INCLUDE ${LWIP_DIR}/include ${ESP_OPEN_RTOS_DIR}/lwip/include)
+set(LWIP_INCLUDE ${LWIP_DIR}/include ${ESP_OPEN_RTOS_DIR}/lwip/include ${LWIP_DIR}/include/lwip)
 set(FREE_RTOS ${ESP_OPEN_RTOS_DIR}/FreeRTOS/Source)
 set(OPEN_ESPLISBS  ${ESP_OPEN_RTOS_DIR}/open_esplibs)
 

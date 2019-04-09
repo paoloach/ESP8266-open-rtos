@@ -44,6 +44,11 @@ intellij {
     pluginName 'ESP8266'
 }
 
+publishPlugin {
+    username 'pachdjian@gmail.com'
+    password 'nutellaC++17'
+}
+
 patchPluginXml {
     sinceBuild "182.9999"
     untilBuild "191.*"
