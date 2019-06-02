@@ -63,6 +63,7 @@ set(COMMON_INCLUDE
         ${RTOS_DIR}/components/tcpip_adapter/include
         ${RTOS_DIR}/components/tcpip_adapter/include
         ${RTOS_DIR}/components/util/include
+        ${RTOS_DIR}/components/vfs/include/
         )
 
 
@@ -109,10 +110,9 @@ add_subdirectory(spiffs)
 add_subdirectory(ssl)
 add_subdirectory(tcpipAdapter)
 add_subdirectory(wpaSupplicant)
+add_subdirectory(vfs)
 
 set(PROGRAM_SRC main.c include/sdkconfig.h)
-
-
 
 add_custom_target(linkerDef
         COMMAND ${CMAKE_C_COMPILER} -DAPP_OFFSET=0x10000 -DAPP_SIZE=0xF0000  -I ../include -C -P -x c -E ${RTOS_DIR}/components/esp8266/ld/esp8266.ld -o esp8266_out.ld
@@ -169,6 +169,7 @@ add_dependencies(firmware
         spiffs
         ssl
         tcpipAdapter
+        vfs
         wpaSupplicant)
 
 add_dependencies(image firmware linkerDef)
@@ -191,6 +192,8 @@ set_target_properties(firmware PROPERTIES
                     -L ${RTOS_DIR}/components/esp8266/lib")
 
 add_dependencies(firmware linkerDef)
+
+
 
 target_link_libraries(firmware
         -Wl,--start-group
@@ -220,22 +223,25 @@ target_link_libraries(firmware
         tcpipAdapter
         util
         wpaSupplicant
-        gcc
-        hal
-        core
-        net80211
-        phy
-        pp
-        smartconfig
-        ssc
-        wpa
-        espnow
-        wps
+        vfs
         ${RTOS_DIR}/components/newlib/newlib/lib/libc_nano.a
         ${RTOS_DIR}/components/newlib/newlib/lib/libm.a
         stdc++
         gcov
-        -Wl,--end-group)
+        )
+
+string(FIND ${SDKCONFIG} "CONFIG_NO_BLOBS" FOUND_NO_BLOBS)
+string(FIND ${SDKCONFIG} "CONFIG_ESP8266_WIFI_DEBUG_LOG_ENABLE" FOUND_ESP8266_WIFI_DEBUG_LOG_ENABLE)
+if (FOUND_NO_BLOBS LESS  1)
+    if (FOUND_ESP8266_WIFI_DEBUG_LOG_ENABLE LESS 1)
+        target_link_libraries(firmware gcc hal core net80211 phy pp smartconfig ssc wpa espnow wps)
+    else (FOUND_ESP8266_WIFI_DEBUG_LOG_ENABLE LESSER 1)
+        target_link_libraries(firmware gcc hal core_dbg net80211_dbg  phy pp_dbg smartconfig ssc wpa_dbg espnow_dbg wps_dbg)
+    endif()
+endif()
+
+
+target_link_libraries(firmware  -Wl,--end-group)
 
 
 target_compile_options(firmware PUBLIC  -DICACHE_FLASH ${COMMON_FLAGS})

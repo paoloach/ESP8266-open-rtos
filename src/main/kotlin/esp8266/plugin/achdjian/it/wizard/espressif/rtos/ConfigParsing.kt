@@ -1,5 +1,6 @@
 package esp8266.plugin.achdjian.it.wizard.espressif.rtos
 
+import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.MessageType
 import esp8266.plugin.achdjian.it.ui.showMessage
@@ -7,7 +8,14 @@ import java.io.File
 
 fun configParsing(project: Project): Map<String, String> {
     val result = HashMap<String, String>()
-    val configDir = project.baseDir.findChild(Constants.CONFIG_DIR)
+    val modules = ModuleManager.getInstance(project).getModules()
+    if (modules.isEmpty())
+        return result
+    val moduleFile = modules[0].moduleFile?:return result
+    val parent = moduleFile.parent
+
+
+    val configDir = parent.findChild(Constants.CONFIG_DIR)
     if (configDir == null || !configDir.exists()) {
         return result;
     }

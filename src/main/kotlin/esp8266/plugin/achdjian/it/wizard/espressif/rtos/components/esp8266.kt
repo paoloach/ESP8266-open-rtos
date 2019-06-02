@@ -64,6 +64,7 @@ val esp8266ConfigurationMenu = listOf(
         BoolConfigEntry("Use a partition to store PHY init data", "ESP_PHY_INIT_DATA_IN_PARTITION"),
         BoolConfigEntry("Store phy calibration data in NVS", "ESP_PHY_CALIBRATION_AND_DATA_STORAGE", true),
         BoolConfigEntry("Using new ets_vprintf instead of rom code", "USING_NEW_ETS_VPRINTF", true),
-        BoolConfigEntry("Set wifi tx rate from 54M to 1M", "WIFI_TX_RATE_SEQUENCE_FROM_HIGH", true)
+        BoolConfigEntry("Set wifi tx rate from 54M to 1M", "WIFI_TX_RATE_SEQUENCE_FROM_HIGH", true),
+        IntConfigEntry("vdd33_const value", "ESP_PHY_INIT_DATA_VDD33_CONST", 33, 0, 255)
 
 )

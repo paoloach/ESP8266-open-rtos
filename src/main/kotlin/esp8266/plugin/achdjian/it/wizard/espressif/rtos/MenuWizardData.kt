@@ -366,7 +366,7 @@ class MenuWizardData() {
             BoolConfigEntry("Enable https", "ESP_HTTP_CLIENT_ENABLE_HTTPS", true),
             SubPanelConfigEntry("HTTP Server", httpServerMenu),
             SubPanelConfigEntry("FreeRTOS", freeRTOSConfig),
-            BoolConfigEntry("Use mbedTLS SHA256 & SHA512 implementations", "LIBSODIUM_USE_MBEDTLS_SHA" ,   true),
+            BoolConfigEntry("Use mbedTLS SHA256 & SHA512 implementations", "LIBSODIUM_USE_MBEDTLS_SHA" ,   true, dependsOn = Not(espSha)),
             SubPanelConfigEntry("Log output", logMenu),
             SubPanelConfigEntry("LWIP", entriesLWIP),
             enablemDns,
@@ -375,6 +375,8 @@ class MenuWizardData() {
             SubPanelConfigEntry("MQTT(Paho)", mqttMenu),
             SubPanelConfigEntry("Newlib", entriesNewLib),
             SubPanelConfigEntry("SSL", entriesSSL),
+            SubPanelConfigEntry("Virtual file system", vfsMenu),
+            SubPanelConfigEntry("Util", utilMenu),
             SubPanelConfigEntry("wpa supplicant", wpaSupplicantMenu),
             IntConfigEntry("IP Address lost timer interval (seconds)", "IP_LOST_TIMER_INTERVAL", 120, 0, 65535)
     )

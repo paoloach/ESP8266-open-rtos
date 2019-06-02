@@ -3,6 +3,7 @@ package esp8266.plugin.achdjian.it.settings
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
+import java.io.File
 
 
 @State(name = "ESP8266.configuration", storages = [(Storage("ESP8266.xml"))])
@@ -12,6 +13,10 @@ data class ESP8266SettingsState(
         var esptool2: String = "",
         var ccPath: String= ESP8266SDKSettings.GCC,
         var cxxPath: String= ESP8266SDKSettings.CXX) : PersistentStateComponent<ESP8266SettingsState> {
+
+    val crosscompilerPath : String get(){
+        return File(ccPath).parentFile.toString()
+    }
 
     override fun getState(): ESP8266SettingsState? {
         return this

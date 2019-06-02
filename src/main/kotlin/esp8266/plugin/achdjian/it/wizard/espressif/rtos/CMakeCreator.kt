@@ -65,6 +65,7 @@ fun createEspressifRTORSubCMake(projectName: String, wizardMenu: MenuWizardData,
     makeSubCMake("ssl", projectName, wizardMenu, path, creator)
     makeSubCMake("tcpipAdapter", projectName, wizardMenu, path, creator)
     makeSubCMake("util", projectName, wizardMenu, path, creator)
+    makeSubCMake("vfs", projectName, wizardMenu, path, creator)
     makeSubCMake("wpaSupplicant", projectName, wizardMenu, path, creator)
 
 }

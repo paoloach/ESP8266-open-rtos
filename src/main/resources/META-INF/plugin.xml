@@ -38,7 +38,7 @@ Disclaimer
 
     <extensions defaultExtensionNs="com.intellij">
         <directoryProjectGenerator implementation="esp8266.plugin.achdjian.it.wizard.free.rtos.ESP8266FreeRTOSProjectGenerator"/>
-        <directoryProjectGenerator implementation="esp8266.plugin.achdjian.it.wizard.espressif.rtos.ESP8266EspressifRTOSProjectGenerator"/>
+        <directoryProjectGenerator implementation="it.achdjian.plugin.esp8266.generator.CProjectGenerator"/>
         <projectConfigurable order="last" id="ESP8266.plugin.achdjian.it"
                              instance="esp8266.plugin.achdjian.it.settings.ESP8266SDKSettings"
                              displayName="ESP8266 config" groupId="build"/>
@@ -46,7 +46,7 @@ Disclaimer
     </extensions>
     <actions>
         <group id="esp8266.actions"  description="ESP8266 RTOS setting" text="ESP8266 RTOS setting">
-            <action id="esp8266.plugin.achdjian.settings" class="esp8266.plugin.achdjian.it.actions.Settings" text="RTOS Settings"/>
+            <action id="esp8266.plugin.achdjian.settings" class="it.achdjian.plugin.esp8266.actions.Settings" text="RTOS Settings"/>
         </group>
 
 
