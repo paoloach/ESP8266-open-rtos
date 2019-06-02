@@ -35,21 +35,28 @@ class SaveAction(
 
 }
 
-class Settings : AnAction("ESP32 setting..."), ComponentListener {
+class Settings : AnAction("ESP8266 setting..."), ComponentListener {
+    var settingPanel:ESP8266WizardPanel? = null
+
     override fun componentMoved(p0: ComponentEvent?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun componentResized(p0: ComponentEvent?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        p0?.let { event ->
+            if (event.source is JPanel) {
+
+                settingPanel?.let {
+                    it.size = Dimension(it.internalPanel.width, it.realHeight)
+                    it.preferredSize = Dimension(it.internalPanel.width, it.realHeight)
+                }
+            }
+        }
     }
 
     override fun componentHidden(p0: ComponentEvent?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun componentShown(p0: ComponentEvent?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     companion object {
@@ -82,10 +89,14 @@ class Settings : AnAction("ESP32 setting..."), ComponentListener {
 
             val contentPanel = JPanel()
             contentPanel.layout = BoxLayout(contentPanel, BoxLayout.Y_AXIS)
-            val settingPanel = ESP8266WizardPanel(contentPanel, wizardData.entries)
-            settingPanel.internalPanel.addComponentListener(this)
-            settingPanel.preferredSize = Dimension(500, 300)
-            settingPanel.size = Dimension(500, 300)
+            ESP8266WizardPanel(contentPanel, wizardData.entries,true).let {
+                settingPanel =it
+                it.internalPanel.addComponentListener(this)
+                it.preferredSize = Dimension(500, 300)
+                it.size = Dimension(500, 300)
+
+            }
+
 
             val scrollPane = ScrollPaneFactory.createScrollPane(settingPanel, false)
 

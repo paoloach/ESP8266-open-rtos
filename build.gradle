@@ -46,6 +46,7 @@ intellij {
 }
 
 
+
 patchPluginXml {
     sinceBuild "182.9999"
     untilBuild "192.*"
