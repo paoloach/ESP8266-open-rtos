@@ -75,7 +75,7 @@ compileKotlin {
 }
 
 task copyPlugin(type: Copy) {
-    from file("${buildDir}/libs/ESP8266-1.5.0.jar")
+    from file("${buildDir}/libs/ESP8266-1.5.1.jar")
     into file("${project.gradle.gradleUserHomeDir}/../.CLion2019.1/config/plugins/ESP8266/lib")
 }
 
