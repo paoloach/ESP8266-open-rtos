@@ -3,10 +3,10 @@ package it.achdjian.plugin.espparser
 data class ChoiceConfig(val type: ConfigType, val name: String, val text: String) {}
 
 class EspressifChoice(
-    val parent: EspressifMenuParser,
-    override val name: String,
-    private val configElements: List<EspressifConfig>,
-    override val dependsOn: MutableSet<Expression> = mutableSetOf()
+        val parent: EspressifMenuParser,
+        override val name: String,
+        private val configElements: List<EspressifConfig>,
+        override val dependsOn: MutableSet<Expression> = mutableSetOf()
 ) : EspressifMenuElement {
     override val veriableDepending: List<String>
         get() = varDepending
@@ -29,7 +29,7 @@ class EspressifChoice(
         val trimmedLine = line.trim()
 
         if (helping && trimmedLine.isNotEmpty()) {
-            val spaces = line.indexOfFirst { it != ' ' }
+            val spaces = line.indexOfFirst { it != ' '  && it !='\t' }
             if (help.isEmpty()) {
                 helpSpaces = spaces
             } else {
@@ -51,7 +51,8 @@ class EspressifChoice(
                 return this
             }
             trimmedLine.startsWith("#") -> return this
-            trimmedLine.startsWith("endchoice") -> return parent
+            trimmedLine.startsWith("endchoice") ->
+                return parent
             (trimmedLine.startsWith("prompt") || trimmedLine.startsWith("bool")) -> {
                 val start = trimmedLine.indexOf("\"", 4)
                 if (start > 0) {

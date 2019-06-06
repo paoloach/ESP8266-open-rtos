@@ -1,24 +1,19 @@
 package it.achdjian.plugin.espparser
 
 import it.achdjian.plugin.esp8266.entry_type.Value
-import java.io.File
 
 open class EspressifConfig(
-    val parent: EspressifMenuParser,
-    line: String
+        val parent: EspressifMenuParser,
+        line: String
 
 ) : EspressifMenuElement {
-    val internalName: String
+    val internalName: String = if (line.startsWith("config"))
+        line.substring(6).trim()
+    else if (line.startsWith("menuconfig"))
+        line.substring(10).trim()
+    else throw RuntimeException("Error parsing $line")
     override val dependsOn = mutableSetOf<Expression>()
     val promptIf = mutableSetOf<Expression>()
-
-    init {
-        if (line.startsWith("config"))
-            internalName = line.substring(6).trim()
-        else if (line.startsWith("menuconfig"))
-            internalName = line.substring(10).trim()
-        else throw RuntimeException("Error parsing $line")
-    }
 
     override val configs: List<EspressifConfig>
         get() = listOf(this)
@@ -44,51 +39,7 @@ open class EspressifConfig(
     private var helpSpaces = 0
     var min = Int.MIN_VALUE.toLong()
     var max = Int.MAX_VALUE.toLong()
-    var envVariable: String = ""
-
-    private val escapedHelp: String get() = help.replace("\"", "\\\"").replace("$", "\\$")
-
-
-    private fun createBooleanConfigEntry(output: File) {
-        output.appendText("BoolConfigEntry(\"${text}\", \"${name}\", \"${escapedHelp}\", $multiDefault[\"true\"]")
-        output.appendText(dependsOn.toString())
-        if (select.isNotEmpty()) {
-            output.appendText(",associated=listOf(")
-            output.appendText(select.joinToString())
-            output.appendText(")")
-        }
-        output.appendText(")\n")
-    }
-
-
-    private fun parseBoolDefault(value: String): Boolean? {
-        if (value == "\"y\"")
-            return true
-        if (value == "y")
-            return true
-        if (value == "\"Y\"")
-            return true
-        if (value == "Y")
-            return true
-        if (value == "\"n\"")
-            return false
-        if (value == "\"N\"")
-            return false
-        if (value == "n")
-            return false
-        if (value == "N")
-            return false
-        if (value == "F")
-            return false
-        if (value == "f")
-            return false
-        if (value == "T")
-            return true
-        if (value == "t")
-            return true
-        return null
-
-    }
+    private var envVariable: String = ""
 
 
     private fun addText(trimmedLine: String) {
@@ -108,7 +59,7 @@ open class EspressifConfig(
     override fun addLine(line: String): EspressifMenuParser {
         val trimmedLine = line.trim()
         if (helpText && trimmedLine.isNotEmpty()) {
-            val spaces = line.indexOfFirst { it != ' ' && it !='\t'}
+            val spaces = line.indexOfFirst { it != ' ' && it != '\t' }
             if (spaces <= helpSpaces) {
                 helpText = false
             }
@@ -190,11 +141,15 @@ open class EspressifConfig(
                 val optionValue = trimmedLine.substring(6).trim()
                 if (optionValue.startsWith("env=")) {
                     envVariable = removeDoubleQuotes(optionValue.substring(4).trim())
-                    if (envVariable=="IDF_TARGET"){
-                        multiDefault.add(Value(SimpleExpression("esp32"),emptyExpression ))
+                    if (envVariable == "IDF_TARGET") {
+                        multiDefault.add(Value(SimpleExpression("esp32"), emptyExpression))
                     }
                 }
             }
+            trimmedLine.startsWith("endchoice") ->
+                return parent.addLine(line)
+            trimmedLine.startsWith("choice") ->
+                return parent.addLine(line)
             trimmedLine.isEmpty() -> return this
             else -> {
                 if (parent is EspressifOwningConfig)

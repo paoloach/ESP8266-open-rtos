@@ -19,7 +19,7 @@ plugins {
 
 
 group 'plugin.achdjian.it'
-version '1.5.0'
+version '1.5.1'
 
 
 
@@ -51,6 +51,7 @@ patchPluginXml {
     sinceBuild "182.9999"
     untilBuild "192.*"
     changeNotes """
+      <p>&#8226; 1.5.1 &#8594; Fix espressif RTOS parser
       <p>&#8226; 1.5.0 &#8594; updated to espressif RTOS in order to parse the menu directly by the rtos sdk
       <p>&#8226; 1.4.4 &#8594; updated to espressif RTOS, commit SHA 8aae2e57645784fc40eaecf03b310850e3e66ea3
       <p>&#8226; 1.4.3 &#8594; Added http client & server, reorder espressif menu
