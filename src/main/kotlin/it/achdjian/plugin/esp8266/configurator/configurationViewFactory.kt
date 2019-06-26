@@ -1,6 +1,8 @@
 package it.achdjian.plugin.esp8266.configurator
 
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.ui.ComboBox
+import it.achdjian.plugin.esp8266.actions.Settings
 import it.achdjian.plugin.esp8266.entry_type.*
 import it.achdjian.plugin.esp8266.entry_type.ConfigElements.configElements
 import it.achdjian.plugin.esp8266.ui.ButtonTitledBorder
@@ -18,6 +20,9 @@ import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 
 fun configuratorViewFactory(configurationEntry: ConfigurationEntry): Component? {
+
+    val LOG = Logger.getInstance("configuratorViewFactory")
+
     if (configurationEntry.text.isEmpty()) {
         return null
     }
@@ -81,8 +86,10 @@ fun configuratorViewFactory(configurationEntry: ConfigurationEntry): Component? 
             comboBox.addActionListener {
                 configurationEntry.default?.value = false
                 configurationEntry.choices.firstOrNull { c -> c.text == comboBox.selectedItem }?.let { c ->
+
                     c.value = true
                     configurationEntry.choiced = c
+                    LOG.info("selected ${c.text} = ${c.configEntry}")
                 }
             }
 

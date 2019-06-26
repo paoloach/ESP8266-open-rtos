@@ -102,7 +102,7 @@ class Settings : AnAction("ESP8266 setting..."), ComponentListener {
 
             val dialog = DialogBuilder(project)
                 .centerPanel(scrollPane)
-                .title("ESP32 Settings")
+                .title("ESP8266 Settings")
 
 
             dialog.addAction(SaveAction(wizardData, getProjectPath(project), dialog.dialogWrapper))
@@ -133,14 +133,26 @@ class Settings : AnAction("ESP8266 setting..."), ComponentListener {
                     val configPair = it.split("=")
                     if (configPair.size == 2) {
                         var key = configPair[0]
-                        if (key.startsWith("CONFIG_"))
+                        if (key.startsWith("CONFIG_")) {
                             key = key.substring(7)
-                        val value = configPair[1]
-                        result[key] = value
+                            val value = removeQuotes(configPair[1])
+                            result[key] = value
+                        } else if (key.startsWith("# CONFIG_")){
+                            key = key.substring(9)
+                            result[key] = "n"
+                        }
+
                     }
                 }
         } ?: Messages.showErrorDialog(project, "Unable to find $CONFIG_FILE_NAME file", "ESP32 plugin")
 
         return result
+    }
+
+    private fun removeQuotes(value:String):String{
+        if (value.startsWith("\""))
+            return value.substring(1, value.length-1)
+        else
+            return value
     }
 }
