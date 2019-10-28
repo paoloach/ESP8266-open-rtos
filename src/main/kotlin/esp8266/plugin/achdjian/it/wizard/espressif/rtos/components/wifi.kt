@@ -1,9 +1,9 @@
 package esp8266.plugin.achdjian.it.wizard.espressif.rtos.components
 
 import esp8266.plugin.achdjian.it.wizard.espressif.rtos.ConfigurationEntry
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configurations.BoolConfigEntry
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configurations.ChoiceConfigEntry
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configurations.IntConfigEntry
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configentry.BoolConfigEntry
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configentry.ChoiceConfigEntry
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configentry.IntConfigEntry
 
 val wifiTxRateSequenceFromHigh = BoolConfigEntry("Set wifi tx rate from 54M to 1M", "WIFI_TX_RATE_SEQUENCE_FROM_HIGH", defaultValue = true)
 val esp8266WifiDebugLogEnable = BoolConfigEntry("Enable WiFi debug log", "ESP8266_WIFI_DEBUG_LOG_ENABLE", defaultValue = false)

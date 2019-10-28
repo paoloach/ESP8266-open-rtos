@@ -1,10 +1,10 @@
 package esp8266.plugin.achdjian.it.wizard.espressif.rtos.components
 
 import esp8266.plugin.achdjian.it.wizard.espressif.rtos.ConfigurationEntry
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configurations.BoolConfigEntry
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configurations.IntConfigEntry
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configurations.StringConfigEntry
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configurations.SubPanelConfigEntry
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configentry.BoolConfigEntry
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configentry.IntConfigEntry
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configentry.StringConfigEntry
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configentry.SubPanelConfigEntry
 
 
 val awsIotOverrideThingShadowRxBuffer = BoolConfigEntry("Override Shadow RX buffer size", "AWS_IOT_OVERRIDE_THING_SHADOW_RX_BUFFER", false)

@@ -1,6 +1,6 @@
 package esp8266.plugin.achdjian.it.wizard.espressif.rtos.components
 
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configurations.*
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configentry.*
 
 val socFullICache = BooleanInteger("Enable full cache mode", "SOC_FULL_ICACHE", false, 0x8000, 0xC000)
 

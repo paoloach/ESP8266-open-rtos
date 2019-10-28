@@ -1,7 +1,7 @@
 package esp8266.plugin.achdjian.it.wizard.espressif.rtos.components
 
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configurations.BoolConfigEntry
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configurations.ChoiceConfigEntry
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configentry.BoolConfigEntry
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configentry.ChoiceConfigEntry
 
 
 private val bootloaderInitSpiFlash = BoolConfigEntry("Bootloader init SPI flash", "BOOTLOADER_INIT_SPI_FLASH", true)

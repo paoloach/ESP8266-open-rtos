@@ -1,7 +1,7 @@
 package esp8266.plugin.achdjian.it.wizard.espressif.rtos.components
 
 import esp8266.plugin.achdjian.it.wizard.espressif.rtos.ConfigurationEntry
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configurations.IntConfigEntry
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configentry.IntConfigEntry
 
 val mDNSMenu = listOf<ConfigurationEntry>(
         IntConfigEntry("Max number of services", "MDNS_MAX_SERVICES", 10, 1, 64),

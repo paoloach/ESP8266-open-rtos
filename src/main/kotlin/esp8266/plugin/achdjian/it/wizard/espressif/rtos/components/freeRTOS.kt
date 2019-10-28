@@ -1,7 +1,7 @@
 package esp8266.plugin.achdjian.it.wizard.espressif.rtos.components
 
 import esp8266.plugin.achdjian.it.wizard.espressif.rtos.ConfigurationEntry
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configurations.*
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configentry.*
 
 
 val freeRTOSHz = IntConfigEntry("Tick rate (Hz)", "FREERTOS_HZ", 100, 1, 1000)

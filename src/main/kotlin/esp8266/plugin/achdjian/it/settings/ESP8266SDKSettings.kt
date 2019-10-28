@@ -5,15 +5,12 @@ import com.intellij.openapi.components.ProjectComponent
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.ComponentWithBrowseButton
 import com.intellij.openapi.ui.TextComponentAccessor
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.TextFieldWithHistoryWithBrowseButton
 import com.intellij.ui.components.installFileCompletionAndBrowseDialog
 import esp8266.plugin.achdjian.it.ui.panel
-import javax.swing.JButton
 import javax.swing.JComponent
-import javax.swing.JLabel
 import javax.swing.JPanel
 
 class ESP8266SDKSettings(private val project: Project) : ProjectComponent, Configurable {
@@ -35,12 +32,11 @@ class ESP8266SDKSettings(private val project: Project) : ProjectComponent, Confi
     override fun isModified(): Boolean {
         val state = ApplicationManager.getApplication().getComponent(ESP8266SettingsState::class.java, DEFAULT) as ESP8266SettingsState
 
-        val modified = (state.ccPath != ccPath?.canonicalPath)
+        return  (state.ccPath != ccPath?.canonicalPath)
                 || (state.cxxPath != cxxPath?.canonicalPath)
                 || (state.freeRtosPath != freeRtosPath?.canonicalPath)
                 || (state.espressifRtosPath != espressifRtosPath?.canonicalPath)
                 || (state.esptool2 != esptool2Path?.canonicalPath)
-        return modified
     }
 
     override fun getDisplayName() = "ESP8266"

@@ -1,7 +1,7 @@
 package esp8266.plugin.achdjian.it.wizard.espressif.rtos.components
 
 import esp8266.plugin.achdjian.it.wizard.espressif.rtos.ConfigurationEntry
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configurations.*
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configentry.*
 
 
 private val enableIPV6 = BoolConfigEntry("Enable IPv6", "LWIP_IPV6", true)

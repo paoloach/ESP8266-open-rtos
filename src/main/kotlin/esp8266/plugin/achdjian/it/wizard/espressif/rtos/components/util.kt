@@ -1,4 +1,4 @@
-package esp8266.plugin.achdjian.it.wizard.espressif.rtos.configurations
+package esp8266.plugin.achdjian.it.wizard.espressif.rtos.configentry
 
 import esp8266.plugin.achdjian.it.wizard.espressif.rtos.ConfigurationEntry
 

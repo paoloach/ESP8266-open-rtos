@@ -1,10 +1,10 @@
 package esp8266.plugin.achdjian.it.wizard.espressif.rtos.components
 
 import esp8266.plugin.achdjian.it.wizard.espressif.rtos.ConfigurationEntry
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configurations.BoolConfigEntry
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configurations.ChoiceConfigEntry
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configurations.IntConfigEntry
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configurations.StringConfigEntry
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configentry.BoolConfigEntry
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configentry.ChoiceConfigEntry
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configentry.IntConfigEntry
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configentry.StringConfigEntry
 
 
 val mqttV3_1 = BoolConfigEntry("V3.1", "MQTT_V3_1", true)

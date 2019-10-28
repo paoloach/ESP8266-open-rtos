@@ -28,24 +28,22 @@ Disclaimer
     ]]></description>
 
 
-    <change-notes>
-    </change-notes>
-
     <!-- please see https://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
          on how to target different products -->
     <depends>com.intellij.modules.clion</depends>
 
 
     <extensions defaultExtensionNs="com.intellij">
+        <configurationType implementation="esp8266.plugin.achdjian.it.wizard.espressif.configuration.flash.FlashConfigurationType"/>
         <directoryProjectGenerator implementation="esp8266.plugin.achdjian.it.wizard.free.rtos.ESP8266FreeRTOSProjectGenerator"/>
         <directoryProjectGenerator implementation="it.achdjian.plugin.esp8266.generator.CProjectGenerator"/>
         <projectConfigurable order="last" id="ESP8266.plugin.achdjian.it"
                              instance="esp8266.plugin.achdjian.it.settings.ESP8266SDKSettings"
-                             displayName="ESP8266 config" groupId="build"/>
+                             displayName="ESP8266 Config" groupId="build"/>
 
     </extensions>
     <actions>
-        <group id="esp8266.actions"  description="ESP8266 RTOS setting" text="ESP8266 RTOS setting">
+        <group id="esp8266.actions"  description="ESP8266 RTOS Setting" text="ESP8266 RTOS Setting">
             <action id="esp8266.plugin.achdjian.settings" class="it.achdjian.plugin.esp8266.actions.Settings" text="RTOS Settings"/>
         </group>
 

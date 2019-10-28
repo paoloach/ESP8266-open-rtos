@@ -1,4 +1,4 @@
-package esp8266.plugin.achdjian.it.wizard.espressif.rtos.configurations
+package esp8266.plugin.achdjian.it.wizard.espressif.rtos.configentry
 
 class HexConfigEntry(text: String, configEntry: String, value: Int, dependsOn: List<BoolConfigEntry>) : StringConfigEntry(text, configEntry, value.toString(16), dependsOn) {
     constructor(text: String, configEntry: String, value: Int) : this(text, configEntry, value, listOf())

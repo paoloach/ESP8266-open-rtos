@@ -1,7 +1,7 @@
 package esp8266.plugin.achdjian.it.wizard.espressif.rtos
 
 import esp8266.plugin.achdjian.it.wizard.espressif.rtos.components.*
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configurations.*
+import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configentry.*
 
 class MenuWizardData() {
     val consoleUartNum: String get() : String = if (consoleUartCustom1.value) "1" else "0"
