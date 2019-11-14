@@ -53,6 +53,7 @@ patchPluginXml {
     sinceBuild "182.9999"
     untilBuild "193.*"
     changeNotes """
+      <p>&#8226; 1.7.0 &#8594; Added serial colored terminal as monitoring window
       <p>&#8226; 1.6.0 &#8594; Added flash configuration
       <p>&#8226; 1.5.3 &#8594; Support for CLion 2019.3
       <p>&#8226; 1.5.2 &#8594; Fix
