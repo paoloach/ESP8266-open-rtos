@@ -2,11 +2,12 @@ package it.achdjian.plugin.esp8266.configurator
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
-import esp8266.plugin.achdjian.it.settings.ESP8266SDKSettings
-import esp8266.plugin.achdjian.it.settings.ESP8266SettingsState
+import it.achdjian.plugin.esp8266.settings.ESP8266SDKSettings
+import it.achdjian.plugin.esp8266.settings.ESP8266SettingsState
 import it.achdjian.plugin.esp8266.actions.Settings
 import it.achdjian.plugin.esp8266.entry_type.*
 import it.achdjian.plugin.esp8266.entry_type.ConfigElements.configElements
+import it.achdjian.plugin.esp8266.settings.getESP8266Setting
 import it.achdjian.plugin.espparser.*
 import java.io.File
 
@@ -24,7 +25,7 @@ class WizardData() {
     }
 
     fun updateEntries() {
-        val state = ApplicationManager.getApplication().getComponent(ESP8266SettingsState::class.java, ESP8266SDKSettings.DEFAULT) as ESP8266SettingsState
+        val state =getESP8266Setting()
 
         val idfPath = File(state.espressifRtosPath)
         val kConfig = File(idfPath, "Kconfig")

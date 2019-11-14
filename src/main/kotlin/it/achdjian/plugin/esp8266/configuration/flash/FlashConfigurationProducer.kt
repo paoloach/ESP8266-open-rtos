@@ -1,10 +1,10 @@
-package esp8266.plugin.achdjian.it.wizard.espressif.configuration.flash
+package it.achdjian.plugin.esp8266.configuration.flash
 
 import com.intellij.execution.actions.ConfigurationContext
 import com.intellij.execution.actions.RunConfigurationProducer
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
-import esp8266.plugin.achdjian.it.wizard.espressif.configuration.flash.FlashRunConfiguration
+import it.achdjian.plugin.esp8266.configuration.flash.FlashRunConfiguration
 
 class FlashConfigurationProducer : RunConfigurationProducer<FlashRunConfiguration>(true) {
     override fun isConfigurationFromContext(flashRunConf: FlashRunConfiguration, confContext: ConfigurationContext): Boolean {

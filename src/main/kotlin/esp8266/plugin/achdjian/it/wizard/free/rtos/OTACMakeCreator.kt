@@ -3,16 +3,17 @@ package esp8266.plugin.achdjian.it.wizard.free.rtos
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.vfs.VirtualFile
 import org.apache.commons.codec.Charsets
-import esp8266.plugin.achdjian.it.settings.ESP8266SDKSettings
-import esp8266.plugin.achdjian.it.settings.ESP8266SettingsState
+import it.achdjian.plugin.esp8266.settings.ESP8266SDKSettings
+import it.achdjian.plugin.esp8266.settings.ESP8266SettingsState
 import esp8266.plugin.achdjian.it.wizard.WizardData
 import esp8266.plugin.achdjian.it.wizard.getResourceAsString
+import it.achdjian.plugin.esp8266.settings.getESP8266Setting
 
 fun createOTACMakeFileTool(path: VirtualFile, requestor: Any, wizardData: WizardData, projectName: String): VirtualFile {
     val rbootFolder= path.createChildDirectory(requestor, "rboot")
     val file = rbootFolder.findOrCreateChildData(requestor, "CMakeLists.txt")
     var cmakeFile = getResourceAsString("templates/free/rboot/CMakeLists.txt")
-    val setting = ApplicationManager.getApplication().getComponent(ESP8266SettingsState::class.java, ESP8266SDKSettings.DEFAULT) as ESP8266SettingsState
+    val setting = getESP8266Setting()
 
     cmakeFile =cmakeFile
             .replace("__{project_name}__", projectName)

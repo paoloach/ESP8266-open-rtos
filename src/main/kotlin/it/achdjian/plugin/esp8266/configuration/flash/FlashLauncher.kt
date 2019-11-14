@@ -1,4 +1,4 @@
-package esp8266.plugin.achdjian.it.wizard.espressif.configuration.flash
+package it.achdjian.plugin.esp8266.configuration.flash
 
 import com.intellij.execution.configurations.CommandLineState
 import com.intellij.execution.configurations.GeneralCommandLine
@@ -29,8 +29,8 @@ class FlashLauncher(
             cmdLine.withEnvironment(it.additionalEnvironment)
         }
 
-        flashConfigurationState.port?.let { cmdLine.withEnvironment("ESPPORT",  "/dev/$it")}
-        flashConfigurationState.baud?.let { cmdLine.withEnvironment("ESPBAUD", it.toString())}
+        cmdLine.withEnvironment("ESPPORT",  "/dev/${flashConfigurationState.port}")
+        cmdLine.withEnvironment("ESPBAUD", flashConfigurationState.baud.toString())
         return KillableColoredProcessHandler(cmdLine)
     }
 

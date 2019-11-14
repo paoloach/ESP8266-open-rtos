@@ -1,6 +1,7 @@
-package esp8266.plugin.achdjian.it.wizard.espressif.configuration.flash
+package it.achdjian.plugin.esp8266.configuration.flash
 
 import com.intellij.execution.configurations.ConfigurationTypeBase
+import it.achdjian.plugin.esp8266.ICON_FLASH
 
 class FlashConfigurationType : ConfigurationTypeBase(
     FLASH_CONFIGURATION_ID,
@@ -14,7 +15,8 @@ class FlashConfigurationType : ConfigurationTypeBase(
 
     init {
         if (factory == null)
-            factory = FlashConfigurationFactory(this)
+            factory =
+                FlashConfigurationFactory(this)
         factory?.let { addFactory(it)}
     }
 }

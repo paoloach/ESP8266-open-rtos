@@ -54,7 +54,9 @@ class EspressifMenu(
             trimmedLine.startsWith("#") -> return this
             trimmedLine.isEmpty() -> return this
             trimmedLine == "config" || trimmedLine.startsWith("config ") -> {
-                return EspressifConfig(this, trimmedLine)
+                val config= EspressifConfig(this, trimmedLine)
+                elements.add(config)
+                return config
             }
             trimmedLine == "menuconfig" || trimmedLine.startsWith("menuconfig ") -> {
                 return EspressifMenuConfig(this, trimmedLine);

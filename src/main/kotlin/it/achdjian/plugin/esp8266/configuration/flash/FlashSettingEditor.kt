@@ -1,11 +1,12 @@
-package esp8266.plugin.achdjian.it.wizard.espressif.configuration.flash
+package it.achdjian.plugin.esp8266.configuration.flash
 
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
 import com.intellij.ui.layout.panel
 import com.jetbrains.cidr.cpp.cmake.workspace.CMakeWorkspace
 import com.jetbrains.cidr.ui.ActionItemsComboBox
-import esp8266.plugin.achdjian.it.wizard.espressif.rtos.configParsing
+import it.achdjian.plugin.esp8266.configurator.configParsing
+import it.achdjian.plugin.serial.getSerialPort
 import java.io.File
 
 class FlashSettingEditor(private val project: Project) : SettingsEditor<FlashRunConfiguration>() {
@@ -52,34 +53,23 @@ class FlashSettingEditor(private val project: Project) : SettingsEditor<FlashRun
 
         val portList = createPortList()
         portList.forEach { espToolPy.addItem(it) }
-        val config = configParsing(runConfiguration.project)
-        val port = if (state.port.isNullOrBlank()) {
-            config["ESPTOOLPY_PORT"]?.let { it }
-        } else {
-            state.port
-        }
-        if (!port.isNullOrBlank() && !portList.contains(port)) {
+
+        val serialPortData = getSerialPort(project)
+        val port = serialPortData?.portName ?:  state.port
+        val baud = serialPortData?.baud ?: state.baud
+
+        if (!portList.contains(port)){
             espToolPy.addItem(port)
         }
         espToolPy.selectedItem = port
 
         availableBaudRate.forEach { espToolBaudrate.addItem(it) }
-        val baud = if (state.baud == null)
-            config["ESPTOOLPY_BAUD"]?.toIntOrNull()
-        else
-            state.baud
-        baud?.let {
-            espToolBaudrate.selectedItem = DEFAULT_BAUD
-        } ?: selectBaud(baud)
-    }
-
-
-    private fun selectBaud(baud: Int?) {
-        if (!availableBaudRate.contains(baud)) {
+        if (!availableBaudRate.contains(baud)){
             espToolBaudrate.addItem(baud)
         }
-        espToolBaudrate.selectedItem = baud
+        espToolBaudrate.selectedItem =state.baud
     }
+
 
     override fun applyEditorTo(runConfiguration: FlashRunConfiguration) {
 

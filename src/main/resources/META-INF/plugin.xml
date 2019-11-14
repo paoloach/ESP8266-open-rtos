@@ -34,13 +34,19 @@ Disclaimer
 
 
     <extensions defaultExtensionNs="com.intellij">
-        <configurationType implementation="esp8266.plugin.achdjian.it.wizard.espressif.configuration.flash.FlashConfigurationType"/>
+        <toolWindow id="ESP Serial Monitor" anchor="bottom"
+                    factoryClass="it.achdjian.plugin.serial.SerialMonitorToolWindowFactory"
+                    canCloseContents="false" secondary="false"/>
+
+
+        <configurationType implementation="it.achdjian.plugin.esp8266.configuration.flash.FlashConfigurationType"/>
         <directoryProjectGenerator implementation="esp8266.plugin.achdjian.it.wizard.free.rtos.ESP8266FreeRTOSProjectGenerator"/>
         <directoryProjectGenerator implementation="it.achdjian.plugin.esp8266.generator.CProjectGenerator"/>
         <projectConfigurable order="last" id="ESP8266.plugin.achdjian.it"
-                             instance="esp8266.plugin.achdjian.it.settings.ESP8266SDKSettings"
+                             instance="it.achdjian.plugin.esp8266.settings.ESP8266SDKSettings"
                              displayName="ESP8266 Config" groupId="build"/>
 
+        <projectService serviceInterface="it.achdjian.plugin.serial.SerialService" serviceImplementation="it.achdjian.plugin.serial.JsscSerialService"/>
     </extensions>
     <actions>
         <group id="esp8266.actions"  description="ESP8266 RTOS Setting" text="ESP8266 RTOS Setting">
@@ -54,11 +60,17 @@ Disclaimer
         </group>
     </actions>
 
+    <project-components>
+        <component>
+            <interface-class>it.achdjian.plugin.serial.SerialMonitorView</interface-class>
+            <implementation-class>it.achdjian.plugin.serial.SerialMonitorView</implementation-class>
+        </component>
+    </project-components>
 
 
     <application-components>
         <component>
-            <implementation-class>esp8266.plugin.achdjian.it.settings.ESP8266SettingsState</implementation-class>
+            <implementation-class>it.achdjian.plugin.esp8266.settings.ESP8266SettingsState</implementation-class>
         </component>
     </application-components>
 </idea-plugin>

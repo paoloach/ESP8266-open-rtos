@@ -14,15 +14,15 @@ import com.jetbrains.cidr.cpp.cmake.projectWizard.generators.CMakeAbstractCProje
 import com.jetbrains.cidr.cpp.cmake.projectWizard.generators.settings.CMakeProjectSettings
 import com.jetbrains.cidr.cpp.cmake.workspace.CMakeWorkspace
 import com.jetbrains.cidr.cpp.execution.CMakeAppRunConfigurationType
-import esp8266.plugin.achdjian.it.settings.ESP8266SDKSettings
-import esp8266.plugin.achdjian.it.settings.ESP8266SettingsState
-import esp8266.plugin.achdjian.it.wizard.espressif.configuration.flash.FlashConfigurationType
-import esp8266.plugin.achdjian.it.wizard.espressif.configuration.flash.FlashRunConfiguration
+import it.achdjian.plugin.esp8266.configuration.flash.FlashConfigurationType
+import it.achdjian.plugin.esp8266.configuration.flash.FlashRunConfiguration
+import it.achdjian.plugin.esp8266.configurationName
 import it.achdjian.plugin.esp8266.configurator.CONFIG_FILE_NAME
 import it.achdjian.plugin.esp8266.configurator.ESP8266WizardPanel
 import it.achdjian.plugin.esp8266.configurator.MAIN_DIR
 import it.achdjian.plugin.esp8266.configurator.WizardData
 import it.achdjian.plugin.esp8266.entry_type.ConfigurationEntry
+import it.achdjian.plugin.esp8266.settings.getESP8266Setting
 import it.achdjian.plugin.esp8266.ui.getResourceAsString
 import java.util.concurrent.TimeoutException
 import javax.swing.JComponent
@@ -52,7 +52,7 @@ class CProjectGenerator : CMakeAbstractCProjectGenerator() {
     }
 
     override fun getCMakeFileContent(projectName: String): String {
-        val state = ApplicationManager.getApplication().getComponent(ESP8266SettingsState::class.java, ESP8266SDKSettings.DEFAULT) as ESP8266SettingsState
+        val state =getESP8266Setting()
 
         var cmakelists = getResourceAsString("templates/CMakeLists.txt")
         cmakelists = cmakelists
@@ -94,7 +94,7 @@ class CProjectGenerator : CMakeAbstractCProjectGenerator() {
         FlashConfigurationType.factory?.let {
             val newConfig = RunnerAndConfigurationSettingsImpl(
                 runManager,
-                FlashRunConfiguration(project, it, "Flash 8266"),
+                FlashRunConfiguration(project, it, configurationName),
                 false
             )
 
@@ -110,9 +110,9 @@ class CProjectGenerator : CMakeAbstractCProjectGenerator() {
         val cMakeWorkspace = CMakeWorkspace.getInstance(project)
         val settings = cMakeWorkspace.settings
 
-        val state = ApplicationManager.getApplication().getComponent(ESP8266SettingsState::class.java, ESP8266SDKSettings.DEFAULT) as ESP8266SettingsState
+        val state =getESP8266Setting()
         val env = mapOf("PATH" to "${state.crosscompilerPath}:/usr/bin:/sbin:/bin:/opt/bin")
-        var releaseProfile = CMakeSettings.Profile("Release", "Release", "", "", true, env, null, null)
+        val releaseProfile = CMakeSettings.Profile("Release", "Release", "", "", true, env, null, null)
 
         settings.profiles = listOf(releaseProfile)
 

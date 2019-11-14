@@ -1,4 +1,4 @@
-package esp8266.plugin.achdjian.it.wizard.espressif.configuration.flash
+package it.achdjian.plugin.esp8266.configuration.flash
 
 import com.intellij.execution.Executor
 import com.intellij.execution.configurations.ConfigurationFactory
@@ -13,13 +13,17 @@ import com.intellij.openapi.util.WriteExternalException
 import org.jdom.Element
 
 class FlashRunConfiguration(project: Project, factory: ConfigurationFactory, name:String) : RunConfigurationBase<FlashConfigurationState>(project, factory, name) {
-    val flashConfigurationState = FlashConfigurationState(project)
+    val flashConfigurationState =
+        FlashConfigurationState(project)
 
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> =
         FlashSettingEditor(project)
 
     override fun getState(executor: Executor, executionEnvironment: ExecutionEnvironment): RunProfileState? {
-        return FlashLauncher(executionEnvironment, flashConfigurationState)
+        return FlashLauncher(
+            executionEnvironment,
+            flashConfigurationState
+        )
     }
 
     @Throws(WriteExternalException::class)

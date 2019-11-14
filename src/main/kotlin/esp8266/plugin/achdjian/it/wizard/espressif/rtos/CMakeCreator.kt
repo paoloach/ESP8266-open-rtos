@@ -2,11 +2,12 @@ package esp8266.plugin.achdjian.it.wizard.espressif.rtos
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.vfs.VirtualFile
-import esp8266.plugin.achdjian.it.settings.ESP8266SDKSettings
-import esp8266.plugin.achdjian.it.settings.ESP8266SettingsState
+import it.achdjian.plugin.esp8266.settings.ESP8266SDKSettings
+import it.achdjian.plugin.esp8266.settings.ESP8266SettingsState
 import esp8266.plugin.achdjian.it.wizard.espressif.rtos.Constants.CONFIG_DIR
 import esp8266.plugin.achdjian.it.wizard.espressif.rtos.Constants.CONFIG_FILE_NAME
 import esp8266.plugin.achdjian.it.wizard.getResourceAsString
+import it.achdjian.plugin.esp8266.settings.getESP8266Setting
 import org.apache.commons.codec.Charsets
 
 
@@ -14,7 +15,7 @@ import org.apache.commons.codec.Charsets
 fun createEspressifRTOSCMake(projectName: String, wizardData: MenuWizardData, creator: Creator): String {
     val templatePath = creator.createTemplatePath()
     var cmakelists = getResourceAsString("$templatePath/CMakeLists.txt")
-    val setting = ApplicationManager.getApplication().getComponent(ESP8266SettingsState::class.java, ESP8266SDKSettings.DEFAULT) as ESP8266SettingsState
+    val setting = getESP8266Setting()
     val configFlags = creator.createConfigFlags(wizardData)
     cmakelists = cmakelists
             .replace("__{project_name}__", projectName)
@@ -102,7 +103,7 @@ private fun makeSubCMake(subdir: String, projectName: String, wizardMenu: MenuWi
     val templatePath = creator.createTemplatePath()
 
     var cmakelists = getResourceAsString("$templatePath/$subdir/CMakeLists.txt")
-    val setting = ApplicationManager.getApplication().getComponent(ESP8266SettingsState::class.java, ESP8266SDKSettings.DEFAULT) as ESP8266SettingsState
+    val setting =getESP8266Setting()
     cmakelists = cmakelists
             .replace("__{project_name}__", projectName)
             .replace("__{ESPRESSIF_RTOS_DIR}__", "set(RTOS_DIR ${setting.espressifRtosPath})")

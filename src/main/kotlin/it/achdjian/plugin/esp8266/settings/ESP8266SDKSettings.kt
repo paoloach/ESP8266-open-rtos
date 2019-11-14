@@ -1,4 +1,4 @@
-package esp8266.plugin.achdjian.it.settings
+package it.achdjian.plugin.esp8266.settings
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.ProjectComponent
@@ -23,14 +23,11 @@ class ESP8266SDKSettings(private val project: Project) : ProjectComponent, Confi
     private var esptool2Path: VirtualFile? = null
     private var p: JPanel? = null
 
-    companion object {
-        const val GCC = "xtensa-lx106-elf-gcc"
-        const val CXX = "xtensa-lx106-elf-g++"
-        val DEFAULT = ESP8266SettingsState(GCC, CXX)
-    }
-
     override fun isModified(): Boolean {
-        val state = ApplicationManager.getApplication().getComponent(ESP8266SettingsState::class.java, DEFAULT) as ESP8266SettingsState
+        val state = ApplicationManager.getApplication().getComponent(
+            ESP8266SettingsState::class.java,
+            DEFAULT
+        ) as ESP8266SettingsState
 
         return  (state.ccPath != ccPath?.canonicalPath)
                 || (state.cxxPath != cxxPath?.canonicalPath)
@@ -43,7 +40,10 @@ class ESP8266SDKSettings(private val project: Project) : ProjectComponent, Confi
 
 
     override fun apply() {
-        val state = ApplicationManager.getApplication().getComponent(ESP8266SettingsState::class.java, DEFAULT) as ESP8266SettingsState
+        val state = ApplicationManager.getApplication().getComponent(
+            ESP8266SettingsState::class.java,
+            DEFAULT
+        ) as ESP8266SettingsState
         ccPath?.canonicalPath?.let { state.ccPath = it }
         cxxPath?.canonicalPath?.let { state.cxxPath = it }
         freeRtosPath?.canonicalPath?.let { state.freeRtosPath = it }
@@ -58,7 +58,10 @@ class ESP8266SDKSettings(private val project: Project) : ProjectComponent, Confi
 
     override fun createComponent(): JComponent {
         val p = panel("Tools path") {
-            val state = project.getComponent(ESP8266SettingsState::class.java, DEFAULT) as ESP8266SettingsState
+            val state = project.getComponent(
+                ESP8266SettingsState::class.java,
+                DEFAULT
+            ) as ESP8266SettingsState
             row("FREE ESP8266 RTOS path: ") {
                 val component = TextFieldWithHistoryWithBrowseButton()
                 val editor = component.childComponent.textEditor

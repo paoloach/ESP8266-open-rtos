@@ -1,4 +1,4 @@
-package esp8266.plugin.achdjian.it.wizard.espressif.configuration.flash
+package it.achdjian.plugin.esp8266.configuration.flash
 
 import com.intellij.execution.configurations.RunConfigurationOptions
 import com.intellij.openapi.diagnostic.Logger
