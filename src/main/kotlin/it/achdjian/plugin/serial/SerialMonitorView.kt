@@ -12,11 +12,11 @@ import com.intellij.ui.content.ContentFactory
 
 class SerialMonitorView(val project: Project) : ProjectComponent {
 
-    private lateinit var serialMonitorPanel:SerialMonitorPanel
+    private var serialMonitorPanel:SerialMonitorPanel?=null
     fun initToolWindow(toolWindow: ToolWindow) {
 
-        serialMonitorPanel = SerialMonitorPanel(project)
-
+        val serialMonitorPanel = SerialMonitorPanel(project)
+        this.serialMonitorPanel = serialMonitorPanel
 
         val panel = SimpleToolWindowPanel(false, true)
         val content = ContentFactory.SERVICE.getInstance().createContent(panel, project.name, false)
@@ -39,7 +39,9 @@ class SerialMonitorView(val project: Project) : ProjectComponent {
         return ActionManager.getInstance().createActionToolbar(ActionPlaces.UNKNOWN, group, false)
     }
 
-    override fun disposeComponent() = serialMonitorPanel.dispose()
+    override fun disposeComponent() {
+        serialMonitorPanel?.dispose()
+    }
 
     override fun projectClosed() = disposeComponent()
 }
